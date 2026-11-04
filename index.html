@@ -143,7 +143,7 @@ const store={get(k,d){try{const v=localStorage.getItem("wh27b:"+k);return v==nul
 
 /* t, icon, text, cls(opt|bk) */
 const DAYS=[
- {em:"🚗",col:"var(--pc1)",date:"3/27",wd:"星期六",title:"落機，先去瀑布游水",ph:"復活節星期六",pace:"🌴🌴 半日活動",short:"瀑布 · 日落",
+ {em:"🚗",col:"var(--pc1)",date:"3/27",wd:"星期六",title:"落機，先去瀑布游水",ph:"復活節星期六",short:"瀑布 · 日落",
   note:"Cedar Creek Falls 喺 Proserpine 同 Airlie Beach 之間，即係由機場去 Airlie 嘅路上。今日租一日車就夠，之後唔使再揸。<b>要先確認租車公司接受機場取車、Airlie 還車</b>（或者送車上門／上門收車）。如果航班太遲到，就跳過瀑布，直接揸去 Airlie。",
   s:[["約 07:00","✈️","Jetstar 直航 MEL → PPP（約 3 小時）<small>航班時間待確認</small>","bk"],
      ["約 09:00","🚗","Proserpine 機場取車（一日）","bk"],
@@ -155,7 +155,7 @@ const DAYS=[
      ["18:11","🌅","喺 Marina 飲杯嘢睇日落"],
      ["19:15","🍤","晚餐：Fish D'vine（海鮮 + rum bar）","bk"]],
   stay:"Airlie Beach"},
- {em:"🐠",col:"var(--pc2)",date:"3/28",wd:"星期日",title:"外堡礁浮潛",ph:"復活節星期日",pace:"🌴 長日，但喺浮台好舒服",short:"Reefworld",
+ {em:"🐠",col:"var(--pc2)",date:"3/28",wd:"星期日",title:"外堡礁浮潛",ph:"復活節星期日",short:"Reefworld",
   note:"外礁要喺開放海域行大約 2.5 小時，係全程最受風影響嘅一日，所以排最早。出發前 3–5 日睇天氣預報，風大就同 D4 Hamilton 對調。3 月係水母季，落水要著 stinger suit（船上有）。",
   s:[["07:15","☕","Port of Airlie 報到（由住宿行過去）<small>時間以確認信為準</small>","bk"],
      ["07:45","⛴","高速雙體船出發，穿過 Whitsunday 群島去外礁"],
@@ -165,7 +165,7 @@ const DAYS=[
      ["17:30","🌇","返到 Airlie"],
      ["19:00","🍜","晚餐：Eastwoods（東南亞菜，人氣高）","bk"]],
   stay:"Airlie Beach"},
- {em:"🏝",col:"var(--pc3)",date:"3/29",wd:"星期一",title:"Whitehaven 白沙一整日",ph:"復活節星期一",pace:"🌴🌴 船程長，但成日喺沙灘",short:"Chill & Grill",
+ {em:"🏝",col:"var(--pc3)",date:"3/29",wd:"星期一",title:"Whitehaven 白沙一整日",ph:"復活節星期一",short:"Chill & Grill",
   note:"Cruise Whitsundays 嘅 Chill & Grill：7:15am 出發、6:20pm 返，喺 Whitehaven 最多可以留 6 個鐘。包 Hill Inlet 導賞、漢堡 BBQ 午餐、早晚茶。可以加訂沙灘 cabana（$30，最多坐 4 人，先到先得）。訂嗰陣問清楚有冇 stinger suit 提供。",
   s:[["07:00","☕","Port of Airlie 報到<small>時間以確認信為準</small>","bk"],
      ["07:15","⛴","開船，穿過 Whitsunday 群島"],
@@ -176,7 +176,7 @@ const DAYS=[
      ["18:20","🌇","返到 Airlie，船上睇日落"],
      ["19:00","🍕","輕鬆晚餐，行得到嘅附近食"]],
   stay:"Airlie Beach"},
- {em:"🛥",col:"var(--pc4)",date:"3/30",wd:"星期二",title:"Hamilton Island＋水上摩托",pace:"🌴🌴 自己控制節奏",short:"Hamilton · 水上摩托",
+ {em:"🛥",col:"var(--pc4)",date:"3/30",wd:"星期二",title:"Hamilton Island＋水上摩托",short:"Hamilton · 水上摩托",
   note:"船由 Cruise Whitsundays 營運，單程約 1 小時，大約 $60 一程；8:00am 去、5:10pm 返。水上摩托係 Hamilton Island 嘅 1 小時導賞團，喺 Marina C-arm（Marina Tavern 對面）出發，兩人一架；12 歲以上、懷孕或者頸背有傷唔可以玩。島上有免費 shuttle。",
   s:[["07:45","☕","Port of Airlie 上船"],
      ["08:00","⛴","船去 Hamilton Island（約 1 小時，或會經 Daydream Island）","bk"],
@@ -189,7 +189,7 @@ const DAYS=[
      ["17:10","🌅","搭船返 Airlie，日落（6:09pm）喺海上睇","bk"],
      ["18:30","🍝","晚餐：La Marina（意大利菜）"]],
   stay:"Airlie Beach"},
- {em:"🏡",col:"var(--pc5)",date:"3/31",wd:"星期三",title:"慢慢返屋企",pace:"🌴🌴 半日",short:"返墨爾本",
+ {em:"🏡",col:"var(--pc5)",date:"3/31",wd:"星期三",title:"慢慢返屋企",short:"返墨爾本",
   note:"",
   s:[["08:00","🥞","慢慢食早餐，最後游一次 Lagoon","opt"],
      ["09:30","🚌","Check-out，坐 shuttle 去機場","bk"],
@@ -203,7 +203,7 @@ function trip(){
  DAYS.map((D,i)=>`<article class="day" id="d${i+1}" style="--dc:${D.col}">
   <div class="dhead"><div class="dtop"><span class="dn">DAY ${i+1}</span><span>${D.date} ${D.wd}</span></div>
   <h2>${D.em} ${D.title}</h2>
-  <div class="tags">${D.ph?`<span class="tag ph">${D.ph}</span>`:""}<span class="tag pace">${D.pace}</span></div></div>
+  ${D.ph?`<div class="tags"><span class="tag ph">${D.ph}</span></div>`:""}</div>
   <div class="dbody">${D.note?`<div class="note">${D.note}</div>`:""}
   <ul class="tl">${D.s.map(([t,ic,a,c])=>`<li class="${c||""}"><span class="t">${t}</span><span class="i">${ic}</span><span class="a">${a}</span></li>`).join("")}</ul>
   ${D.stay?`<div class="stay">🛏 住：${D.stay}</div>`:""}</div></article>`).join("");
