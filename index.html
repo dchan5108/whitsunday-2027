@@ -65,7 +65,7 @@ footer{font-size:12px;color:var(--muted);margin-top:16px}
 <div class="wrap">
   <header class="hero">
     <h1>Whitsundays 2027</h1>
-    <p class="sub">3/27–3/31 · 住 Airlie Beach · 2 人</p>
+    <p class="sub">3/27–3/31 · 住 The Sebel Whitsundays（Airlie Beach）· 2 人</p>
     <svg viewBox="0 0 800 160" preserveAspectRatio="none" aria-hidden="true">
       <circle cx="610" cy="40" r="34" fill="#fff3c9" opacity=".85"/>
       <path d="M0 70 C120 55 220 85 360 70 S620 50 800 66 V160 H0Z" fill="#7fd0d9" opacity=".55"/>
@@ -94,7 +94,7 @@ const store={get(k,d){try{const v=localStorage.getItem("wh27c:"+k);return v==nul
 
 const DAYS=[
  {date:"3/27 六",title:"抵達 · Cedar Creek Falls",ph:1,note:"機場租車一日，去完瀑布喺 Airlie 還車（要確認可以異地還車）。",
-  s:[["07:00","MEL → PPP（Jetstar）","bk"],["09:00","機場取車","bk"],["09:45","Cedar Creek Falls 游水"],["12:00","Northerlies 午餐","bk"],["14:00","Airlie check-in、還車"],["15:00","Airlie Beach Lagoon"],["17:15","Bicentennial Walkway → Coral Sea Marina"],["18:11","日落"],["19:15","Fish D'vine 晚餐","bk"]]},
+  s:[["07:00","MEL → PPP（Jetstar）","bk"],["09:00","機場取車","bk"],["09:45","Cedar Creek Falls 游水"],["12:00","Northerlies 午餐","bk"],["14:00","The Sebel check-in、還車"],["15:00","Airlie Beach Lagoon"],["17:15","Bicentennial Walkway → Coral Sea Marina"],["18:11","日落"],["19:15","Fish D'vine 晚餐","bk"]]},
  {date:"3/28 日",title:"Reefworld 外堡礁浮潛",ph:1,note:"最受風影響，風大就同 D4 對調。",
   s:[["07:15","Port of Airlie 報到","bk"],["10:30","Reefworld：浮潛、半潛艇（包午餐）"],["17:30","返 Airlie"],["19:00","Eastwoods 晚餐","bk"]]},
  {date:"3/29 一",title:"Whitehaven Chill & Grill",ph:1,note:"",
@@ -108,7 +108,7 @@ function trip(){
  $("trip").innerHTML=`<p class="leg"><b>●</b> 要預訂</p>`+DAYS.map((D,i)=>`<article class="day"><h2><span>D${i+1} ${D.title}</span><small>${D.date}</small></h2>${D.ph?`<span class="ph">復活節公眾假期</span>`:""}${D.note?`<p class="note">${D.note}</p>`:""}<ul class="tl">${D.s.map(([t,a,c])=>`<li class="${c||""}"><span class="t">${t}</span><span class="a">${a}</span></li>`).join("")}</ul></article>`).join("");
 }
 
-const BDEF=[["fl","機票","pp",550,1],["car","D1 租車＋油","tot",140,1],["sh","回程機場 shuttle","pp",25,1],["fe","Hamilton 船","pp",120,1],["st","住宿 4 晚","tot",1200,1],["reef","Reefworld","pp",319,1],["cg","Chill & Grill","pp",279,1],["cb","Cabana","tot",30,1],["jet","水上摩托（1 架）","tot",200,1],["fd","餐飲","pp",400,1],["in","保險","pp",50,1],["mi","雜費","pp",100,1]];
+const BDEF=[["fl","機票","pp",550,1],["car","D1 租車＋油","tot",140,1],["sh","回程機場 shuttle","pp",25,1],["fe","Hamilton 船","pp",120,1],["st","The Sebel 海景 4 晚","tot",896,1],["reef","Reefworld","pp",319,1],["cg","Chill & Grill","pp",279,1],["cb","Cabana","tot",30,1],["jet","水上摩托（1 架）","tot",200,1],["fd","餐飲","pp",400,1],["in","保險","pp",50,1],["mi","雜費","pp",100,1]];
 let BUD=store.get("bud",{}),BM=store.get("bm","pp");const N=2;
 const bget=r=>{const o=BUD[r[0]]||{};return{amt:o.amt??r[3],on:o.on??!!r[4]}};
 const tot=r=>{const b=bget(r);return b.on?(r[2]==="pp"?b.amt*N:b.amt):0};
@@ -124,7 +124,7 @@ function budget(){
  B.querySelectorAll("[data-amt]").forEach(x=>x.onchange=()=>{(BUD[x.dataset.amt]??={}).amt=Math.max(0,+x.value||0);store.set("bud",BUD);budget()});
 }
 
-const BOOK=[["fl","機票","越早越好"],["st","住宿（近主街）","越早越好"],["car","D1 租車（異地還車）","訂完機票"],["nl","Northerlies 午餐","2 週前"],["reef","Reefworld","1–2 個月前"],["cg","Chill & Grill＋cabana","1–2 個月前"],["fe","Hamilton 船","1 個月前"],["jet","水上摩托","1 個月前"],["sh","回程 shuttle","1 個月前"],["eat","Fish D'vine、Eastwoods","2 週前"],["in","旅遊保險","訂完機票"]];
+const BOOK=[["fl","機票","越早越好"],["st","The Sebel 海景房 $896（確認可免費取消）","越早越好"],["car","D1 租車（異地還車）","訂完機票"],["nl","Northerlies 午餐","2 週前"],["reef","Reefworld","1–2 個月前"],["cg","Chill & Grill＋cabana","1–2 個月前"],["fe","Hamilton 船","1 個月前"],["jet","水上摩托","1 個月前"],["sh","回程 shuttle","1 個月前"],["eat","Fish D'vine、Eastwoods","2 週前"],["in","旅遊保險","訂完機票"]];
 const TIPS=["3 月風大，船可能取消：揀可免費取消／改期，出發前睇預報。","水母季：海度落水著 stinger suit；Lagoon 冇水母。","冇 Uber，的士 $80–100。","帶：reef-safe 防曬、帽、暈浪丸、水鞋、薄風褸。"];
 let BK=store.get("bk",{});
 function tips(){
