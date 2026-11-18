@@ -106,3 +106,7 @@ body{background:var(--bg);color:var(--fg)}
 .highlight-badge{gap:10px}
 .highlight-section .section-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
 @media(max-width:420px){.highlight-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.badge-art{width:76px;height:76px}.badge-label{font-size:11px}}
+/* 今日頁（跟 Iceland 間距）＋天氣文字 */
+#today{max-width:720px;margin:0 auto;padding:4px 0 24px;display:grid;gap:12px}
+#today .section-title h2{margin:2px 0 0;font-size:1.25rem}
+#wx{margin:10px 0 12px;padding:10px 12px;border-radius:12px;background:var(--bg);font-size:14px;line-height:1.7}
