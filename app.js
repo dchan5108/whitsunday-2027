@@ -17,7 +17,7 @@ function trip(){
  const cons=cur===D.DAYS.length-1?"":"";
  $("trip").innerHTML=`<div class="chips" role="group" aria-label="選擇日子">${chips}</div>
  <article class="card day"><div class="dh"><h2>D${cur+1}　${esc(d.title)}</h2><span class="dt">${md(d.date)}（${d.wd}）</span></div>
- ${d.ph?`<span class="ph">昆士蘭公眾假期</span>`:""}
+ ${highlightBadges(cur)}${d.ph?`<span class="ph">昆士蘭公眾假期</span>`:""}
  ${d.note?`<p class="note">${esc(d.note)}</p>`:""}
  <ul class="tl">${rows}</ul>
  <p class="legend"><span class="k book">●</span> 要預訂　<span class="k done">✓</span> 已訂　<span class="ai">AI 建議</span> 不是你指定的，可改</p>
@@ -53,9 +53,9 @@ function overview(){
  const diff=dayIndex(),total=D.DAYS.length,daysLeft=Math.max(0,-diff);
  const state=diff<0?"出發倒數":diff<total?"旅程進行中":"旅程回憶";
  const title=diff<0?`仲有 <strong>${daysLeft}</strong> 日，出發去海島！`:diff<total?`Day ${diff+1} · 今日去探索`:"Whitsundays · 美好回憶";
- $("home").innerHTML=`<section class="landing-intro"><div class="eyebrow">THE WHITSUNDAYS · QUEENSLAND</div><h2>海風、白沙，同一場藍色假期。</h2><p>4日3夜 · ${esc(niceDate(D.TRIP.start))} — ${esc(niceDate(D.TRIP.end))}</p></section>
- <section class="card countdown"><span class="eyebrow">${state}</span><div class="count-main">${title}</div><p class="note">${diff<0?"陽光、帆船同碧藍海水，準備好出發。":diff<total?"打開今日行程，睇吓下一站。":"隨時翻閱呢趟海島旅程。"}</p><button class="btn" type="button" data-go="${diff>=0&&diff<total?"today":"trip"}">${diff>=0&&diff<total?"查看今日行程":"探索四日行程"} →</button></section>
- <section class="section-head"><h2>四日海島日記</h2><p class="note">每一日，都有唔同嘅藍。</p></section>
+ $("home").innerHTML=`<section class="landing-intro"><div class="eyebrow">THE WHITSUNDAYS · QUEENSLAND</div><h2>Whitsundays 2027</h2><p>4日3夜 · ${esc(niceDate(D.TRIP.start))} — ${esc(niceDate(D.TRIP.end))}</p></section>
+ <section class="card countdown"><span class="eyebrow">${state}</span><div class="count-main">${title}</div><p class="note">${diff<0?"查看行程及出發準備。":diff<total?"打開今日行程，睇吓下一站。":"隨時翻閱呢趟海島旅程。"}</p><button class="btn" type="button" data-go="${diff>=0&&diff<total?"today":"trip"}">${diff>=0&&diff<total?"查看今日行程":"探索四日行程"} →</button></section>
+ <section class="section-head"><h2>四日海島日記</h2></section>
  <div class="day-cards">${D.DAYS.map((d,i)=>`<button class="day-preview" type="button" data-day="${i}"><span class="day-num">DAY ${String(i+1).padStart(2,"0")}</span><span class="day-name">${esc(d.title)}</span><span class="day-date">${esc(niceDate(d.date))} <span aria-hidden="true">↗</span></span></button>`).join("")}</div>
  <section class="card stay"><span class="eyebrow">OUR ISLAND BASE</span><h3>${esc(D.TRIP.base)}</h3><p class="note">${D.TRIP.people} 人 · 4 日 3 夜 · Airlie Beach</p></section>`;
  $("home").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>navigate(b.dataset.go));
@@ -63,20 +63,46 @@ function overview(){
 }
 function today(){
  const idx=dayIndex(),preview=idx<0,finished=idx>=D.DAYS.length,i=preview?0:Math.min(idx,D.DAYS.length-1),d=D.DAYS[i];
- $("today").innerHTML=`<section class="card today-head"><span class="eyebrow">${preview?"DAY 1 · 預覽":finished?"旅程已結束":"TODAY · DAY "+(i+1)}</span><h2>${esc(d.title)}</h2><p class="note">${esc(niceDate(d.date))}${preview?" · 出發前先睇第一日安排":""}</p><button class="btn" id="today-open" type="button">查看完整行程 →</button></section><section class="card"><h3>${preview?"第一日行程預覽":"當日行程"}</h3><ul class="tl">${d.s.map(([t,a,tag])=>`<li class="${esc(tag||"")}"><span class="t">${esc(t)}</span><div class="a">${esc(a)}</div></li>`).join("")}</ul></section>`;
+ $("today").innerHTML=`<section class="card today-head"><span class="eyebrow">${preview?"DAY 1 · 預覽":finished?"旅程已結束":"TODAY · DAY "+(i+1)}</span><h2>${esc(d.title)}</h2><p class="note">${esc(niceDate(d.date))}${preview?" · 出發前先睇第一日安排":""}</p><button class="btn" id="today-open" type="button">查看完整行程 →</button></section>${highlightBadges(i)}<section class="card"><h3>${preview?"第一日行程預覽":"當日行程"}</h3><ul class="tl">${d.s.map(([t,a,tag])=>`<li class="${esc(tag||"")}"><span class="t">${esc(t)}</span><div class="a">${esc(a)}</div></li>`).join("")}</ul></section>`;
  $("today-open").onclick=()=>{cur=i;navigate("trip")};
 }
+/* 今日重點：獨立圖案，避免不同景點重用同一款 */
+/* 今日重點：每個地點獨立勳章圖案，不使用冰島的解鎖系統。 */
+const HIGHLIGHTS=[
+ [{id:"reef",name:"Heart Reef Scenic Flight"},{id:"airlie",name:"Airlie Beach"}],
+ [{id:"sail",name:"Camira Sailing"},{id:"white",name:"Whitehaven Beach"},{id:"snorkel",name:"浮潛"}],
+ [{id:"hamilton",name:"Hamilton Island"},{id:"peak",name:"Passage Peak"},{id:"catseye",name:"Catseye Beach"}],
+ [{id:"walk",name:"Bicentennial Walkway"},{id:"plane",name:"回程"}]
+];
+function badgeArt(id){
+ const water='<path d="M5 52 Q18 46 30 52 T55 52 T79 52 V81 H5Z" fill="#2c9ba7"/><path d="M5 61 Q20 55 35 61 T65 61 T79 61" stroke="#baf1e6" stroke-width="3" fill="none"/>';
+ const sun='<circle cx="62" cy="23" r="11" fill="#ffdf94"/>';
+ const art={
+ reef:'<path d="M25 48 C10 36 20 24 32 30 Q42 18 49 31 Q62 27 62 41 Q62 52 43 64 Q27 58 25 48Z" fill="#eaf8ef" stroke="#fff" stroke-width="3"/><path d="M12 17 l48 12 -17 3 -8 12 -5 -13 -18 -8Z" fill="#fff" stroke="#30667a" stroke-width="2"/>',
+ airlie:sun+'<path d="M9 53 Q30 43 45 51 L74 47 V74 H9Z" fill="#e7d7aa"/><path d="M46 50 l7 -26" stroke="#745a3d" stroke-width="4"/><path d="M53 24 Q35 11 27 23 Q46 20 53 24 Q63 10 74 19 Q62 18 53 24" fill="#397a59"/>',
+ sail:sun+'<path d="M42 13 V62 M39 20 L17 52 H39Z M46 29 L68 52 H46Z" fill="#fff9e9" stroke="#ffffff" stroke-width="2"/><path d="M21 60 Q42 70 65 60 L59 69 H30Z" fill="#8b583c"/>',
+ white:sun+'<path d="M7 58 Q25 39 42 50 T77 42 V80 H7Z" fill="#f8efcf"/><path d="M7 63 Q24 54 36 61 T77 54" fill="none" stroke="#fff" stroke-width="5"/>',
+ snorkel:'<path d="M18 30 Q42 18 64 30 L61 46 Q42 57 21 46Z" fill="#f1fcfc" stroke="#155b75" stroke-width="4"/><path d="M40 27 V47 M65 35 H74 V19" stroke="#155b75" stroke-width="4" fill="none"/><circle cx="29" cy="39" r="3" fill="#4c9eb6"/>',
+ hamilton:sun+'<path d="M7 54 Q20 28 38 44 Q56 21 77 53 V77 H7Z" fill="#4e9577"/><path d="M11 65 Q42 53 74 62" fill="none" stroke="#f3ebc9" stroke-width="6"/><path d="M46 56 L46 40 L59 40 L59 56Z" fill="#fff7e8"/>',
+ peak:sun+'<path d="M7 64 L32 22 L47 44 L58 30 L78 64Z" fill="#4e8d77"/><path d="M25 64 L37 48 L44 54 L54 45 L65 64" fill="none" stroke="#c9e6bd" stroke-width="3"/>',
+ catseye:sun+'<path d="M7 62 Q22 42 40 51 T77 49 V78 H7Z" fill="#e9d4a7"/><path d="M7 57 Q22 48 39 57 T77 54" fill="none" stroke="#fff8ed" stroke-width="4"/><path d="M16 33 Q25 27 34 33" fill="none" stroke="#fff" stroke-width="3"/>',
+ walk:sun+'<path d="M7 58 Q25 38 42 52 T77 44 V78 H7Z" fill="#4b977a"/><path d="M15 79 Q32 53 57 54 T77 38" fill="none" stroke="#e9d3aa" stroke-width="9"/><path d="M15 79 Q32 53 57 54 T77 38" fill="none" stroke="#fff4d9" stroke-width="3"/>',
+ plane:'<path d="M11 43 L70 18 L52 43 L70 56 L62 64 L44 52 L29 67 L23 62 L34 45Z" fill="#fffdf2" stroke="#2c6a80" stroke-width="2"/>'
+ };
+ return `<svg viewBox="0 0 84 84" role="img" aria-label="${esc(id)}"><defs><linearGradient id="sky-${id}" x2="0" y2="1"><stop stop-color="#dff9f2"/><stop offset="1" stop-color="#80d1d6"/></linearGradient></defs><circle cx="42" cy="42" r="40" fill="url(#sky-${id})"/>${water}${art[id]||sun}<circle cx="42" cy="42" r="39" fill="none" stroke="#fff7dd" stroke-width="2"/></svg>`
+}
+function highlightBadges(i){return `<section class="card highlight-section"><div class="section-head"><h3>今日重點</h3><span class="eyebrow">DAY ${i+1} HIGHLIGHTS</span></div><div class="highlight-grid">${(HIGHLIGHTS[i]||[]).map(h=>`<div class="highlight-badge"><span class="badge-art" aria-hidden="true">${badgeArt(h.id)}</span><span class="badge-label">${esc(h.name)}</span></div>`).join("")}</div></section>`}
 /* ---------- 登入、文件、同步（後台：Google Apps Script） ---------- */
 const API=D.CONFIG.api,LS={get:(k,d)=>{try{const v=localStorage.getItem("wh27-"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set:(k,v)=>{try{v==null?localStorage.removeItem("wh27-"+k):localStorage.setItem("wh27-"+k,JSON.stringify(v))}catch(e){}}};
 let ME=LS.get("me",null),ST=LS.get("st",{}),DOCS=null,VIS=null;
 const dev=()=>{const u=navigator.userAgent;return (/iPhone/.test(u)?"iPhone":/iPad/.test(u)?"iPad":/Android/.test(u)?"Android":/Mac/.test(u)?"Mac":/Windows/.test(u)?"Windows":"其他")+" · "+(/CriOS|Chrome/.test(u)?"Chrome":/Firefox|FxiOS/.test(u)?"Firefox":/Safari/.test(u)?"Safari":"瀏覽器")+(matchMedia("(display-mode: standalone)").matches?"（主畫面）":"")};
 async function call(body){if(!API)throw new Error("後台未設定");const r=await fetch(API,{method:"POST",body:JSON.stringify(Object.assign({sk:ME&&ME.sk},body))});const j=await r.json();
- if(j.err==="sess"){ME=null;LS.set("me",null);DOCS=VIS=null;if(!$("prep").hidden)prep();throw new Error("登入已失效，請再登入")}return j}
+ if(j.err==="sess"){ME=null;LS.set("me",null);DOCS=VIS=null;lockApp();renderGate("登入已失效，請重新登入。");throw new Error("登入已失效，請再登入")}return j}
 const errTxt={notallowed:"這個 Gmail 未被加入可登入名單。",token:"Google 登入失敗，請再試。",aud:"後台的 CLIENT_ID 設定不正確。",big:"檔案太大（上限 10MB）。",owner:"只有你的帳戶看到登入記錄。"};
 function gsi(cb){if(window.google&&google.accounts)return cb();const s=document.createElement("script");s.src="https://accounts.google.com/gsi/client";s.async=true;s.onload=cb;document.head.appendChild(s)}
 function loginBtn(el,msg){gsi(()=>{google.accounts.id.initialize({client_id:D.CONFIG.gclient,ux_mode:"popup",callback:async r=>{msg.textContent="檢查中…";
  try{const j=await call({op:"login",idt:r.credential,dev:dev()});if(!j.ok){msg.textContent=errTxt[j.err]||("登入失敗："+j.err);return}
-  ME={sk:j.sk,email:j.email,owner:!!j.owner};LS.set("me",ME);prep();syncState()}catch(e){msg.textContent=e.message}}});
+  ME={sk:j.sk,email:j.email,owner:!!j.owner};LS.set("me",ME);prep();syncState();unlockApp();navigate("home")}catch(e){msg.textContent=e.message}}});
  google.accounts.id.renderButton(el,{theme:"outline",size:"large",text:"signin_with",locale:"zh-TW"})})}
 async function syncState(){if(!ME)return;try{const j=await call({op:"stget"});if(j.ok){ST=j.st||{};LS.set("st",ST);if(!$("prep").hidden)drawChk()}}catch(e){}}
 function ping(){if(ME&&API)call({op:"ping",dev:dev()}).then(j=>{if(j.ok&&ME){ME.owner=!!j.owner;LS.set("me",ME)}}).catch(()=>{})}
@@ -113,19 +139,36 @@ function prep(){
  <section class="card"><h2>注意事項</h2><p class="note">內容待更新及補充來源。</p>
  <ul class="tips"><li>3 月風浪較大，船團可能因天氣取消。</li><li>旅程期間屬水母季，在海中浮潛要穿 stinger suit。</li><li>Airlie Beach 沒有 Uber。</li></ul></section>`;
  if(API&&!ME)loginBtn($("gbtn"),$("gmsg"));
- const lo=$("lgout");if(lo)lo.onclick=()=>{call({op:"logout"}).catch(()=>{});ME=null;LS.set("me",null);DOCS=VIS=null;prep()};
+ const lo=$("lgout");if(lo)lo.onclick=()=>{call({op:"logout"}).catch(()=>{});ME=null;LS.set("me",null);DOCS=VIS=null;lockApp();renderGate()};
  drawChk();drawDocs();drawVis()}
 
+/* ---------- 登入閘門 ---------- */
+let AUTH_READY=false;
+function lockApp(){AUTH_READY=false;document.body.classList.add("locked");document.querySelectorAll("main > section").forEach(el=>el.hidden=true)}
+function unlockApp(){AUTH_READY=true;document.body.classList.remove("locked");$("gate").hidden=true}
+function renderGate(message=""){
+ lockApp();const el=$("gate");el.hidden=false;
+ el.innerHTML=`<div class="gate-cover"><div class="gate-sun">☀</div><div class="gate-kicker">THE WHITSUNDAYS · QUEENSLAND</div><h1>Whitsundays 2027</h1><p>27–30 March 2027</p></div><div class="gate-panel"><h2>旅程登入</h2><p class="note">只限已獲授權的旅伴查看行程。</p>${message?`<p class="gate-error" role="status">${esc(message)}</p>`:""}<div id="gate-google"></div><p class="note" id="gate-msg"></p></div>`;
+ if(!API||!D.CONFIG.gclient){$("gate-msg").textContent="登入服務尚未設定。";return}
+ loginBtn($("gate-google"),$("gate-msg"));
+}
+async function verifySession(){
+ if(!ME||!ME.sk){renderGate();return}
+ lockApp();$("gate").hidden=false;$("gate").innerHTML='<div class="gate-panel"><h2>正在驗證登入…</h2></div>';
+ try{const j=await call({op:"ping",dev:dev()});if(!j.ok)throw Error("登入已失效");ME.owner=!!j.owner;LS.set("me",ME);unlockApp();show(location.hash.slice(1)||"home");syncState()}
+ catch(e){ME=null;LS.set("me",null);renderGate("登入已失效，請重新登入。")}
+}
 /* ---------- 分頁 ---------- */
 const TABS=["prep","today","home","trip","budget"];
 function navigate(t){show(t);window.scrollTo({top:0,behavior:"smooth"})}
-function show(t){if(!TABS.includes(t))t="home";
+function show(t){if(!AUTH_READY)return;if(!TABS.includes(t))t="home";
  document.querySelectorAll(".bnav button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));
- TABS.forEach(s=>$(s).hidden=s!==t);
+ TABS.forEach(k=>$(k).hidden=k!==t);
  ({prep,today,home:overview,trip,budget})[t]();
- try{if(location.hash.slice(1)!==t)history.replaceState(null,"","#"+t)}catch(e){}}
+ try{if(location.hash.slice(1)!==t)history.replaceState(null,"","#"+t)}catch(e){}
+}
 document.querySelectorAll(".bnav button").forEach(b=>b.onclick=()=>{show(b.dataset.tab);window.scrollTo(0,0)});
 window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
-show(location.hash.slice(1)||"home");ping();syncState();
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+verifySession();
+/* 不註冊舊版 Iceland service worker，避免錯誤快取。 */
 })();

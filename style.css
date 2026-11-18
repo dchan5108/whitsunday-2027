@@ -110,3 +110,42 @@ body{background:var(--bg)}
 button:focus-visible,a:focus-visible{outline:3px solid #ffb77a;outline-offset:3px}
 @media(max-width:360px){.day-cards{grid-template-columns:1fr}.day-preview{min-height:112px}}
 @media(prefers-color-scheme:dark){:root{--bg:#171f22;--card:#222d31;--fg:#e8f4f4;--muted:#adbec2;--line:#3a5054;--route:#77d8e6}.countdown,.today-head,.day-preview,.day-preview:nth-child(2),.day-preview:nth-child(3),.day-preview:nth-child(4){background:linear-gradient(145deg,#233a40,#1d3036);border-color:#3a5559}.hero{color:#fff}.count-main strong{color:#85e1ed}}
+
+/* Iceland-inspired information hierarchy, Whitsundays coastal identity */
+:root{--bg:#f5f8f8;--card:#fff;--fg:#203744;--muted:#647783;--line:#dce9eb;--route:#087e93}
+body{background:var(--bg)}
+.hero{background:linear-gradient(160deg,#0e7d98,#4fc6c8 58%,#e9e2ca);padding-bottom:105px}
+.card{border-radius:16px;box-shadow:0 3px 16px rgba(18,77,92,.035)}
+body.locked .hero,body.locked main,body.locked .bnav{display:none!important}
+body.locked .wrap{padding-top:0}
+#gate{min-height:85vh}
+.gate-cover{position:relative;min-height:340px;border-radius:0 0 24px 24px;background:linear-gradient(155deg,#076b8a 0%,#39b8c5 52%,#b4e4db 74%,#f4e7c7 100%);color:white;padding:95px 26px 35px;overflow:hidden}
+.gate-cover:after{content:"";position:absolute;width:130%;height:110px;left:-10%;bottom:-65px;background:#f5f8f8;border-radius:50% 50% 0 0;transform:rotate(-3deg)}
+.gate-cover h1{font-size:clamp(2rem,7vw,3rem);line-height:1.15;margin:12px 0 6px;letter-spacing:-.04em}
+.gate-cover p{margin:0;opacity:.95}
+.gate-kicker{font-size:11px;letter-spacing:.17em;font-weight:700}
+.gate-sun{position:absolute;right:30px;top:25px;font-size:54px;color:#fff0ba}
+.gate-panel{max-width:440px;margin:20px auto;padding:22px;background:var(--card);border:1px solid var(--line);border-radius:20px;text-align:center}
+.gate-panel h2{margin:0 0 5px;font-size:1.25rem}
+#gate-google{display:flex;justify-content:center;margin:20px 0 8px;min-height:42px}
+.gate-error{color:#a83c30;font-size:13px}
+.highlight-section{margin-top:12px}
+.highlight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px;margin-top:12px}
+.highlight-badge{display:flex;flex-direction:column;align-items:center;text-align:center;gap:7px;font-size:12px;font-weight:650;line-height:1.3}
+.badge-art{display:grid;place-items:center;width:82px;height:82px;border:4px solid #e7d6a8;border-radius:50%;background:radial-gradient(circle at 30% 25%,#e9fbf6,#8ad4d3 72%,#2796a7);box-shadow:0 3px 0 #bdab79,0 7px 14px rgba(24,84,91,.12);font-size:37px}
+.badge-label{max-width:130px}
+@media(prefers-color-scheme:dark){:root{color-scheme:light}}
+
+/* Iceland-inspired layout tokens: shared editorial hierarchy, Whitsundays palette */
+:root{--bg:#f7f3ea;--card:#fffdf8;--fg:#1e2b30;--muted:#5f6d6b;--line:#e6dfd1;--route:#176f83;--shadow:0 1px 2px rgba(70,55,30,.05),0 4px 14px rgba(70,55,30,.06)}
+body{background:var(--bg);color:var(--fg)}
+.card,.gate-panel{background:var(--card);border-color:var(--line);box-shadow:var(--shadow);border-radius:18px}
+.hero{border-radius:0 0 22px 22px}
+.gate-cover{background:linear-gradient(155deg,#0c536b 0%,#1a91a7 42%,#67c6c9 72%,#e5d9b5 100%)}
+.gate-panel{box-shadow:0 8px 28px rgba(32,66,71,.08)}
+.highlight-grid{grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:16px}
+.badge-art{width:94px;height:94px;padding:4px;box-sizing:border-box;background:#e7d7ac;border:3px solid #c3a56b;box-shadow:0 3px 0 #9b8055,0 8px 18px rgba(34,72,80,.12);font-size:initial;overflow:hidden}
+.badge-art svg{display:block;width:100%;height:100%;border-radius:50%}
+.highlight-badge{gap:10px}
+.highlight-section .section-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+@media(max-width:420px){.highlight-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.badge-art{width:76px;height:76px}.badge-label{font-size:11px}}
