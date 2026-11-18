@@ -94,7 +94,7 @@ async function call(body){if(!API)throw new Error("後台未設定");const r=awa
 const errTxt={notallowed:"這個 Gmail 未被加入可登入名單。",token:"Google 登入失敗，請再試。",aud:"後台的 CLIENT_ID 設定不正確。",big:"檔案太大（上限 10MB）。",owner:"只有你的帳戶看到登入記錄。"};
 function gsi(cb){if(window.google&&google.accounts)return cb();const s=document.createElement("script");s.src="https://accounts.google.com/gsi/client";s.async=true;s.onload=cb;s.onerror=()=>{const e=document.getElementById("gate-msg");if(e)e.textContent="無法載入 Google 登入，請檢查網絡。"};document.head.appendChild(s)}
 function loginBtn(el,msg){gsi(()=>{google.accounts.id.initialize({client_id:D.CONFIG.gclient,ux_mode:"popup",callback:async r=>{msg.textContent="檢查中…";
- try{const j=await call({op:"login",idt:r.credential,dev:dev()});if(!j.ok){msg.textContent=errTxt[j.err]||("登入失敗："+j.err);return}
+ try{const j=await call({op:"login",idt:r.credential,dev:dev()});if(!j.ok){msg.textContent=errTxt[j.err]||("登入失敗："+j.err+(j.detail?"："+j.detail:""));return}
   ME={sk:j.sk,email:j.email,owner:!!j.owner,role:j.role};LS.set("me",ME);if(j.role==="pending"){showGate("登入成功，等待管理員批准。");return}hideGate();show("home");syncState();loadDays()}catch(e){msg.textContent=e.message}}});
  google.accounts.id.renderButton(el,{theme:"outline",size:"large",text:"signin_with",locale:"zh-TW"})})}
 async function syncState(){if(!ME)return;try{const j=await call({op:"stget"});if(j.ok){ST=j.st||{};LS.set("st",ST);if(!$("prep").hidden)drawChk()}}catch(e){}}
