@@ -45,8 +45,27 @@ function budget(){
  ${cons.length?`<section class="card"><h3>考慮中（不計入合計）</h3><table class="bt"><tbody>${cons.map(row).join("")}</tbody></table></section>`:""}`;
 }
 
-/* ---------- 其他頁（下一步製作） ---------- */
-function todo(id,t){$(id).innerHTML=`<section class="card"><h2>${t}</h2><p class="note">製作中。</p></section>`}
+/* ---------- Landing / 今日 ---------- */
+const dateLocal=s=>new Date(s+"T00:00:00");
+const dayIndex=()=>{const now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());return Math.round((today-dateLocal(D.TRIP.start))/86400000)};
+const niceDate=s=>new Intl.DateTimeFormat("zh-HK",{month:"long",day:"numeric",weekday:"short"}).format(dateLocal(s));
+function overview(){
+ const diff=dayIndex(),total=D.DAYS.length,daysLeft=Math.max(0,-diff);
+ const state=diff<0?"出發倒數":diff<total?"旅程進行中":"旅程回憶";
+ const title=diff<0?`仲有 <strong>${daysLeft}</strong> 日，出發去海島！`:diff<total?`Day ${diff+1} · 今日去探索`:"Whitsundays · 美好回憶";
+ $("home").innerHTML=`<section class="landing-intro"><div class="eyebrow">THE WHITSUNDAYS · QUEENSLAND</div><h2>海風、白沙，同一場藍色假期。</h2><p>4日3夜 · ${esc(niceDate(D.TRIP.start))} — ${esc(niceDate(D.TRIP.end))}</p></section>
+ <section class="card countdown"><span class="eyebrow">${state}</span><div class="count-main">${title}</div><p class="note">${diff<0?"陽光、帆船同碧藍海水，準備好出發。":diff<total?"打開今日行程，睇吓下一站。":"隨時翻閱呢趟海島旅程。"}</p><button class="btn" type="button" data-go="${diff>=0&&diff<total?"today":"trip"}">${diff>=0&&diff<total?"查看今日行程":"探索四日行程"} →</button></section>
+ <section class="section-head"><h2>四日海島日記</h2><p class="note">每一日，都有唔同嘅藍。</p></section>
+ <div class="day-cards">${D.DAYS.map((d,i)=>`<button class="day-preview" type="button" data-day="${i}"><span class="day-num">DAY ${String(i+1).padStart(2,"0")}</span><span class="day-name">${esc(d.title)}</span><span class="day-date">${esc(niceDate(d.date))} <span aria-hidden="true">↗</span></span></button>`).join("")}</div>
+ <section class="card stay"><span class="eyebrow">OUR ISLAND BASE</span><h3>${esc(D.TRIP.base)}</h3><p class="note">${D.TRIP.people} 人 · 4 日 3 夜 · Airlie Beach</p></section>`;
+ $("home").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>navigate(b.dataset.go));
+ $("home").querySelectorAll("[data-day]").forEach(b=>b.onclick=()=>{cur=+b.dataset.day;navigate("trip")});
+}
+function today(){
+ const idx=dayIndex(),preview=idx<0,finished=idx>=D.DAYS.length,i=preview?0:Math.min(idx,D.DAYS.length-1),d=D.DAYS[i];
+ $("today").innerHTML=`<section class="card today-head"><span class="eyebrow">${preview?"DAY 1 · 預覽":finished?"旅程已結束":"TODAY · DAY "+(i+1)}</span><h2>${esc(d.title)}</h2><p class="note">${esc(niceDate(d.date))}${preview?" · 出發前先睇第一日安排":""}</p><button class="btn" id="today-open" type="button">查看完整行程 →</button></section><section class="card"><h3>${preview?"第一日行程預覽":"當日行程"}</h3><ul class="tl">${d.s.map(([t,a,tag])=>`<li class="${esc(tag||"")}"><span class="t">${esc(t)}</span><div class="a">${esc(a)}</div></li>`).join("")}</ul></section>`;
+ $("today-open").onclick=()=>{cur=i;navigate("trip")};
+}
 /* ---------- 登入、文件、同步（後台：Google Apps Script） ---------- */
 const API=D.CONFIG.api,LS={get:(k,d)=>{try{const v=localStorage.getItem("wh27-"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set:(k,v)=>{try{v==null?localStorage.removeItem("wh27-"+k):localStorage.setItem("wh27-"+k,JSON.stringify(v))}catch(e){}}};
 let ME=LS.get("me",null),ST=LS.get("st",{}),DOCS=null,VIS=null;
@@ -99,13 +118,14 @@ function prep(){
 
 /* ---------- 分頁 ---------- */
 const TABS=["prep","today","home","trip","budget"];
-function show(t){if(!TABS.includes(t))t="trip";
+function navigate(t){show(t);window.scrollTo({top:0,behavior:"smooth"})}
+function show(t){if(!TABS.includes(t))t="home";
  document.querySelectorAll(".bnav button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));
  TABS.forEach(s=>$(s).hidden=s!==t);
- ({prep,today:()=>todo("today","今日"),home:()=>todo("home","總覽"),trip,budget})[t]();
+ ({prep,today,home:overview,trip,budget})[t]();
  try{if(location.hash.slice(1)!==t)history.replaceState(null,"","#"+t)}catch(e){}}
 document.querySelectorAll(".bnav button").forEach(b=>b.onclick=()=>{show(b.dataset.tab);window.scrollTo(0,0)});
 window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
-show(location.hash.slice(1));ping();syncState();
+show(location.hash.slice(1)||"home");ping();syncState();
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 })();
