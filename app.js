@@ -6,66 +6,6 @@ const fmt=n=>"$"+(Math.round(n*100)/100).toLocaleString("en-AU",{minimumFraction
 const md=s=>{const [y,m,d]=s.split("-");return +m+"/"+(+d)};
 const srcList=keys=>(keys||[]).filter(k=>D.SRC[k]).map(k=>`<a href="${esc(D.SRC[k][1])}" target="_blank" rel="noopener">${esc(D.SRC[k][0])}</a>`).join("<br>");
 
-/* ---------- 行程 ---------- */
-let cur=0;
-function spotCard(k){const p=D.SPOTS[k];if(!p)return"";
- return `<details class="spot"><summary>${esc(p.n)}</summary><p>${esc(p.i)}</p><p class="meta">時間：${esc(p.h)}</p><p class="src">來源：<br>${srcList(p.s)}</p></details>`}
-function trip(){
- const chips=D.DAYS.map((d,i)=>`<button type="button" data-i="${i}" aria-pressed="${i===cur}"><b>D${i+1}</b><small>${md(d.date)}（${d.wd}）</small></button>`).join("");
- const d=D.DAYS[cur];
- const rows=d.s.map(([t,a,tag,x])=>`<li class="${tag||""}"><span class="t">${esc(t)}</span><div class="a">${esc(a)}${x&&x.ai?' <span class="ai">AI 建議</span>':""}${x&&x.sp?spotCard(x.sp):""}</div></li>`).join("");
- const cons=cur===D.DAYS.length-1?"":"";
- $("trip").innerHTML=`<div class="chips" role="group" aria-label="選擇日子">${chips}</div>
- <article class="card day"><div class="dh"><h2>D${cur+1}　${esc(d.title)}</h2><span class="dt">${md(d.date)}（${d.wd}）</span></div>
- ${highlightBadges(cur)}${d.ph?`<span class="ph">昆士蘭公眾假期</span>`:""}
- ${d.note?`<p class="note">${esc(d.note)}</p>`:""}
- <ul class="tl">${rows}</ul>
- <p class="legend"><span class="k book">●</span> 要預訂　<span class="k done">✓</span> 已訂　<span class="ai">AI 建議</span> 不是你指定的，可改</p>
- <div class="dnav"><button type="button" data-i="${cur-1}" ${cur===0?"disabled":""}>‹ 前一日</button><button type="button" data-i="${cur+1}" ${cur===D.DAYS.length-1?"disabled":""}>後一日 ›</button></div></article>
- ${D.CONSIDER.length?`<section class="card"><h3>考慮中（未放入行程）</h3>${D.CONSIDER.map(c=>`<p class="note">${esc(c.note)}</p>${spotCard(c.sp)}`).join("")}</section>`:""}
- ${d.ph?`<p class="src">公眾假期來源：${srcList(["fw"])}</p>`:""}${cons}`;
- $("trip").querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{const i=+b.dataset.i;if(i>=0&&i<D.DAYS.length){cur=i;trip();window.scrollTo({top:0,behavior:"smooth"})}});
-}
-
-/* ---------- 旅行費用 ---------- */
-function budget(){
- const N=D.TRIP.people,cats=["住宿","交通","活動","飲食","其他"];
- const each=c=>c.share==="shared"?c.amount/N:c.amount;
- const counted=D.COSTS.filter(c=>c.status==="confirmed"||c.status==="estimate");
- const sum=st=>counted.filter(c=>c.status===st).reduce((s,c)=>s+each(c),0);
- const conf=sum("confirmed"),est=sum("estimate"),miss=D.COSTS.filter(c=>c.status==="missing"),cons=D.COSTS.filter(c=>c.status==="consider");
- const lab={confirmed:"已確認",estimate:"估算",missing:"未有價錢",consider:"考慮中"};
- const row=c=>`<tr class="${c.status}"><td>${esc(c.n)}${c.ai?' <span class="ai">AI 建議</span>':""}<small>${c.share==="shared"?"兩人平分":"每人"}${c.note?" · "+esc(c.note):""}${c.s?`<br>${srcList(c.s)}`:""}</small></td><td><span class="st ${c.status}">${lab[c.status]}</span></td><td class="num">${c.status==="missing"?"—":fmt(each(c))}${c.share==="shared"&&c.status!=="missing"?`<small>總數 ${fmt(c.amount)}</small>`:""}</td></tr>`;
- $("budget").innerHTML=`<section class="card"><h2>費用（每人，AUD）</h2>
- <p class="note">用來估算旅費，不是記帳。兩人共用的費用（例如住宿）除以 2；機票、團費等按每人計。</p>
- <div class="tot"><div><small>已確認</small><b>${fmt(conf)}</b></div><div><small>估算</small><b>${fmt(est)}</b></div><div class="all"><small>合計（未完整）</small><b>${fmt(conf+est)}</b></div></div>
- ${miss.length?`<p class="miss">另有 <b>${miss.length}</b> 項未有價錢，未計入合計：${miss.map(c=>esc(c.n)).join("、")}。</p>`:""}</section>
- ${cats.map(cat=>{const r=D.COSTS.filter(c=>c.cat===cat&&c.status!=="consider");if(!r.length)return"";
-   return `<section class="card"><h3>${cat}</h3><table class="bt"><tbody>${r.map(row).join("")}</tbody></table></section>`}).join("")}
- ${cons.length?`<section class="card"><h3>考慮中（不計入合計）</h3><table class="bt"><tbody>${cons.map(row).join("")}</tbody></table></section>`:""}`;
-}
-
-/* ---------- Landing / 今日 ---------- */
-const dateLocal=s=>new Date(s+"T00:00:00");
-const dayIndex=()=>{const now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());return Math.round((today-dateLocal(D.TRIP.start))/86400000)};
-const niceDate=s=>new Intl.DateTimeFormat("zh-HK",{month:"long",day:"numeric",weekday:"short"}).format(dateLocal(s));
-function overview(){
- const diff=dayIndex(),total=D.DAYS.length,daysLeft=Math.max(0,-diff);
- const state=diff<0?"出發倒數":diff<total?"旅程進行中":"旅程回憶";
- const title=diff<0?`仲有 <strong>${daysLeft}</strong> 日，出發去海島！`:diff<total?`Day ${diff+1} · 今日去探索`:"Whitsundays · 美好回憶";
- $("home").innerHTML=`<section class="landing-intro"><div class="eyebrow">THE WHITSUNDAYS · QUEENSLAND</div><h2>Whitsundays 2027</h2><p>4日3夜 · ${esc(niceDate(D.TRIP.start))} — ${esc(niceDate(D.TRIP.end))}</p></section>
- <section class="card countdown"><span class="eyebrow">${state}</span><div class="count-main">${title}</div><p class="note">${diff<0?"查看行程及出發準備。":diff<total?"打開今日行程，睇吓下一站。":"隨時翻閱呢趟海島旅程。"}</p><button class="btn" type="button" data-go="${diff>=0&&diff<total?"today":"trip"}">${diff>=0&&diff<total?"查看今日行程":"探索四日行程"} →</button></section>
- <section class="section-head"><h2>四日海島日記</h2></section>
- <div class="day-cards">${D.DAYS.map((d,i)=>`<button class="day-preview" type="button" data-day="${i}"><span class="day-num">DAY ${String(i+1).padStart(2,"0")}</span><span class="day-name">${esc(d.title)}</span><span class="day-date">${esc(niceDate(d.date))} <span aria-hidden="true">↗</span></span></button>`).join("")}</div>
- <section class="card stay"><span class="eyebrow">OUR ISLAND BASE</span><h3>${esc(D.TRIP.base)}</h3><p class="note">${D.TRIP.people} 人 · 4 日 3 夜 · Airlie Beach</p></section>`;
- $("home").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>navigate(b.dataset.go));
- $("home").querySelectorAll("[data-day]").forEach(b=>b.onclick=()=>{cur=+b.dataset.day;navigate("trip")});
-}
-function today(){
- const idx=dayIndex(),preview=idx<0,finished=idx>=D.DAYS.length,i=preview?0:Math.min(idx,D.DAYS.length-1),d=D.DAYS[i];
- $("today").innerHTML=`<section class="card today-head"><span class="eyebrow">${preview?"DAY 1 · 預覽":finished?"旅程已結束":"TODAY · DAY "+(i+1)}</span><h2>${esc(d.title)}</h2><p class="note">${esc(niceDate(d.date))}${preview?" · 出發前先睇第一日安排":""}</p><button class="btn" id="today-open" type="button">查看完整行程 →</button></section>${highlightBadges(i)}<section class="card"><h3>${preview?"第一日行程預覽":"當日行程"}</h3><ul class="tl">${d.s.map(([t,a,tag])=>`<li class="${esc(tag||"")}"><span class="t">${esc(t)}</span><div class="a">${esc(a)}</div></li>`).join("")}</ul></section>`;
- $("today-open").onclick=()=>{cur=i;navigate("trip")};
-}
 /* 今日重點：獨立圖案，避免不同景點重用同一款 */
 /* 今日重點：每個地點獨立勳章圖案，不使用冰島的解鎖系統。 */
 const HIGHLIGHTS=[
@@ -92,20 +32,62 @@ function badgeArt(id){
  return `<svg viewBox="0 0 84 84" role="img" aria-label="${esc(id)}"><defs><linearGradient id="sky-${id}" x2="0" y2="1"><stop stop-color="#dff9f2"/><stop offset="1" stop-color="#80d1d6"/></linearGradient></defs><circle cx="42" cy="42" r="40" fill="url(#sky-${id})"/>${water}${art[id]||sun}<circle cx="42" cy="42" r="39" fill="none" stroke="#fff7dd" stroke-width="2"/></svg>`
 }
 function highlightBadges(i){return `<section class="card highlight-section"><div class="section-head"><h3>今日重點</h3><span class="eyebrow">DAY ${i+1} HIGHLIGHTS</span></div><div class="highlight-grid">${(HIGHLIGHTS[i]||[]).map(h=>`<div class="highlight-badge"><span class="badge-art" aria-hidden="true">${badgeArt(h.id)}</span><span class="badge-label">${esc(h.name)}</span></div>`).join("")}</div></section>`}
+
+/* ---------- 行程 ---------- */
+let cur=0;
+function spotCard(k){const p=D.SPOTS[k];if(!p)return"";
+ return `<details class="spot"><summary>${esc(p.n)}</summary><p>${esc(p.i)}</p><p class="meta">時間：${esc(p.h)}</p><p class="src">來源：<br>${srcList(p.s)}</p></details>`}
+function trip(){
+ const chips=D.DAYS.map((d,i)=>`<button type="button" data-i="${i}" aria-pressed="${i===cur}"><b>D${i+1}</b><small>${md(d.date)}（${d.wd}）</small></button>`).join("");
+ const d=D.DAYS[cur];
+ const rows=d.s.map(([t,a,tag,x])=>`<li class="${tag||""}"><span class="t">${esc(t)}</span><div class="a">${esc(a)}${x&&x.ai?' <span class="ai">AI 建議</span>':""}${x&&x.sp?spotCard(x.sp):""}</div></li>`).join("");
+ const cons=cur===D.DAYS.length-1?"":"";
+ $("trip").innerHTML=`<div class="chips" role="group" aria-label="選擇日子">${chips}</div>
+ <article class="card day"><div class="dh"><h2>D${cur+1}　${esc(d.title)}</h2><span class="dt">${md(d.date)}（${d.wd}）</span></div>
+ ${d.ph?`<span class="ph">昆士蘭公眾假期</span>`:""}
+ ${d.note?`<p class="note">${esc(d.note)}</p>`:""}${highlightBadges(cur)}
+ <ul class="tl">${rows}</ul>
+ <p class="legend"><span class="k book">●</span> 要預訂　<span class="k done">✓</span> 已訂　<span class="ai">AI 建議</span> 不是你指定的，可改</p>
+ <div class="dnav"><button type="button" data-i="${cur-1}" ${cur===0?"disabled":""}>‹ 前一日</button><button type="button" data-i="${cur+1}" ${cur===D.DAYS.length-1?"disabled":""}>後一日 ›</button></div></article>
+ ${D.CONSIDER.length?`<section class="card"><h3>考慮中（未放入行程）</h3>${D.CONSIDER.map(c=>`<p class="note">${esc(c.note)}</p>${spotCard(c.sp)}`).join("")}</section>`:""}
+ ${d.ph?`<p class="src">公眾假期來源：${srcList(["fw"])}</p>`:""}${cons}`;
+ $("trip").querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{const i=+b.dataset.i;if(i>=0&&i<D.DAYS.length){cur=i;trip();window.scrollTo({top:0,behavior:"smooth"})}});
+}
+
+/* ---------- 旅行費用 ---------- */
+function budget(){
+ const N=D.TRIP.people,cats=["住宿","交通","活動","飲食","其他"];
+ const each=c=>c.share==="shared"?c.amount/N:c.amount;
+ const counted=D.COSTS.filter(c=>c.status==="confirmed"||c.status==="estimate");
+ const sum=st=>counted.filter(c=>c.status===st).reduce((s,c)=>s+each(c),0);
+ const conf=sum("confirmed"),est=sum("estimate"),miss=D.COSTS.filter(c=>c.status==="missing"),cons=D.COSTS.filter(c=>c.status==="consider");
+ const lab={confirmed:"已確認",estimate:"估算",missing:"未有價錢",consider:"考慮中"};
+ const row=c=>`<tr class="${c.status}"><td>${esc(c.n)}${c.ai?' <span class="ai">AI 建議</span>':""}<small>${c.share==="shared"?"兩人平分":"每人"}${c.note?" · "+esc(c.note):""}${c.s?`<br>${srcList(c.s)}`:""}</small></td><td><span class="st ${c.status}">${lab[c.status]}</span></td><td class="num">${c.status==="missing"?"—":fmt(each(c))}${c.share==="shared"&&c.status!=="missing"?`<small>總數 ${fmt(c.amount)}</small>`:""}</td></tr>`;
+ $("budget").innerHTML=`<section class="card"><h2>費用（每人，AUD）</h2>
+ <p class="note">用來估算旅費，不是記帳。兩人共用的費用（例如住宿）除以 2；機票、團費等按每人計。</p>
+ <div class="tot"><div><small>已確認</small><b>${fmt(conf)}</b></div><div><small>估算</small><b>${fmt(est)}</b></div><div class="all"><small>合計（未完整）</small><b>${fmt(conf+est)}</b></div></div>
+ ${miss.length?`<p class="miss">另有 <b>${miss.length}</b> 項未有價錢，未計入合計：${miss.map(c=>esc(c.n)).join("、")}。</p>`:""}</section>
+ ${cats.map(cat=>{const r=D.COSTS.filter(c=>c.cat===cat&&c.status!=="consider");if(!r.length)return"";
+   return `<section class="card"><h3>${cat}</h3><table class="bt"><tbody>${r.map(row).join("")}</tbody></table></section>`}).join("")}
+ ${cons.length?`<section class="card"><h3>考慮中（不計入合計）</h3><table class="bt"><tbody>${cons.map(row).join("")}</tbody></table></section>`:""}`;
+}
+
+/* ---------- 其他頁（下一步製作） ---------- */
+function todo(id,t){$(id).innerHTML=`<section class="card"><h2>${t}</h2><p class="note">製作中。</p></section>`}
 /* ---------- 登入、文件、同步（後台：Google Apps Script） ---------- */
 const API=D.CONFIG.api,LS={get:(k,d)=>{try{const v=localStorage.getItem("wh27-"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set:(k,v)=>{try{v==null?localStorage.removeItem("wh27-"+k):localStorage.setItem("wh27-"+k,JSON.stringify(v))}catch(e){}}};
 let ME=LS.get("me",null),ST=LS.get("st",{}),DOCS=null,VIS=null;
 const dev=()=>{const u=navigator.userAgent;return (/iPhone/.test(u)?"iPhone":/iPad/.test(u)?"iPad":/Android/.test(u)?"Android":/Mac/.test(u)?"Mac":/Windows/.test(u)?"Windows":"其他")+" · "+(/CriOS|Chrome/.test(u)?"Chrome":/Firefox|FxiOS/.test(u)?"Firefox":/Safari/.test(u)?"Safari":"瀏覽器")+(matchMedia("(display-mode: standalone)").matches?"（主畫面）":"")};
 async function call(body){if(!API)throw new Error("後台未設定");const r=await fetch(API,{method:"POST",body:JSON.stringify(Object.assign({sk:ME&&ME.sk},body))});const j=await r.json();
- if(j.err==="sess"){ME=null;LS.set("me",null);DOCS=VIS=null;lockApp();renderGate("登入已失效，請重新登入。");throw new Error("登入已失效，請再登入")}return j}
+ if(j.err==="sess"){ME=null;LS.set("me",null);DOCS=VIS=null;if(!$("prep").hidden)prep();throw new Error("登入已失效，請再登入")}return j}
 const errTxt={notallowed:"這個 Gmail 未被加入可登入名單。",token:"Google 登入失敗，請再試。",aud:"後台的 CLIENT_ID 設定不正確。",big:"檔案太大（上限 10MB）。",owner:"只有你的帳戶看到登入記錄。"};
 function gsi(cb){if(window.google&&google.accounts)return cb();const s=document.createElement("script");s.src="https://accounts.google.com/gsi/client";s.async=true;s.onload=cb;document.head.appendChild(s)}
 function loginBtn(el,msg){gsi(()=>{google.accounts.id.initialize({client_id:D.CONFIG.gclient,ux_mode:"popup",callback:async r=>{msg.textContent="檢查中…";
  try{const j=await call({op:"login",idt:r.credential,dev:dev()});if(!j.ok){msg.textContent=errTxt[j.err]||("登入失敗："+j.err);return}
-  ME={sk:j.sk,email:j.email,owner:!!j.owner};LS.set("me",ME);prep();syncState();unlockApp();navigate("home")}catch(e){msg.textContent=e.message}}});
+  ME={sk:j.sk,email:j.email,owner:!!j.owner,role:j.role};LS.set("me",ME);hideGate();show("home");syncState()}catch(e){msg.textContent=e.message}}});
  google.accounts.id.renderButton(el,{theme:"outline",size:"large",text:"signin_with",locale:"zh-TW"})})}
 async function syncState(){if(!ME)return;try{const j=await call({op:"stget"});if(j.ok){ST=j.st||{};LS.set("st",ST);if(!$("prep").hidden)drawChk()}}catch(e){}}
-function ping(){if(ME&&API)call({op:"ping",dev:dev()}).then(j=>{if(j.ok&&ME){ME.owner=!!j.owner;LS.set("me",ME)}}).catch(()=>{})}
+function ping(){if(ME&&API)call({op:"ping",dev:dev()}).then(j=>{if(j.ok&&ME){ME.owner=!!j.owner;ME.role=j.role;LS.set("me",ME);if(j.role==="pending")showGate("登入成功，等待管理員批准。");else hideGate()}}).catch(()=>showGate("登入狀態未能驗證，請重新登入。"))}
 const kb=n=>n>1048576?(n/1048576).toFixed(1)+" MB":Math.max(1,Math.round(n/1024))+" KB";
 const dt=t=>new Date(t).toLocaleString("zh-HK",{hour12:false,month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"});
 
@@ -139,36 +121,26 @@ function prep(){
  <section class="card"><h2>注意事項</h2><p class="note">內容待更新及補充來源。</p>
  <ul class="tips"><li>3 月風浪較大，船團可能因天氣取消。</li><li>旅程期間屬水母季，在海中浮潛要穿 stinger suit。</li><li>Airlie Beach 沒有 Uber。</li></ul></section>`;
  if(API&&!ME)loginBtn($("gbtn"),$("gmsg"));
- const lo=$("lgout");if(lo)lo.onclick=()=>{call({op:"logout"}).catch(()=>{});ME=null;LS.set("me",null);DOCS=VIS=null;lockApp();renderGate()};
+ const lo=$("lgout");if(lo)lo.onclick=()=>{call({op:"logout"}).catch(()=>{});ME=null;LS.set("me",null);DOCS=VIS=null;showGate()};
  drawChk();drawDocs();drawVis()}
 
-/* ---------- 登入閘門 ---------- */
-let AUTH_READY=false;
-function lockApp(){AUTH_READY=false;document.body.classList.add("locked");document.querySelectorAll("main > section").forEach(el=>el.hidden=true)}
-function unlockApp(){AUTH_READY=true;document.body.classList.remove("locked");$("gate").hidden=true}
-function renderGate(message=""){
- lockApp();const el=$("gate");el.hidden=false;
- el.innerHTML=`<div class="gate-cover"><div class="gate-sun">☀</div><div class="gate-kicker">THE WHITSUNDAYS · QUEENSLAND</div><h1>Whitsundays 2027</h1><p>27–30 March 2027</p></div><div class="gate-panel"><h2>旅程登入</h2><p class="note">只限已獲授權的旅伴查看行程。</p>${message?`<p class="gate-error" role="status">${esc(message)}</p>`:""}<div id="gate-google"></div><p class="note" id="gate-msg"></p></div>`;
- if(!API||!D.CONFIG.gclient){$("gate-msg").textContent="登入服務尚未設定。";return}
- loginBtn($("gate-google"),$("gate-msg"));
-}
-async function verifySession(){
- if(!ME||!ME.sk){renderGate();return}
- lockApp();$("gate").hidden=false;$("gate").innerHTML='<div class="gate-panel"><h2>正在驗證登入…</h2></div>';
- try{const j=await call({op:"ping",dev:dev()});if(!j.ok)throw Error("登入已失效");ME.owner=!!j.owner;LS.set("me",ME);unlockApp();show(location.hash.slice(1)||"home");syncState()}
- catch(e){ME=null;LS.set("me",null);renderGate("登入已失效，請重新登入。")}
-}
+/* ---------- Iceland-style countdown / gated landing ---------- */
+function gateMarkup(message){const left=Math.ceil((new Date(D.TRIP.start+'T00:00:00+10:00')-Date.now())/86400000);return `<div class="ocean-scene"><div class="ocean-sun"></div><div class="ocean-island"></div><div class="ocean-wave"></div></div><div class="gate-card"><div class="eyebrow">27–30 MARCH · QUEENSLAND</div><h1>WHITSUNDAYS<br>2027</h1><div class="countdown">${left>0?`<strong>${left}</strong><span>Days to go</span>`:'Adventure time'}</div><p>${esc(message||'登入後查看四日行程、準備事項及旅行費用。')}</p><div id="gate-google"></div><p class="gate-msg" id="gate-msg"></p></div>`}
+function showGate(message){let g=document.getElementById('auth-gate');if(!g){g=document.createElement('div');g.id='auth-gate';document.body.appendChild(g)}g.innerHTML=gateMarkup(message);g.hidden=false;document.body.classList.add('locked');if(D.CONFIG.api&&D.CONFIG.gclient)loginBtn(document.getElementById('gate-google'),document.getElementById('gate-msg'));else document.getElementById('gate-msg').textContent='請先在 data.js 設定 Apps Script URL 及 Google OAuth Client ID。'}
+function hideGate(){const g=document.getElementById('auth-gate');if(g)g.hidden=true;document.body.classList.remove('locked')}
+function home(){const left=Math.max(0,Math.ceil((new Date(D.TRIP.start+'T00:00:00+10:00')-Date.now())/86400000));const d=D.DAYS;const next=d.findIndex(x=>new Date(x.date+'T23:59:59+10:00')>=new Date());const i=next<0?0:next;
+ $('home').innerHTML=`<div class="section-title"><span>THE JOURNEY</span><h2>Whitsundays 2027</h2><p>${left?left+' 日後出發':'四日三夜 · Airlie Beach'}</p></div><div class="overview-grid">${d.map((x,n)=>`<button class="overview-day" data-day="${n}"><span>DAY ${n+1} · ${md(x.date)}</span><strong>${esc(x.title)}</strong><small>${esc(x.note||'')}</small></button>`).join('')}</div><div class="card"><h3>住宿</h3><p>${esc(D.TRIP.base)}</p></div>`;
+ $('home').querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{cur=+b.dataset.day;show('trip')})}
+function today(){const n=D.DAYS.findIndex(x=>x.date===new Date().toLocaleDateString('en-CA',{timeZone:'Australia/Brisbane'}));const i=n<0?0:n;const d=D.DAYS[i];$('today').innerHTML=`<div class="section-title"><span>${n<0?'行程預覽':'TODAY'}</span><h2>D${i+1} · ${esc(d.title)}</h2></div><section class="card"><p class="note">${n<0?'旅行期間會自動顯示當日行程。':''}</p>${highlightBadges(i)}<ul class="tl">${d.s.map(x=>`<li><span class="t">${esc(x[0])}</span><div class="a">${esc(x[1])}</div></li>`).join('')}</ul><button class="btn" id="today-more">查看當日完整行程</button></section>`;$('today-more').onclick=()=>{cur=i;show('trip')}}
 /* ---------- 分頁 ---------- */
 const TABS=["prep","today","home","trip","budget"];
-function navigate(t){show(t);window.scrollTo({top:0,behavior:"smooth"})}
-function show(t){if(!AUTH_READY)return;if(!TABS.includes(t))t="home";
+function show(t){if(!ME||ME.role==="pending"){showGate(ME&&ME.role==="pending"?"登入成功，等待管理員批准。":"");return}if(!TABS.includes(t))t="home";
  document.querySelectorAll(".bnav button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));
- TABS.forEach(k=>$(k).hidden=k!==t);
- ({prep,today,home:overview,trip,budget})[t]();
- try{if(location.hash.slice(1)!==t)history.replaceState(null,"","#"+t)}catch(e){}
-}
+ TABS.forEach(s=>$(s).hidden=s!==t);
+ ({prep,today,home,trip,budget})[t]();
+ try{if(location.hash.slice(1)!==t)history.replaceState(null,"","#"+t)}catch(e){}}
 document.querySelectorAll(".bnav button").forEach(b=>b.onclick=()=>{show(b.dataset.tab);window.scrollTo(0,0)});
 window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
-verifySession();
-/* 不註冊舊版 Iceland service worker，避免錯誤快取。 */
+showGate('正在驗證登入狀態…');if(ME&&ME.sk){call({op:'ping',dev:dev()}).then(j=>{if(!j.ok||j.role==='pending')throw Error('尚未獲批');ME.owner=!!j.owner;ME.role=j.role;LS.set('me',ME);hideGate();show(location.hash.slice(1)||'home');syncState()}).catch(()=>{ME=null;LS.set('me',null);showGate('請使用 Google 登入。')})}
+/* No service worker until cache/version migration has been tested. */
 })();

@@ -2,7 +2,7 @@
    私隱：不要放訂位編號、確認電郵、護照、電話或電郵地址。 */
 window.DATA={
 /* 後台：Google Apps Script 網頁應用程式網址（部署後填入）；Google 登入用戶端 ID（同冰島網站） */
-CONFIG:{api:"https://script.google.com/macros/s/AKfycbySVoNcNw1wXqtQ5RfLdlh4fbiTJk5TNFLLFuPJNd2-nneTnsabmxjUkUCZYVWpGutQ/exec",gclient:"147893735528-nu3c7upfv480ciatt1u7fg2jm8ju8jcn.apps.googleusercontent.com"},
+CONFIG:{api:"",gclient:"147893735528-nu3c7upfv480ciatt1u7fg2jm8ju8jcn.apps.googleusercontent.com"},
 
 /* 出發前要做。ai:1＝AI 建議 */
 PREP:[
