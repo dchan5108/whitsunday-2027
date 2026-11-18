@@ -1,13 +1,37 @@
-# Whitsundays 2027 — deployment
+# Whitsundays 2027 — 安裝及部署指南
 
-1. Keep Iceland project and its Google Sheet untouched. Create a **separate** Google Sheet for Whitsundays.
-2. In that Sheet choose Extensions → Apps Script. Paste `Code.gs` into the script editor.
-3. Set Apps Script **Script properties**: `GOOGLE_CLIENT_ID` (Google OAuth Web Client ID), `OWNER_EMAIL` (your Gmail), and `DRIVE_FOLDER_ID` (the ID of your existing Google Drive folder `Trips planning / 2027 Whitsunday` for uploaded documents).
-4. Deploy → New deployment → Web app → Execute as **Me**, access **Anyone**. Copy the `/exec` URL.
-5. In `data.js`, replace `CONFIG.api` with that URL and ensure `CONFIG.gclient` matches the OAuth client ID. Add your GitHub Pages origin to the OAuth client’s authorized JavaScript origins.
-6. Upload the website files to GitHub Pages. Do not upload `Code.gs`, Iceland source files, or confidential bookings to the public repository.
-7. Test: signed-out landing, sign-in, pending member, owner, checklist sync across two devices, document upload and download, and sign-out.
+## 網站內容
 
-**Privacy:** GitHub Pages source is public. Hiding the itinerary behind a JavaScript login overlay is a UI restriction, not a security boundary. The public `data.js` contains itinerary content. For truly private itinerary data, move it into the authenticated Apps Script API.
+- `index.html`, `style.css`, `app.js`, `data.js`: 網站前端
+- `Code.gs`: **獨立** Google Apps Script 後台；請勿放到 GitHub Pages
+- `README.md`: 功能及測試說明
 
-**Scope:** This is an independent, deployable Whitsundays app with an Iceland-inspired UI and independent backend. It is **not** a verified 1:1 transplant of the 537 KB Iceland HTML app. The original Iceland files are included only as offline reference in the `iceland-reference/` directory. They are not part of the deployable website.
+## 1. 建立獨立後台
+
+1. 在現有 Whitsundays 專用 Google Sheet 開啟 **Extensions → Apps Script**（不要覆蓋 Iceland 的 Apps Script）。
+2. 將 `Code.gs` 貼到 Whitsundays 的 Apps Script 專案。
+3. 在 **Project Settings → Script properties** 設定：
+   - `GOOGLE_CLIENT_ID`: Google OAuth Web Client ID
+   - `OWNER_EMAIL`: 你的 Google 登入電郵（**只放在 Apps Script 屬性，不放前端**）
+   - `DRIVE_FOLDER_ID`: 你已建立的 `Trips planning / 2027 Whitsunday` 資料夾 ID（如要使用文件上載功能）
+4. Deploy → New deployment → Web app；Execute as **Me**；Who has access **Anyone**。複製 `/exec` URL。
+5. 在 `data.js` 填入 `CONFIG.api` 的 `/exec` URL；確認 `CONFIG.gclient` 與後台 `GOOGLE_CLIENT_ID` 相同。
+6. Google Cloud OAuth Client 的 Authorized JavaScript origins 加入你 GitHub Pages 網站的 origin（例如 `https://username.github.io`）。
+
+## 2. 部署前端
+
+將 `index.html`、`style.css`、`app.js`、`data.js` 放到 Whitsundays 的 GitHub Pages repository。**不要**上傳 `Code.gs` 或任何私密文件。
+
+## 3. 驗收
+
+1. 未登入：只能看到登入頁；不能透過頁面選單看到行程。
+2. Owner 登入：可查看所有頁面、編輯每日行程、審批成員、上載文件。
+3. 新 Gmail 登入：顯示待審批；Owner 批准後可進入。
+4. 跨兩個裝置測試清單勾選、行程編輯及文件存取。
+5. 測試登出、失效 Session、拒絕成員及後台不可用。
+
+## 安全限制
+
+**重要：** GitHub Pages 是公開靜態網站，`data.js` 內的行程與費用仍可從原始碼讀取。登入頁只能阻止一般訪客從介面查看，**不能視為資料保密**。如要真正保密，必須把所有行程、費用搬到經 Google 驗證的後台 API，前端登入後才讀取。
+
+**目前未經實際 Google 登入／Apps Script 部署測試**；需你填入專案設定並部署後才能驗證。

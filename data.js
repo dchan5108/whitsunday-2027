@@ -1,7 +1,7 @@
 /* 網站資料：行程、景點、旅行費用。改資料只需要改這個檔。
    私隱：不要放訂位編號、確認電郵、護照、電話或電郵地址。 */
 window.DATA={
-/* 後台：Google Apps Script 網頁應用程式網址（部署後填入）；Google 登入用戶端 ID（同冰島網站） */
+/* 後台：Google Apps Script 網頁應用程式網址（部署後填入）；Google 登入用戶端 ID（可使用同一 OAuth client，但後台獨立） */
 CONFIG:{api:"",gclient:"147893735528-nu3c7upfv480ciatt1u7fg2jm8ju8jcn.apps.googleusercontent.com"},
 
 /* 出發前要做。ai:1＝AI 建議 */

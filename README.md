@@ -1,21 +1,21 @@
-# whitsunday-2027
+# Whitsundays 2027
 
-Whitsundays 2027（3/27–3/30）旅行網站，靜態 GitHub Pages。
+Whitsundays 四日三夜網站（2027 年 3 月 27–30 日）。基於你現有 Whitsundays 行程資料及 Iceland 網站設計需求重新整合，**不是 Iceland 537KB HTML 原始碼的逐行 1:1 搬移**。
 
-- `data.js`：行程、景點、費用、出發前清單、後台設定
-- `app.js`：頁面（準備、今日、總覽、行程、費用）
-- `apps-script/Code.gs`：後台（Gmail 登入、登入記錄、文件同步、清單同步）
+### 已實作
 
-私隱：訂位編號、確認電郵、護照、電話、Gmail 地址不可放入這個 repo。
-文件存放在擁有者的 Google Drive，登入記錄存放在 Google Sheet。
+- 登入頁／倒數計時、Google Sign-In、後端 Session 驗證
+- 新會員待審批、Owner 批准／拒絕、登入記錄
+- 總覽、今日行程（旅行前標註預覽）、四日時間表、景點資料及來源
+- 每日不同圖案的今日重點
+- Owner 修改每日標題、備註及時間表（同步 Google Sheet）
+- 出發前清單同步、文件上載及下載、旅行費用估算
+- 獨立 Whitsundays Apps Script／Sheet；不修改 Iceland
 
-## 設定後台
+### 未包含
 
-1. 開 https://script.google.com ，新增專案，把 `apps-script/Code.gs` 全部貼上。
-2. 專案設定 → 指令碼屬性，加入：
-   - `CLIENT_ID`：Google OAuth 用戶端 ID（與 `data.js` 的 `gclient` 相同）
-   - `ALLOWED_EMAILS`：可登入的 Gmail，以逗號分隔
-   - `OWNER_EMAIL`：可看登入記錄的 Gmail
-3. 部署 → 新增部署作業 → 類型「網頁應用程式」；執行身分「我」；存取權「所有人」。第一次會要求授權 Drive、Sheet 和對外連線。
-4. 把網頁應用程式網址填入 `data.js` 的 `CONFIG.api`。
-5. 之後改 `Code.gs` 要「管理部署作業 → 編輯 → 新版本」，網址不變。
+- Iceland 網站全部原有模組逐行移植、Iceland badges 解鎖系統
+- 完全保密的私人行程 API（靜態 `data.js` 可被檢視）
+- 真實部署及登入測試
+
+安裝請參考 `SETUP.md`。

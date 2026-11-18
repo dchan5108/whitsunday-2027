@@ -22,12 +22,15 @@ function handle_(b){if(b.op==='login'||b.op==='glogin'){
  const email=verify_(b.idt);if(!email)return {err:'token'};let role=role_(email);
  if(!role){sheet_('members',['email','status','role','name','requested']).appendRow([email,'pending','real',String(b.name||'').slice(0,80),new Date()]);role='pending'}
  if(role==='rejected')return {err:'notallowed'};
+ sheet_('visits',['time','email','action','device']).appendRow([new Date(),email,'login',String(b.dev||'').slice(0,120)]);
  return {ok:1,sk:makeSession_(email),email,role,owner:role==='owner'};
  }
  const s=session_(b.sk);if(!s)return {err:'sess'};
  if(b.op==='ping'||b.op==='gpull')return {ok:1,email:s.email,role:s.role,owner:s.role==='owner'};
  if(b.op==='logout'||b.op==='gout'){PropertiesService.getScriptProperties().deleteProperty('S_'+digest_(String(b.sk)));return {ok:1}}
  if(s.role==='pending')return {err:'pending'};
+ if(b.op==='dayget')return {ok:1,days:kv_().days||{}};
+ if(b.op==='dayset'){if(s.role!=='owner')return {err:'admin'};const key=String(b.key||'');if(!/^day[0-3]$/.test(key))return {err:'key'};const v=b.value||{};if(typeof v.title!=='string'||typeof v.note!=='string'||!Array.isArray(v.s)||v.s.length>60)return {err:'data'};const days=kv_().days||{};days[key]={title:v.title.slice(0,150),note:v.note.slice(0,1500),s:v.s.map(x=>[String(x[0]||'').slice(0,30),String(x[1]||'').slice(0,500),''])};setkv_('days',days);return {ok:1,days}}
  if(b.op==='stget')return {ok:1,st:kv_().checklist||{}};
  if(b.op==='stset'){const lock=LockService.getScriptLock();lock.waitLock(15000);try{const st=kv_().checklist||{};const key=String(b.key||'');if(!/^[a-z0-9-]{1,40}$/i.test(key))return {err:'key'};if(b.val)st[key]=Date.now();else delete st[key];setkv_('checklist',st);return {ok:1,st}}finally{lock.releaseLock()}}
  if(b.op==='docs')return {ok:1,docs:docs_()};
@@ -42,6 +45,6 @@ function handle_(b){if(b.op==='login'||b.op==='glogin'){
  if(b.op==='docdel'){if(s.role!=='owner')return {err:'admin'};const d=docs_().find(x=>x.id===b.id);if(!d)return {err:'missing'};DriveApp.getFileById(d.id).setTrashed(true);const sh=sheet_('docs',['id','name','mime','owner','date']),v=sh.getDataRange().getValues(),i=v.findIndex((r,n)=>n&&r[0]===b.id);if(i>0)sh.deleteRow(i+1);return {ok:1,docs:docs_()}}
  if(b.op==='members'){if(s.role!=='owner')return {err:'admin'};return {ok:1,members:members_()}}
  if(b.op==='mset'){if(s.role!=='owner')return {err:'admin'};const m=members_().find(x=>x.email===String(b.email||'').toLowerCase());if(!m)return {err:'missing'};const a=String(b.act||'');if(!['approve','reject','pending'].includes(a))return {err:'act'};sheet_('members',['email','status','role','name','requested']).getRange(m.row,2,1,2).setValues([[a==='approve'?'approved':a==='reject'?'rejected':'pending',a==='approve'?'real':'']]);return {ok:1,members:members_()}}
- if(b.op==='visits'){if(s.role!=='owner')return {err:'admin'};return {ok:1,visits:[]}}
+ if(b.op==='visits'){if(s.role!=='owner')return {err:'admin'};return {ok:1,visits:sheet_('visits',['time','email','action','device']).getDataRange().getValues().slice(1).reverse().slice(0,100).map(r=>({t:r[0],email:r[1],act:r[2],dev:r[3]}))}}
  return {err:'op'};
 }
