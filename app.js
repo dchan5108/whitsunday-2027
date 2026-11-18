@@ -1,4 +1,4 @@
-/* 頁面：總覽、今日、行程、旅行費用、注意事項。資料在 data.js */
+/* 頁面：準備、今日、總覽、行程、費用。資料在 data.js */
 (function(){
 const D=window.DATA,$=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -36,8 +36,8 @@ function budget(){
  const conf=sum("confirmed"),est=sum("estimate"),miss=D.COSTS.filter(c=>c.status==="missing"),cons=D.COSTS.filter(c=>c.status==="consider");
  const lab={confirmed:"已確認",estimate:"估算",missing:"未有價錢",consider:"考慮中"};
  const row=c=>`<tr class="${c.status}"><td>${esc(c.n)}${c.ai?' <span class="ai">AI 建議</span>':""}<small>${c.share==="shared"?"兩人平分":"每人"}${c.note?" · "+esc(c.note):""}${c.s?`<br>${srcList(c.s)}`:""}</small></td><td><span class="st ${c.status}">${lab[c.status]}</span></td><td class="num">${c.status==="missing"?"—":fmt(each(c))}${c.share==="shared"&&c.status!=="missing"?`<small>總數 ${fmt(c.amount)}</small>`:""}</td></tr>`;
- $("budget").innerHTML=`<section class="card"><h2>旅行費用（每人，AUD）</h2>
- <p class="note">用來估算旅費，不是記帳。兩人共用的費用（住宿、租車、油費、水上電單車）除以 2；機票、團費等按每人計。</p>
+ $("budget").innerHTML=`<section class="card"><h2>費用（每人，AUD）</h2>
+ <p class="note">用來估算旅費，不是記帳。兩人共用的費用（例如住宿）除以 2；機票、團費等按每人計。</p>
  <div class="tot"><div><small>已確認</small><b>${fmt(conf)}</b></div><div><small>估算</small><b>${fmt(est)}</b></div><div class="all"><small>合計（未完整）</small><b>${fmt(conf+est)}</b></div></div>
  ${miss.length?`<p class="miss">另有 <b>${miss.length}</b> 項未有價錢，未計入合計：${miss.map(c=>esc(c.n)).join("、")}。</p>`:""}</section>
  ${cats.map(cat=>{const r=D.COSTS.filter(c=>c.cat===cat&&c.status!=="consider");if(!r.length)return"";
@@ -47,16 +47,16 @@ function budget(){
 
 /* ---------- 其他頁（下一步製作） ---------- */
 function todo(id,t){$(id).innerHTML=`<section class="card"><h2>${t}</h2><p class="note">製作中。</p></section>`}
-function tips(){
- $("tips").innerHTML=`<section class="card"><h2>注意事項</h2><p class="note">內容待更新及補充來源。</p>
+function prep(){
+ $("prep").innerHTML=`<section class="card"><h2>注意事項</h2><p class="note">內容待更新及補充來源。</p>
  <ul class="tips"><li>3 月風浪較大，船團可能因天氣取消。</li><li>旅程期間屬水母季，在海中浮潛要穿 stinger suit。</li><li>Airlie Beach 沒有 Uber。</li></ul></section>`}
 
 /* ---------- 分頁 ---------- */
-const TABS=["home","today","trip","budget","tips"];
+const TABS=["prep","today","home","trip","budget"];
 function show(t){if(!TABS.includes(t))t="trip";
  document.querySelectorAll(".bnav button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));
  TABS.forEach(s=>$(s).hidden=s!==t);
- ({home:()=>todo("home","總覽"),today:()=>todo("today","今日"),trip,budget,tips})[t]();
+ ({prep,today:()=>todo("today","今日"),home:()=>todo("home","總覽"),trip,budget})[t]();
  try{if(location.hash.slice(1)!==t)history.replaceState(null,"","#"+t)}catch(e){}}
 document.querySelectorAll(".bnav button").forEach(b=>b.onclick=()=>{show(b.dataset.tab);window.scrollTo(0,0)});
 window.addEventListener("hashchange",()=>show(location.hash.slice(1)));

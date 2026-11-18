@@ -5,14 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Whitsundays 2027</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Whitsundays">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#3fa7b5">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="style.css?v=2026-11-18-b">
+<link rel="stylesheet" href="style.css?v=2026-11-18-c">
 </head>
 <body>
 <div class="wrap">
   <header class="hero">
     <h1>Whitsundays 2027</h1>
-    <p>3/27–3/30 · The Sebel Whitsundays（Airlie Beach）· 2 人</p>
     <svg viewBox="0 0 800 160" preserveAspectRatio="none" aria-hidden="true">
       <circle cx="610" cy="40" r="34" fill="#fff3c9" opacity=".85"/>
       <path d="M0 70 C120 55 220 85 360 70 S620 50 800 66 V160 H0Z" fill="#7fd0d9" opacity=".55"/>
@@ -25,21 +32,21 @@
     </svg>
   </header>
   <main>
-    <section id="home" hidden></section>
+    <section id="prep" hidden></section>
     <section id="today" hidden></section>
+    <section id="home" hidden></section>
     <section id="trip" hidden></section>
     <section id="budget" hidden></section>
-    <section id="tips" hidden></section>
   </main>
 </div>
 <nav class="bnav" aria-label="主要頁面">
-  <button type="button" data-tab="home" aria-selected="false">總覽</button>
+  <button type="button" data-tab="prep" aria-selected="false">準備</button>
   <button type="button" data-tab="today" aria-selected="false">今日</button>
+  <button type="button" data-tab="home" aria-selected="false">總覽</button>
   <button type="button" data-tab="trip" aria-selected="true">行程</button>
-  <button type="button" data-tab="budget" aria-selected="false">旅行費用</button>
-  <button type="button" data-tab="tips" aria-selected="false">注意事項</button>
+  <button type="button" data-tab="budget" aria-selected="false">費用</button>
 </nav>
-<script src="data.js?v=2026-11-18-b"></script>
-<script src="app.js?v=2026-11-18-b"></script>
+<script src="data.js?v=2026-11-18-c"></script>
+<script src="app.js?v=2026-11-18-c"></script>
 </body>
 </html>
