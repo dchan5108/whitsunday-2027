@@ -1,6 +1,24 @@
 /* 網站資料：行程、景點、旅行費用。改資料只需要改這個檔。
    私隱：不要放訂位編號、確認電郵、護照、電話或電郵地址。 */
 window.DATA={
+/* 後台：Google Apps Script 網頁應用程式網址（部署後填入）；Google 登入用戶端 ID（同冰島網站） */
+CONFIG:{api:"",gclient:"147893735528-nu3c7upfv480ciatt1u7fg2jm8ju8jcn.apps.googleusercontent.com"},
+
+/* 出發前要做。ai:1＝AI 建議 */
+PREP:[
+ {id:"fly",n:"訂 Scenic Flight（3/27 13:00）",d:"訂位時要提供全名及體重。",ai:1,s:["fly3"]},
+ {id:"cam",n:"訂 Camira Sailing Adventure（3/28）",d:"問清楚復活節公眾假期的實際價錢。",ai:1},
+ {id:"fer",n:"訂 Hamilton Island 來回船票（3/29）",ai:1},
+ {id:"sh1",n:"訂 3/27 機場 shuttle",d:"配合 JQ842 08:30 抵達。",ai:1},
+ {id:"sh2",n:"訂 3/30 機場 shuttle",d:"配合 VA1118 15:15 起飛。",ai:1},
+ {id:"bag",n:"問 The Sebel 可否寄存行李",d:"3/27 入住前及 3/30 退房後。",ai:1},
+ {id:"ins",n:"買旅遊保險",d:"住宿不可退款；選包天氣取消及航班延誤的保單。",ai:1},
+ {id:"lug",n:"確認兩程機票的行李額",d:"去程 Jetstar、回程 Virgin Lite。",ai:1},
+ {id:"call",n:"出發前 48 小時致電 Ocean Rafting 確認接送時間",ai:1,s:["fly4"]},
+ {id:"wx",n:"出發前 3–5 日看天氣及風浪預報",ai:1},
+ {id:"chk",n:"網上 check-in（兩程）",ai:1}
+],
+
 TRIP:{title:"Whitsundays 2027",start:"2027-03-27",end:"2027-03-30",base:"The Sebel Whitsundays（Airlie Beach）",people:2},
 
 /* 來源：key → [標題, 網址] */
@@ -19,6 +37,8 @@ SRC:{
  fly2:["Sailing Whitsundays：OR Scenic Flight to Heart Reef","https://sailing-whitsundays.com/whitsundays/ocean-rafting-scenic-flight"],
  cam:["Cruise Whitsundays：Camira Brochure 2026（PDF）","https://www.cruisewhitsundays.com/wp-content/uploads/2026/01/Camira-Brochure-2026.pdf"],
  cam2:["Cruise Whitsundays：Reef & Sail combo","https://www.cruisewhitsundays.com/?p=4597"],
+ fly3:["Luxury Escapes：Ocean Rafting 1 Hour Scenic Flight","https://luxuryescapes.com/ca/experience/ocean-rafting-1-hour-scenic-flight/rez:PG3P4W"],
+ fly4:["Sunlover Holidays：Fly & Raft Southern Lights（確認接送）","https://www.sunloverholidays.com.au/tours/Airlie-Beach/Ocean-Rafting-Fly-Raft-Southern-Lights-2WSYTDOCEWSYDAYQ.html"],
  pp2:["Tourism Whitsundays：Passage Peak","https://www.tourismwhitsundays.com.au/itineraries/passage-peak"],
  pp:["Hamilton Island：Walking trails","https://www.hamiltonisland.com.au/community-and-development/community-facilities/walking-trails"],
  jet:["RAA Travel：Airlie Adventure","https://travel.raa.com.au/holiday/airlie-adventure-b22fa71d658e10200bab567b829a2d80"],

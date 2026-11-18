@@ -66,3 +66,17 @@ a{color:var(--route)}
 @media (min-width:760px){.bnav{max-width:720px;margin:0 auto;bottom:12px;border:1px solid var(--line);border-radius:16px}}
 .ai{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:0 6px;background:color-mix(in srgb,#c9a45c 22%,transparent);color:#8a6a28;white-space:nowrap;vertical-align:1px}
 @media (prefers-color-scheme:dark){.ai{color:#e3c46e}}
+.btn{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--route);background:var(--route);color:#fff;font-size:14px;cursor:pointer}
+.btn.ghost{background:none;color:var(--route)}
+.chk{list-style:none;margin:6px 0 0;padding:0}
+.chk li{padding:8px 0;border-top:1px solid var(--line)}.chk li:first-child{border-top:0}
+.chk label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.chk input{width:20px;height:20px;margin-top:2px;accent-color:var(--ok);flex:0 0 auto}
+.chk small{display:block;color:var(--muted);font-size:12.5px}
+.chk li.done .n{text-decoration:line-through;color:var(--muted)}
+.docl{list-style:none;margin:10px 0 0;padding:0}
+.docl li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:8px 0;border-top:1px solid var(--line)}
+.docl small{grid-column:1;color:var(--muted);font-size:12px}
+.docl .del{grid-row:1/3;grid-column:2;align-self:center;border:1px solid var(--line);background:none;border-radius:999px;padding:4px 12px;color:var(--warn);cursor:pointer}
+.lnk{border:0;background:none;padding:0;color:var(--route);text-align:left;cursor:pointer;word-break:break-all}
+.vt td:first-child{white-space:nowrap;color:var(--muted);font-size:13px;width:7.5em}
