@@ -13,14 +13,14 @@ function spotCard(k){const p=D.SPOTS[k];if(!p)return"";
 function trip(){
  const chips=D.DAYS.map((d,i)=>`<button type="button" data-i="${i}" aria-pressed="${i===cur}"><b>D${i+1}</b><small>${md(d.date)}（${d.wd}）</small></button>`).join("");
  const d=D.DAYS[cur];
- const rows=d.s.map(([t,a,tag,x])=>`<li class="${tag||""}"><span class="t">${esc(t)}</span><div class="a">${esc(a)}${x&&x.sp?spotCard(x.sp):""}</div></li>`).join("");
+ const rows=d.s.map(([t,a,tag,x])=>`<li class="${tag||""}"><span class="t">${esc(t)}</span><div class="a">${esc(a)}${x&&x.ai?' <span class="ai">AI 建議</span>':""}${x&&x.sp?spotCard(x.sp):""}</div></li>`).join("");
  const cons=cur===D.DAYS.length-1?"":"";
  $("trip").innerHTML=`<div class="chips" role="group" aria-label="選擇日子">${chips}</div>
  <article class="card day"><div class="dh"><h2>D${cur+1}　${esc(d.title)}</h2><span class="dt">${md(d.date)}（${d.wd}）</span></div>
  ${d.ph?`<span class="ph">昆士蘭公眾假期</span>`:""}
  ${d.note?`<p class="note">${esc(d.note)}</p>`:""}
  <ul class="tl">${rows}</ul>
- <p class="legend"><span class="k book">●</span> 要預訂　<span class="k done">✓</span> 已訂</p>
+ <p class="legend"><span class="k book">●</span> 要預訂　<span class="k done">✓</span> 已訂　<span class="ai">AI 建議</span> 不是你指定的，可改</p>
  <div class="dnav"><button type="button" data-i="${cur-1}" ${cur===0?"disabled":""}>‹ 前一日</button><button type="button" data-i="${cur+1}" ${cur===D.DAYS.length-1?"disabled":""}>後一日 ›</button></div></article>
  ${D.CONSIDER.length?`<section class="card"><h3>考慮中（未放入行程）</h3>${D.CONSIDER.map(c=>`<p class="note">${esc(c.note)}</p>${spotCard(c.sp)}`).join("")}</section>`:""}
  ${d.ph?`<p class="src">公眾假期來源：${srcList(["fw"])}</p>`:""}${cons}`;
@@ -35,7 +35,7 @@ function budget(){
  const sum=st=>counted.filter(c=>c.status===st).reduce((s,c)=>s+each(c),0);
  const conf=sum("confirmed"),est=sum("estimate"),miss=D.COSTS.filter(c=>c.status==="missing"),cons=D.COSTS.filter(c=>c.status==="consider");
  const lab={confirmed:"已確認",estimate:"估算",missing:"未有價錢",consider:"考慮中"};
- const row=c=>`<tr class="${c.status}"><td>${esc(c.n)}<small>${c.share==="shared"?"兩人平分":"每人"}${c.note?" · "+esc(c.note):""}${c.s?`<br>${srcList(c.s)}`:""}</small></td><td><span class="st ${c.status}">${lab[c.status]}</span></td><td class="num">${c.status==="missing"?"—":fmt(each(c))}${c.share==="shared"&&c.status!=="missing"?`<small>總數 ${fmt(c.amount)}</small>`:""}</td></tr>`;
+ const row=c=>`<tr class="${c.status}"><td>${esc(c.n)}${c.ai?' <span class="ai">AI 建議</span>':""}<small>${c.share==="shared"?"兩人平分":"每人"}${c.note?" · "+esc(c.note):""}${c.s?`<br>${srcList(c.s)}`:""}</small></td><td><span class="st ${c.status}">${lab[c.status]}</span></td><td class="num">${c.status==="missing"?"—":fmt(each(c))}${c.share==="shared"&&c.status!=="missing"?`<small>總數 ${fmt(c.amount)}</small>`:""}</td></tr>`;
  $("budget").innerHTML=`<section class="card"><h2>旅行費用（每人，AUD）</h2>
  <p class="note">用來估算旅費，不是記帳。兩人共用的費用（住宿、租車、油費、水上電單車）除以 2；機票、團費等按每人計。</p>
  <div class="tot"><div><small>已確認</small><b>${fmt(conf)}</b></div><div><small>估算</small><b>${fmt(est)}</b></div><div class="all"><small>合計（未完整）</small><b>${fmt(conf+est)}</b></div></div>
