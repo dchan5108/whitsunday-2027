@@ -60,10 +60,12 @@ a{color:var(--route)}
 .st.consider{background:var(--bg);color:var(--muted)}
 .tips{margin:6px 0 0;padding-left:1.2em;font-size:14px}
 /* 底部分頁 */
-.bnav{position:fixed;left:0;right:0;bottom:0;z-index:10;display:grid;grid-template-columns:repeat(5,1fr);background:var(--card);border-top:1px solid var(--line);padding:4px 4px calc(4px + env(safe-area-inset-bottom,0px))}
-.bnav button{border:0;background:none;padding:8px 2px;font-size:12.5px;color:var(--muted);cursor:pointer;border-radius:10px;min-height:44px}
-.bnav button[aria-selected="true"]{color:var(--route);font-weight:700;background:color-mix(in srgb,var(--route) 10%,transparent)}
-@media (min-width:760px){.bnav{max-width:720px;margin:0 auto;bottom:12px;border:1px solid var(--line);border-radius:16px}}
+.bnav{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;padding:4px 4px calc(4px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.72);-webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);border-top:.5px solid rgba(0,0,0,.08)}
+.bnav button{border:0;background:none;display:grid;justify-items:center;gap:1px;padding:5px 2px;font-size:11px;color:#667985;cursor:pointer;border-radius:10px}
+.bnav svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bnav button[aria-selected="true"]{color:#2b6f95;font-weight:700}
+.bnav button[aria-selected="true"] svg{stroke-width:2.3}
+@media (prefers-color-scheme:dark){.bnav{background:rgba(30,34,38,.72);border-top-color:rgba(255,255,255,.1)}.bnav button{color:#a3abb3}.bnav button[aria-selected="true"]{color:#7fb7d9}}
 .ai{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:0 6px;background:color-mix(in srgb,#c9a45c 22%,transparent);color:#8a6a28;white-space:nowrap;vertical-align:1px}
 @media (prefers-color-scheme:dark){.ai{color:#e3c46e}}
 .btn{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--route);background:var(--route);color:#fff;font-size:14px;cursor:pointer}

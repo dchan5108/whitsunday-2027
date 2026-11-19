@@ -34,7 +34,7 @@ function badgeArt(id){
 function highlightBadges(i){return `<section class="card highlight-section"><div class="section-head"><h3>今日重點</h3><span class="eyebrow">DAY ${i+1} HIGHLIGHTS</span></div><div class="highlight-grid">${(HIGHLIGHTS[i]||[]).map(h=>`<div class="highlight-badge"><span class="badge-art" aria-hidden="true">${badgeArt(h.id)}</span><span class="badge-label">${esc(h.name)}</span></div>`).join("")}</div></section>`}
 
 
-let OVERRIDES={};
+let OVERRIDES=(()=>{try{return JSON.parse(localStorage.getItem("wh27-days"))||{}}catch(e){return {}}})();
 function liveDays(){return D.DAYS.map((d,i)=>({...d,...(OVERRIDES['day'+i]||{})}))}
 function editDay(i){if(!ME||!ME.owner)return;const d=liveDays()[i];const title=prompt("修改 D"+(i+1)+" 標題",d.title);if(title===null)return;
  const note=prompt("修改當日備註",d.note||"");if(note===null)return;
@@ -42,7 +42,7 @@ function editDay(i){if(!ME||!ME.owner)return;const d=liveDays()[i];const title=p
  const entries=lines.split(/\n/).map(x=>x.split("|")).filter(x=>x.length>=2).map(x=>[x[0].trim(),x.slice(1).join("|").trim(),""]);
  const patch={title:title.trim(),note:note.trim(),s:entries};if(!patch.title||!entries.length){alert("標題同時間表不可為空");return}
  call({op:"dayset",key:'day'+i,value:patch}).then(j=>{if(!j.ok)throw Error(j.err);OVERRIDES=j.days||{};trip()}).catch(e=>alert("儲存失敗："+e.message))}
-async function loadDays(){try{const j=await call({op:"dayget"});if(j.ok){OVERRIDES=j.days||{};const t=TABS.find(x=>!$(x).hidden);if(t&&["home","today","trip"].includes(t))({home,today,trip})[t]()}}catch(e){}}
+async function loadDays(){try{const j=await call({op:"dayget"});if(j.ok){OVERRIDES=j.days||{};LS.set("days",OVERRIDES);const t=TABS.find(x=>!$(x).hidden);if(t&&["home","today","trip"].includes(t))({home,today,trip})[t]()}}catch(e){}}
 
 /* ---------- 行程 ---------- */
 let cur=0;
@@ -98,14 +98,39 @@ function loginBtn(el,msg){gsi(()=>{google.accounts.id.initialize({client_id:D.CO
   ME={sk:j.sk,email:j.email,owner:!!j.owner,role:j.role};LS.set("me",ME);if(j.role==="pending"){showGate("登入成功，等待管理員批准。");return}hideGate();show("home");syncState();loadDays()}catch(e){msg.textContent=e.message}}});
  google.accounts.id.renderButton(el,{theme:"outline",size:"large",text:"signin_with",locale:"zh-TW"})})}
 async function syncState(){if(!ME)return;try{const j=await call({op:"stget"});if(j.ok){ST=j.st||{};LS.set("st",ST);if(!$("prep").hidden)drawChk()}}catch(e){}}
-function ping(){if(ME&&API)call({op:"ping",dev:dev()}).then(j=>{if(j.ok&&ME){ME.owner=!!j.owner;ME.role=j.role;LS.set("me",ME);if(j.role==="pending")showGate("登入成功，等待管理員批准。");else hideGate()}}).catch(()=>showGate("登入狀態未能驗證，請重新登入。"))}
+function ping(){if(ME&&API)call({op:"ping",dev:dev()}).then(j=>{if(j.ok&&ME){ME.owner=!!j.owner;ME.role=j.role;LS.set("me",ME);if(j.role==="pending")showGate("登入成功，等待管理員批准。");else hideGate()}}).catch(e=>{if(!(e instanceof TypeError||!navigator.onLine))showGate("登入狀態未能驗證，請重新登入。")})}
 const kb=n=>n>1048576?(n/1048576).toFixed(1)+" MB":Math.max(1,Math.round(n/1024))+" KB";
 const dt=t=>new Date(t).toLocaleString("zh-HK",{hour12:false,month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"});
 
-function drawChk(){const el=$("chk");if(!el)return;const done=D.PREP.filter(p=>ST[p.id]).length;
- el.innerHTML=`<p class="note">已完成 ${done}／${D.PREP.length}${ME?"（已同步）":"（登入後同步）"}</p><ul class="chk">${D.PREP.map(p=>`<li class="${ST[p.id]?"done":""}"><label><input type="checkbox" data-k="${p.id}" ${ST[p.id]?"checked":""}><span><span class="n">${esc(p.n)}</span>${p.ai?' <span class="ai">AI 建議</span>':""}${p.d?`<small>${esc(p.d)}</small>`:""}${p.s?`<small class="src">來源：${srcList(p.s)}</small>`:""}</span></label></li>`).join("")}</ul>`;
- el.querySelectorAll("[data-k]").forEach(c=>c.onchange=async()=>{const k=c.dataset.k;if(c.checked)ST[k]=Date.now();else delete ST[k];LS.set("st",ST);drawChk();
-  if(ME)try{const j=await call({op:"stset",key:k,val:c.checked});if(j.ok){ST=j.st;LS.set("st",ST);drawChk()}}catch(e){}})}
+/* 準備頁（冰島版樣式）：預訂清單＋出發前要做。已訂／已完成會同步；「要再確認」「不用訂」只存在這部裝置 */
+let ST2=LS.get("st2",{}),TKF="todo";const GOPEN={};
+const stOf=id=>ST[id]?"ok":(ST2[id]||"todo");
+const STL={todo:"未訂",ok:"已訂",recheck:"要再確認",na:"不用訂"};
+async function setDone(k,v){if(v)ST[k]=Date.now();else delete ST[k];LS.set("st",ST);
+ if(ME)try{const j=await call({op:"stset",key:k,val:v});if(j.ok){ST=j.st||ST;LS.set("st",ST);drawChk()}}catch(e){}}
+function prepHero(){const start=new Date(D.TRIP.start+"T00:00:00+10:00"),left=Math.ceil((start-Date.now())/864e5);if(left<=0)return"";
+ const pct=Math.max(2,Math.min(98,100-left/365*100)),tm=new Date().toLocaleTimeString("zh-HK",{timeZone:"Australia/Brisbane",hour:"numeric",minute:"2-digit",hour12:true});
+ return `<section class="fcd noen" aria-label="倒數"><div class="fct"><b>${left} 日後出發</b><span>3月27日 – 3月30日</span></div><div class="fcb"><i style="width:${pct}%"></i><u style="left:${pct}%">✈️</u></div><div class="fcr"><span>今日</span><span>出發 🇦🇺</span></div><div class="fcr fci">昆士蘭時間 ${tm}</div></section>`}
+function drawChk(){const el=$("chk");if(!el)return;
+ const B=D.PREP.filter(p=>p.g==="book"),P=D.PREP.filter(p=>p.g!=="book");
+ const isDone=p=>["ok","na"].includes(stOf(p.id)),nd=B.filter(isDone).length,nok=B.filter(p=>stOf(p.id)==="ok").length;
+ const shown=B.filter(p=>TKF==="all"||(TKF==="done")===isDone(p));
+ const groups=[...new Set(shown.map(p=>p.dl||"沒有期限"))];
+ const item=p=>{const st=stOf(p.id);return `<li class="tk tk-${st}"><div class="tk-h"><select class="tst st ${st}" data-task="${p.id}" aria-label="狀態：${esc(p.n)}">${Object.keys(STL).map(k=>`<option value="${k}"${k===st?" selected":""}>${STL[k]}</option>`).join("")}</select><i class="tkcat noen" aria-hidden="true">${p.ic||"📌"}</i><span class="bkn">${esc(p.n)}</span>${p.imp?'<span class="tkimp">重要</span>':""}</div>
+  <div class="bkm">${p.d?esc(p.d)+" · ":""}<b class="tkd">${esc(p.dl||"沒有期限")}</b>${p.ai?' <span class="ai">AI 建議</span>':""}</div>${p.s?`<div class="tk-a"><button type="button" class="tkdet" aria-expanded="false">詳情</button><div class="bkmore tkmore" hidden><p class="src">來源：<br>${srcList(p.s)}</p></div></div>`:""}</li>`};
+ const pd=P.filter(p=>ST[p.id]).length,pp=P.length?Math.round(pd/P.length*100):0;
+ el.innerHTML=`<div id="bookp"><section id="g-book"><h3 class="bkh">預訂</h3><div class="bkprog">已訂 <b>${nok}</b> / ${B.length}<small class="bklocal"> · ${ME?"已同步":"登入後同步"}</small><div class="bkbar"><i style="width:${B.length?nd/B.length*100:0}%"></i></div></div>
+ <div class="tkf" role="group" aria-label="篩選狀態"><span class="tkseg">${[["todo","未訂",B.length-nd],["done","已訂",nd],["all","全部",B.length]].map(([k,t,n])=>`<button type="button" data-tkf="${k}" aria-pressed="${TKF===k}">${t} <b>${n}</b></button>`).join("")}</span></div>
+ ${groups.length?groups.map(g=>{const open=GOPEN[g]!==false,r=shown.filter(p=>(p.dl||"沒有期限")===g);return `<h3 class="tiph bkday bkcol" role="button" tabindex="0" aria-expanded="${open}" data-g="${esc(g)}">${esc(g)}<span class="bkc">${r.length} 項</span></h3><ul class="bkchk tkl"${open?"":" hidden"}>${r.map(item).join("")}</ul>`}).join(""):`<p class="note">沒有項目。</p>`}</section></div>
+ <section class="pcard"><h3>出發前要做</h3><div id="prep-pre"><div class="pdash2"><div class="pd-h"><b>已完成 ${pd} / ${P.length}</b><small>${pp}%</small></div><div class="pd-bar"><i style="width:${pp}%"></i></div></div>
+ <ul class="prelist">${P.map(p=>`<li class="${ST[p.id]?"done":""}"><label><input type="checkbox" data-k="${p.id}" ${ST[p.id]?"checked":""}><span><b>${esc(p.n)}${p.ai?'<em class="ai">AI 建議</em>':""}</b>${p.d?`<small>${esc(p.d)}</small>`:""}${p.s?`<small class="src">來源：${srcList(p.s)}</small>`:""}</span></label></li>`).join("")}</ul>
+ <p class="bnote">${ME?"剔了的會同步到旅伴的裝置。":"登入後才會同步。"}</p></div></section>`;
+ el.querySelectorAll("[data-tkf]").forEach(b=>b.onclick=()=>{TKF=b.dataset.tkf;drawChk()});
+ el.querySelectorAll(".bkcol").forEach(h=>{const t=()=>{GOPEN[h.dataset.g]=h.getAttribute("aria-expanded")!=="true";drawChk()};h.onclick=t;h.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();t()}}});
+ el.querySelectorAll(".tkdet").forEach(b=>b.onclick=()=>{const m=b.nextElementSibling,o=m.hidden;m.hidden=!o;b.setAttribute("aria-expanded",o)});
+ el.querySelectorAll("select.tst").forEach(c=>c.onchange=()=>{const k=c.dataset.task,v=c.value;if(v==="ok"||v==="todo")delete ST2[k];else ST2[k]=v;LS.set("st2",ST2);
+  const was=!!ST[k];if((v==="ok")!==was)setDone(k,v==="ok");drawChk()});
+ el.querySelectorAll("[data-k]").forEach(c=>c.onchange=()=>{setDone(c.dataset.k,c.checked);drawChk()})}
 function drawDocs(){const el=$("docs");if(!el)return;
  if(!ME){el.innerHTML=`<p class="note">登入後可以上載及查看文件。文件存放在你的 Google Drive，不會上 GitHub。</p>`;return}
  el.innerHTML=`${ME.owner?`<label class="btn">上載文件<input type="file" id="docf" hidden></label>`:""} <span class="note" id="docmsg"></span>
@@ -119,7 +144,7 @@ function drawDocs(){const el=$("docs");if(!el)return;
    const url=URL.createObjectURL(new Blob([u8],{type:j.mime}));if(w)w.location=url;else location.href=url;msg.textContent=""}catch(er){msg.textContent=er.message;w&&w.close()}});
  el.querySelectorAll("[data-del]").forEach(b=>b.onclick=async()=>{const d=DOCS.find(x=>x.id===b.dataset.del);if(!confirm("刪除「"+(d?d.name:"")+"」？（會放入 Google Drive 垃圾桶，30 日內可還原）"))return;
   try{const j=await call({op:"docdel",id:b.dataset.del});if(j.ok){DOCS=j.docs;drawDocs()}}catch(er){msg.textContent=er.message}});
- if(DOCS==null)call({op:"docs"}).then(j=>{if(j.ok){DOCS=j.docs;drawDocs()}}).catch(er=>{msg.textContent=er.message})}
+ if(DOCS==null)call({op:"docs"}).then(j=>{if(j.ok){DOCS=j.docs;drawDocs()}}).catch(er=>{msg.textContent=er instanceof TypeError?"沒有網絡，連線後才會顯示文件。":er.message})}
 function drawVis(){const el=$("vis");if(!el)return;
  el.innerHTML=VIS==null?`<button type="button" class="btn ghost" id="visb">看登入記錄</button>`:VIS.length?`<table class="bt vt"><tbody>${VIS.map(v=>`<tr><td>${dt(v.t)}</td><td>${esc(v.email)}<small>${esc(v.act)}${v.dev?" · "+esc(v.dev):""}</small></td></tr>`).join("")}</tbody></table>`:`<p class="note">未有記錄。</p>`;
  const b=$("visb");if(b)b.onclick=async()=>{b.textContent="載入中…";try{const j=await call({op:"visits"});if(j.ok){VIS=j.visits;drawVis()}else b.textContent=errTxt[j.err]||j.err}catch(e){b.textContent=e.message}}}
@@ -127,19 +152,19 @@ function drawVis(){const el=$("vis");if(!el)return;
 
 let MEMBERS=null;
 function drawMembers(){const el=$("members");if(!el||!ME||!ME.owner)return;
- el.innerHTML=`<h2>成員審批</h2><p class="note">只有管理員可以批准或拒絕登入申請。</p>${MEMBERS===null?`<button type="button" class="btn" id="loadmembers">載入申請</button>`:MEMBERS.length?`<ul class="docl">${MEMBERS.map(m=>`<li><strong>${esc(m.name||m.email)}</strong><small>${esc(m.email)} · ${esc(m.status)}</small>${m.status!=="approved"?`<button type="button" class="btn" data-email="${esc(m.email)}" data-act="approve">批准</button>`:""}${m.status!=="rejected"?`<button type="button" class="btn ghost" data-email="${esc(m.email)}" data-act="reject">拒絕</button>`:""}</li>`).join("")}</ul>`:`<p class="note">暫時未有申請。</p>`}<p class="note" id="membermsg"></p>`;
+ el.innerHTML=`<h3>成員審批</h3><p class="note">只有管理員可以批准或拒絕登入申請。</p>${MEMBERS===null?`<button type="button" class="btn" id="loadmembers">載入申請</button>`:MEMBERS.length?`<ul class="docl">${MEMBERS.map(m=>`<li><strong>${esc(m.name||m.email)}</strong><small>${esc(m.email)} · ${esc(m.status)}</small>${m.status!=="approved"?`<button type="button" class="btn" data-email="${esc(m.email)}" data-act="approve">批准</button>`:""}${m.status!=="rejected"?`<button type="button" class="btn ghost" data-email="${esc(m.email)}" data-act="reject">拒絕</button>`:""}</li>`).join("")}</ul>`:`<p class="note">暫時未有申請。</p>`}<p class="note" id="membermsg"></p>`;
  const b=$("loadmembers");if(b)b.onclick=()=>loadMembers();
  el.querySelectorAll("[data-act]").forEach(b=>b.onclick=async()=>{const msg=$("membermsg");msg.textContent="處理中…";try{const j=await call({op:"mset",email:b.dataset.email,act:b.dataset.act});if(!j.ok)throw Error(j.err);MEMBERS=j.members;drawMembers()}catch(e){msg.textContent=e.message}})
 }
 async function loadMembers(){try{const j=await call({op:"members"});if(!j.ok)throw Error(j.err);MEMBERS=j.members;drawMembers()}catch(e){const m=$("membermsg");if(m)m.textContent=e.message}}
 
 function prep(){
- $("prep").innerHTML=`<section class="card"><h2>帳戶</h2>${!API?`<p class="note">後台未設定：登入、文件和同步要先部署 Google Apps Script。</p>`:ME?`<p class="note">已登入：${esc(ME.email)}</p><button type="button" class="btn ghost" id="lgout">登出</button>`:`<p class="note">用 Gmail 登入，只限你同旅伴。</p><div id="gbtn"></div><p class="note" id="gmsg"></p>`}</section>
- <section class="card"><h2>出發前要做</h2><div id="chk"></div></section>
- <section class="card"><h2>文件</h2><div id="docs"></div></section>
- ${ME&&ME.owner?`<section class="card" id="members"></section><section class="card"><h2>登入記錄</h2><div id="vis"></div></section>`:""}
- <section class="card"><h2>注意事項</h2><p class="note">內容待更新及補充來源。</p>
- <ul class="tips"><li>3 月風浪較大，船團可能因天氣取消。</li><li>旅程期間屬水母季，在海中浮潛要穿 stinger suit。</li><li>交通服務及接送時間請於出發前再確認。</li></ul></section>`;
+ $("prep").innerHTML=`<div id="prepHero">${prepHero()}</div><div id="chk"></div>
+ <section class="pcard"><h3>文件</h3><div id="docs"></div></section>
+ <section class="pcard"><h3>注意事項</h3><p class="note">內容待更新及補充來源。</p>
+ <ul class="tips"><li>3 月風浪較大，船團可能因天氣取消。</li><li>旅程期間屬水母季，在海中浮潛要穿 stinger suit。</li><li>交通服務及接送時間請於出發前再確認。</li></ul></section>
+ ${ME&&ME.owner?`<section class="pcard" id="members"></section><section class="pcard"><h3>登入記錄</h3><div id="vis"></div></section>`:""}
+ <section class="pcard"><h3>帳戶</h3>${!API?`<p class="note">後台未設定：登入、文件和同步要先部署 Google Apps Script。</p>`:ME?`<p class="note">已登入：${esc(ME.email)}</p><button type="button" class="btn ghost" id="lgout">登出</button>`:`<p class="note">用 Gmail 登入，只限你同旅伴。</p><div id="gbtn"></div><p class="note" id="gmsg"></p>`}</section>`;
  if(API&&!ME)loginBtn($("gbtn"),$("gmsg"));
  const lo=$("lgout");if(lo)lo.onclick=()=>{call({op:"logout"}).catch(()=>{});ME=null;LS.set("me",null);DOCS=VIS=null;showGate()};
  drawChk();drawDocs();drawVis();drawMembers()}
@@ -161,11 +186,12 @@ function show(t){if(!ME||ME.role==="pending"||ME.role==="rejected"){showGate(ME&
  try{if(location.hash.slice(1)!==t)history.replaceState(null,"","#"+t)}catch(e){}}
 document.querySelectorAll(".bnav button").forEach(b=>b.onclick=()=>{show(b.dataset.tab);window.scrollTo(0,0)});
 window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
-showGate('正在驗證登入狀態…');if(ME&&ME.sk){call({op:'ping',dev:dev()}).then(j=>{if(!j.ok||j.role==='pending'||j.role==='rejected')throw Error('尚未獲批');ME.owner=!!j.owner;ME.role=j.role;LS.set('me',ME);hideGate();show(location.hash.slice(1)||'home');syncState();loadDays()}).catch(()=>{ME=null;LS.set('me',null);showGate('請使用 Google 登入。')})}
-/* No service worker until cache/version migration has been tested. */
-})();
-
+showGate('正在驗證登入狀態…');if(ME&&ME.sk){call({op:'ping',dev:dev()}).then(j=>{if(!j.ok||j.role==='pending'||j.role==='rejected')throw Error('尚未獲批');ME.owner=!!j.owner;ME.role=j.role;LS.set('me',ME);hideGate();show(location.hash.slice(1)||'home');syncState();loadDays()}).catch(e=>{if(ME&&ME.sk&&(e instanceof TypeError||!navigator.onLine)){hideGate();show(location.hash.slice(1)||'home')}else{ME=null;LS.set('me',null);showGate('請使用 Google 登入。')}})}
+/* 離線：用 service worker 保存網站，冇網絡都打得開 */
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 /* Airlie Beach weather (Open-Meteo, free, no key); last result cached for offline */
 function loadWeather(){const el=$('wx');if(!el)return;const url='https://api.open-meteo.com/v1/forecast?latitude=-20.27&longitude=148.72&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Australia%2FBrisbane&start_date='+D.TRIP.start+'&end_date='+D.TRIP.end;
  fetch(url).then(r=>r.json()).then(j=>{const t=j.daily&&j.daily.time;if(!t||!t.length)throw new Error('no data');const rows=t.map((d,x)=>d.slice(5)+'：'+Math.round(j.daily.temperature_2m_min[x])+'–'+Math.round(j.daily.temperature_2m_max[x])+'°C，降雨 '+(j.daily.precipitation_probability_max[x]??'-')+'%').join('<br>');el.innerHTML='Airlie Beach 天氣預報<br>'+rows;LS.set('wx',el.innerHTML)})
  .catch(()=>{el.innerHTML=LS.get('wx',null)||'天氣預報會喺出發前約兩星期開始顯示。'})}
+})();
+
