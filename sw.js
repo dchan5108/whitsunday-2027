@@ -1,5 +1,5 @@
 /* keeps a copy of the trip page so it opens without internet; always tries the newest version first */
-const C="whitsunday-2027-v4";
+const C="whitsunday-2027-v5";
 self.addEventListener("install",e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(["./","./index.html","./style.css","./prep.css","./today.css","./home.css","./trip.css","./day1.webp","./day2.webp","./day4.webp","./app.js","./data.js","./manifest.webmanifest","./icon-192.png","./icon-512.png","./apple-touch-icon.png"])).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener("fetch",e=>{

@@ -186,11 +186,8 @@ function prep(){
  <section class="pcard"><h3>文件</h3><div id="docs"></div></section>
  <section class="pcard"><h3>注意事項</h3><p class="note">內容待更新及補充來源。</p>
  <ul class="tips"><li>3 月風浪較大，船團可能因天氣取消。</li><li>旅程期間屬水母季，在海中浮潛要穿 stinger suit。</li><li>交通服務及接送時間請於出發前再確認。</li></ul></section>
- ${ME&&ME.owner?`<section class="pcard" id="members"></section><section class="pcard"><h3>登入記錄</h3><div id="vis"></div></section>`:""}
- <section class="pcard"><h3>帳戶</h3>${!API?`<p class="note">後台未設定：登入、文件和同步要先部署 Google Apps Script。</p>`:ME?`<p class="note">已登入：${esc(ME.email)}</p><button type="button" class="btn ghost" id="lgout">登出</button>`:`<p class="note">用 Gmail 登入，只限你同旅伴。</p><div id="gbtn"></div><p class="note" id="gmsg"></p>`}</section>`;
- if(API&&!ME)loginBtn($("gbtn"),$("gmsg"));
- const lo=$("lgout");if(lo)lo.onclick=()=>{call({op:"logout"}).catch(()=>{});ME=null;LS.set("me",null);DOCS=VIS=null;showGate()};
- drawChk();drawDocs();drawVis();drawMembers()}
+`;
+ drawChk();drawDocs()}
 
 /* ---------- Iceland-style countdown / gated landing ---------- */
 function gateMarkup(message){const left=Math.ceil((new Date(D.TRIP.start+'T00:00:00+10:00')-Date.now())/86400000);return `<div class="ocean-scene"><div class="ocean-sun"></div><div class="ocean-island"></div><div class="ocean-wave"></div></div><div class="gate-card"><div class="eyebrow">27–30 MARCH · QUEENSLAND</div><h1>WHITSUNDAYS<br>2027</h1><div class="countdown">${left>0?`<strong>${left}</strong><span>Days to go</span>`:'Adventure time'}</div><p>${esc(message||'登入後查看四日行程、準備事項及旅行費用。')}</p><div id="gate-google"></div><p class="gate-msg" id="gate-msg"></p></div>`}
@@ -271,7 +268,16 @@ function today(){const days=liveDays(),tdy=new Date().toLocaleDateString("en-CA"
  loadWeather()}
 /* ---------- 分頁 ---------- */
 const TABS=["prep","today","home","trip","budget"];
-function show(t){if(!ME||ME.role==="pending"||ME.role==="rejected"){showGate(ME&&ME.role==="pending"?"登入成功，等待管理員批准。":"");return}if(!TABS.includes(t))t="home";
+/* 管理（左上角）：成員審批、登入記錄、帳戶 */
+function openAdmin(){let g=$("adm");if(!g){g=document.createElement("dialog");g.id="adm";g.className="admdlg";document.body.appendChild(g)}
+ g.innerHTML=`<div class="admh"><h2>管理</h2><button type="button" class="admx">完成</button></div>
+ ${ME&&ME.owner?`<section class="pcard" id="members"></section><section class="pcard"><h3>登入記錄</h3><div id="vis"></div></section>`:""}
+ <section class="pcard"><h3>帳戶</h3><p class="note">已登入：${esc(ME.email)}</p><button type="button" class="btn ghost" id="lgout">登出</button></section>`;
+ g.querySelector(".admx").onclick=()=>g.close();g.onclick=e=>{if(e.target===g)g.close()};
+ $("lgout").onclick=()=>{g.close();call({op:"logout"}).catch(()=>{});ME=null;LS.set("me",null);DOCS=VIS=MEMBERS=null;showGate()};
+ drawMembers();drawVis();try{g.showModal()}catch(e){g.setAttribute("open","")}}
+function show(t){const ab=$("admbtn");if(ab){ab.hidden=!ME||ME.role==="pending"||ME.role==="rejected";ab.onclick=openAdmin}
+if(!ME||ME.role==="pending"||ME.role==="rejected"){showGate(ME&&ME.role==="pending"?"登入成功，等待管理員批准。":"");return}if(!TABS.includes(t))t="home";
  document.querySelectorAll(".bnav button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));
  TABS.forEach(s=>$(s).hidden=s!==t);
  ({prep,today,home,trip,budget})[t]();
