@@ -127,3 +127,15 @@ body{background:var(--bg);color:var(--fg)}
 .admdlg .pcard{background:#fff;border-radius:16px;padding:14px 16px;margin-top:12px}
 .admdlg .pcard h3{margin:0 0 6px;font-size:17px}
 @media (prefers-color-scheme:dark){.admdlg{background:#171b1f}.admdlg .pcard{background:#22272c}.admdlg .admx{color:#7fb7d9}}
+
+/* Landing（登入頁）：海島沙色主題 */
+:root{--color-primary:#00A8B5;--color-primary-dark:#007A87;--color-primary-light:#E0F6F8;--color-bg-sand:#FAF6F0;--color-surface-card:#FFFFFF;--color-sand-border:#EAE0D2;--color-accent-coral:#FF6F61;--color-accent-coral-hover:#E85A4D;--color-text-main:#133B44;--color-text-muted:#5C7A82;--landing-bg-image:url('images/landing-bg.webp')}
+#auth-gate,.landing-hero{background-color:var(--color-bg-sand);background-image:linear-gradient(to bottom,rgba(250,246,240,.35),rgba(250,246,240,.92)),var(--landing-bg-image);background-size:cover;background-position:center bottom;background-repeat:no-repeat;color:var(--color-text-main)}
+#auth-gate .gate-card{background:rgba(255,255,255,.88);border:1px solid var(--color-sand-border);box-shadow:0 18px 50px rgba(19,59,68,.12);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--color-text-main)}
+#auth-gate .eyebrow{color:var(--color-primary-dark);font-weight:700;letter-spacing:.12em;font-size:12px}
+#auth-gate .gate-card h1{color:var(--color-text-main)}
+#auth-gate .countdown strong{color:var(--color-accent-coral)}
+#auth-gate .countdown span{color:var(--color-text-muted)}
+#auth-gate .gate-card p{color:var(--color-text-muted)}
+#auth-gate #gate-google{display:flex;justify-content:center;margin:8px auto 0}
+#auth-gate #gate-google>div{margin:0 auto}
