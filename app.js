@@ -39,31 +39,54 @@ function liveDays(){return D.DAYS.map((d,i)=>({...d,...(OVERRIDES['day'+i]||{})}
 function editDay(i){if(!ME||!ME.owner)return;const d=liveDays()[i];const title=prompt("修改 D"+(i+1)+" 標題",d.title);if(title===null)return;
  const note=prompt("修改當日備註",d.note||"");if(note===null)return;
  const lines=prompt("修改時間表（每行：時間 | 活動），留空時間亦可以",d.s.map(x=>x[0]+" | "+x[1]).join("\n"));if(lines===null)return;
- const entries=lines.split(/\n/).map(x=>x.split("|")).filter(x=>x.length>=2).map(x=>[x[0].trim(),x.slice(1).join("|").trim(),""]);
+ const entries=lines.split(/\n/).map(x=>x.split("|")).filter(x=>x.length>=2).map(x=>{const t=x[0].trim(),a=x.slice(1).join("|").trim(),o=d.s.find(r=>r[1]===a);return o?[t,a,o[2]||"",o[3]]:[t,a,""]});
  const patch={title:title.trim(),note:note.trim(),s:entries};if(!patch.title||!entries.length){alert("標題同時間表不可為空");return}
  call({op:"dayset",key:'day'+i,value:patch}).then(j=>{if(!j.ok)throw Error(j.err);OVERRIDES=j.days||{};trip()}).catch(e=>alert("儲存失敗："+e.message))}
 async function loadDays(){try{const j=await call({op:"dayget"});if(j.ok){OVERRIDES=j.days||{};LS.set("days",OVERRIDES);const t=TABS.find(x=>!$(x).hidden);if(t&&["home","today","trip"].includes(t))({home,today,trip})[t]()}}catch(e){}}
 
-/* ---------- 行程 ---------- */
+/* ---------- 行程（冰島版樣式） ---------- */
 let cur=0;
-function spotCard(k){const p=D.SPOTS[k];if(!p)return"";
- return `<details class="spot"><summary>${esc(p.n)}</summary><p>${esc(p.i)}</p><p class="meta">時間：${esc(p.h)}</p><p class="src">來源：<br>${srcList(p.s)}</p></details>`}
-function trip(){
- const chips=liveDays().map((d,i)=>`<button type="button" data-i="${i}" aria-pressed="${i===cur}"><b>D${i+1}</b><small>${md(d.date)}（${d.wd}）</small></button>`).join("");
- const d=liveDays()[cur];
- const rows=d.s.map(([t,a,tag,x])=>`<li class="${tag||""}"><span class="t">${esc(t)}</span><div class="a">${esc(a)}${x&&x.ai?' <span class="ai">AI 建議</span>':""}${x&&x.sp?spotCard(x.sp):""}</div></li>`).join("");
- const cons=cur===D.DAYS.length-1?"":"";
- $("trip").innerHTML=`<div class="chips" role="group" aria-label="選擇日子">${chips}</div>
- <article class="card day"><div class="dh"><h2>D${cur+1}　${esc(d.title)}</h2><span class="dt">${md(d.date)}（${d.wd}）</span></div>
- ${d.ph?`<span class="ph">昆士蘭公眾假期</span>`:""}
- ${d.note?`<p class="note">${esc(d.note)}</p>`:""}${ME&&ME.owner?`<button type="button" class="btn ghost" id="edit-day">編輯當日行程</button>`:""}${highlightBadges(cur)}
- <ul class="tl">${rows}</ul>
- <p class="legend"><span class="k book">●</span> 要預訂　<span class="k done">✓</span> 已訂　<span class="ai">AI 建議</span> 不是你指定的，可改</p>
- <div class="dnav"><button type="button" data-i="${cur-1}" ${cur===0?"disabled":""}>‹ 前一日</button><button type="button" data-i="${cur+1}" ${cur===D.DAYS.length-1?"disabled":""}>後一日 ›</button></div></article>
- ${D.CONSIDER.length?`<section class="card"><h3>考慮中（未放入行程）</h3>${D.CONSIDER.map(c=>`<p class="note">${esc(c.note)}</p>${spotCard(c.sp)}`).join("")}</section>`:""}
- ${d.ph?`<p class="src">公眾假期來源：${srcList(["fw"])}</p>`:""}${cons}`;
- const edit=$("edit-day");if(edit)edit.onclick=()=>editDay(cur);$("trip").querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{const i=+b.dataset.i;if(i>=0&&i<D.DAYS.length){cur=i;trip();window.scrollTo({top:0,behavior:"smooth"})}});
-}
+const SV=x=>`<svg viewBox="0 0 24 24" aria-hidden="true">${x}</svg>`;
+const MODE={car:['<path d="M5 16V11l2-5h10l2 5v5"/><path d="M3 16h18v3H3z"/>',"driving"],boat:['<path d="M3 18c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0"/><path d="M5 15l1-4h12l1 4"/><path d="M9 11V7h6v4"/>',""],walk:['<circle cx="13" cy="4.5" r="1.6"/><path d="M10 21l2-6 3 3v3M9 12l2-4 4 1 2 3M11 8l-2 6"/>',"walking"]};
+const rowIc=a=>/早餐|午餐|晚餐|Brunch/.test(a)?"🍽️":/check-in|check-out|退房|入住/.test(a)?"🏨":/^(JQ|VA)\d/.test(a)?"✈️":/shuttle/.test(a)?"🚐":/^(Cruise Whitsundays )?船/.test(a)?"⛴️":"";
+function showPop(key){const [ds,t,a]=key.split("|"),days=liveDays(),i=days.findIndex(x=>x.date===ds);if(i<0)return;
+ const r=days[i].s.find(r=>esc(r[0])===t&&esc(r[1])===a);if(!r)return;const x=r[3]||{},p=x.sp&&D.SPOTS[x.sp],g=x.go;
+ let el=$("pop");if(!el){el=document.createElement("div");el.id="pop";el.className="pop";$("trip").appendChild(el)}
+ const nav=g?"https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(g.q||g.to)+((MODE[g.m]||MODE.car)[1]?"&travelmode="+(MODE[g.m]||MODE.car)[1]:""):"";
+ el.innerHTML=`<div class="poph"><b>${esc(p?p.n:r[1])}</b><button type="button" class="popx" aria-label="關閉" title="關閉">×</button></div><div class="popd"><span>D${i+1}</span>${r[0]?`<span>${esc(r[0])}${x.end?"–"+esc(x.end):""}</span>`:""}</div>
+ ${p?`<p>${esc(p.i)}</p><p class="ppark"><b>時間：</b>${esc(p.h)}</p><p class="ppark"><b>來源：</b>${srcList(p.s)}</p>`:`<p>${esc(r[1])}</p>`}
+ <div class="popb">${nav?`<a class="btn" href="${esc(nav)}" target="_blank" rel="noopener">導航去${esc(g.to)}</a>`:""}${p?`<a class="btn${nav?" ghostb":""}" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.n+" QLD")}" target="_blank" rel="noopener">Google Maps</a>`:""}</div>`;
+ el.hidden=false;el.querySelector(".popx").onclick=()=>{el.hidden=true}}
+function sched(d){let n=0;const tods=new Set();
+ return `<div class="sched rich simp">${d.s.map(([t,a,tag,x])=>{x=x||{};const ic=rowIc(a),num=!ic,meal=ic==="🍽️",hr=+String(t).slice(0,2);
+  const tod=!t?"":hr<12?"早上":hr<18?"下午":"晚上";let lab="";if(tod&&!tods.has(tod)){tods.add(tod);lab=`<div class="tod tod${["早上","下午","晚上"].indexOf(tod)}" aria-hidden="true">${tod}</div>`}
+  if(num)n++;
+  const tags=(tag==="book"?'<span class="bkb">預約</span>':tag==="done"?'<span class="bkb bkok">已訂</span>':"")+(x.ai?'<span class="ost ai" title="AI 建議，不是你指定的">AI 建議</span>':"");
+  const g=x.go,gm=g&&(MODE[g.m]||MODE.car),gu=g?"https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(g.q||g.to)+(gm[1]?"&travelmode="+gm[1]:""):"";
+  const go=g?`<a class="drvgo depgo depline" href="${esc(gu)}" target="_blank" rel="noopener"><span class="depm"><svg class="cnic" viewBox="0 0 24 24" aria-hidden="true">${gm[0]}</svg><span class="dgo">前往 ${esc(g.to)}${g.d?`<small class="drvdur"> · ${esc(g.d)}</small>`:""}</span></span><span class="drvpill">導航</span></a>`:"";
+  const pk=(x.sp&&D.SPOTS[x.sp])||g?`${d.date}|${esc(t)}|${esc(a)}`:"";
+  const head=`<div class="tl-h">${ic?`<i class="tcat noen" aria-hidden="true">${ic}</i>`:""}<span class="tl-n">${esc(a)}</span>${tags}</div>`,det="";
+  return `${lab}<span class="t${num?" key pri":""}">${esc(t)}${x.end?`<small class="tend noen">至 ${esc(x.end)}</small>`:""}</span><span class="a ${meal?"m meal":"c"}${num?" pri key":""}${pk?" hasp":""}"${pk?` data-pop="${pk}" role="button" tabindex="0"`:""}>${num?`<div class="tl-card${det?" hasd":""}">${head}${det}</div>`:head+det}${go}</span>`}).join("")}</div>`}
+function dayArt(i){const d=liveDays()[i],notes=String(d.note||"").split("。").map(x=>x.trim()).filter(Boolean);
+ return `<article class="day" data-dd="${i+1}" style="--dc:#2f8fa0"><h3><span>D${i+1} · ${dlab(d)}</span><span class="h3act"><button type="button" class="optbtn" data-optdlg="${i}">${SV('<path d="M4 6h10M4 12h10M4 18h7"/><circle cx="18" cy="6" r="2"/><circle cx="18" cy="12" r="2"/>')}<span>可選行程</span></button><details class="dmore"><summary aria-label="更多" title="更多">⋯</summary><div class="dmm">${ME&&ME.owner?`<button type="button" class="cuopen" data-edit="${i}">✏️ 調整行程</button>`:""}<button type="button" class="cpday" data-cpday="${i}">📋 複製行程</button></div></details></span></h3>
+ ${sumCard(i,"")}${sched(d)}
+ ${notes.length||d.ph?`<details class="sec" data-sec="info"><summary>注意事項</summary><div class="secb">${notes.length?`<div class="dnote"><div class="dnh">當日注意事項</div><ul>${notes.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}${d.ph?`<div class="dnote"><div class="dnh">公眾假期</div><p>昆士蘭公眾假期，部分服務可能有附加費。<br>${srcList(["fw"])}</p></div>`:""}</div></details>`:""}</article>`}
+function optDlg(i){let g=$("trip").querySelector("dialog.optdlg");if(!g){g=document.createElement("dialog");g.className="optdlg";$("trip").appendChild(g)}
+ g.innerHTML=`<div class="odh"><h3>D${i+1} 可選行程</h3><button type="button" class="odx">完成</button></div><div class="odb"><div class="sub2">考慮中（未放入行程）</div><div class="spots opts">${D.CONSIDER.map(c=>{const p=D.SPOTS[c.sp]||{};return `<details data-spot="${esc(c.sp)}"><summary>${esc(p.n||c.sp)}<span class="add">${esc(c.note||"")}</span></summary><p>${esc(p.i||"")}</p><div class="spd"><dl><dt>時間</dt><dd>${esc(p.h||"")}</dd><dt>來源</dt><dd>${srcList(p.s)}</dd></dl></div></details>`}).join("")||'<p class="note">暫時沒有可選行程。</p>'}</div></div>`;
+ g.querySelector(".odx").onclick=()=>g.close();g.onclick=e=>{if(e.target===g)g.close()};try{g.showModal()}catch(e){g.setAttribute("open","")}}
+function trip(){const days=liveDays();if(cur>=days.length)cur=0;
+ $("trip").innerHTML=`<div id="view-trip"><div class="chips" id="chips" role="group" aria-label="選擇日子"><button type="button" data-d="-1" aria-pressed="${cur<0}" class="call">總表</button>${days.map((d,i)=>`<button type="button" data-d="${i}" aria-pressed="${i===cur}" style="--dc:#2f8fa0" aria-label="D${i+1} ${md(d.date)}">D${i+1}</button>`).join("")}</div>
+ <div id="panel" aria-live="polite">${cur<0?days.map((d,i)=>dayArt(i)).join(""):dayArt(cur)}
+ <div class="daynav">${cur<0?"":`<button type="button" data-go="${cur-1}"${cur===0?" disabled":""}>${cur>0?"← D"+cur:"←"}</button><button type="button" data-go="-1">看全部</button><button type="button" data-go="${cur+1}"${cur===days.length-1?" disabled":""}>${cur<days.length-1?"D"+(cur+2)+" →":"→"}</button>`}</div></div></div>`;
+ const T=$("trip"),go=i=>{if(i>=-1&&i<days.length){cur=i;trip();window.scrollTo({top:0,behavior:"smooth"})}};
+ T.querySelectorAll("#chips [data-d]").forEach(b=>b.onclick=()=>go(+b.dataset.d));
+ T.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(+b.dataset.go));
+ T.querySelectorAll("[data-optdlg]").forEach(b=>b.onclick=()=>optDlg(+b.dataset.optdlg));
+ T.querySelectorAll("[data-pop]").forEach(r=>{const f=e=>{if(e.target.closest("a"))return;showPop(r.dataset.pop)};r.onclick=f;r.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();showPop(r.dataset.pop)}}});
+ T.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>editDay(+b.dataset.edit));
+ T.querySelectorAll("[data-cpday]").forEach(b=>b.onclick=async()=>{const i=+b.dataset.cpday,d=days[i];const txt=`D${i+1} ${dlab(d)} ${d.title}\n`+d.s.map(r=>(r[0]?r[0]+" ":"")+r[1]).join("\n");
+  try{await navigator.clipboard.writeText(txt);b.textContent="✅ 已複製"}catch(e){b.textContent="未能複製"}});
+ loadWeather()}
 
 /* ---------- 旅行費用 ---------- */
 function budget(){
@@ -209,7 +232,7 @@ function loadWeather(){const start=new Date(D.TRIP.start+"T00:00:00+10:00");if((
   if(a.status==="fulfilled"&&a.value.daily){const x=a.value.daily;x.time.forEach((t,k)=>o.daily[t]={c:x.weather_code[k],hi:x.temperature_2m_max[k],lo:x.temperature_2m_min[k],pp:x.precipitation_probability_max[k],uv:x.uv_index_max[k]})}
   if(b.status==="fulfilled"&&b.value.hourly){const t=b.value.hourly.time,v=b.value.hourly.sea_level_height_msl;
    for(let k=1;k<v.length-1;k++){if(v[k]==null)continue;const hi=v[k]>v[k-1]&&v[k]>=v[k+1],lo=v[k]<v[k-1]&&v[k]<=v[k+1];if(!hi&&!lo)continue;const day=t[k].slice(0,10);(o.tide[day]=o.tide[day]||[]).push([t[k].slice(11,16),hi?"高潮":"低潮"])}}
-  if(Object.keys(o.daily).length||Object.keys(o.tide).length){WX=o;LS.set("wx2",WX);if(!$("today").hidden)today()}}).catch(()=>{})}
+  if(Object.keys(o.daily).length||Object.keys(o.tide).length){WX=o;LS.set("wx2",WX);if(!$("today").hidden)today();if(!$("trip").hidden)trip()}}).catch(()=>{})}
 const wxIcon=c=>c==null?"":c<1?"☀️":c<3?"🌤️":c<4?"☁️":c<50?"🌫️":c<70?"🌧️":c<80?"🌨️":c<90?"🌦️":"⛈️";
 const uvLab=u=>u<3?"低":u<6?"中":u<8?"高":u<11?"甚高":"極高";
 
@@ -222,10 +245,13 @@ function goldBadge(id,sz=72){const u="g"+id;return `<svg class="bdgsv" viewBox="
 <g clip-path="url(#${u}c)"><g transform="translate(8 8)">${badgeArt(id).replace(/^<svg[^>]*>|<\/svg>$/g,"")}</g><rect width="100" height="100" fill="url(#${u}v)"/><path d="M14 38A38 38 0 0 1 60 11L62 18A32 32 0 0 0 22 42Z" fill="#fff" opacity=".16"/></g>
 <circle cx="50" cy="50" r="40.6" fill="none" stroke="url(#${u}l)" stroke-width="1.4"/><path d="M9.5 40A42 42 0 0 1 40 8.5" stroke="#fff" stroke-width="1.6" fill="none" opacity=".55" stroke-linecap="round"/><path d="M91 60A42 42 0 0 1 62 91" stroke="#3d2a10" stroke-width="1.4" fill="none" opacity=".35" stroke-linecap="round"/></svg>`}
 
+function sumCard(i,cls=" tdsB"){const days=liveDays(),d=days[i],[sr,ss]=sunTimes(d.date),dl=Math.round((ss-sr)*60);
+ const away=Math.ceil((new Date(d.date+"T00:00:00+10:00")-Date.now())/864e5),w=WX&&WX.daily[d.date];
+ return `<section class="dsum2 dsB${cls}"><div class="dhB noen"><div class="dhL"><div class="dhR">${esc(d.rl||d.title)}</div><div class="dhS"><span>🏠 ${i===days.length-1?"回程":esc(D.TRIP.base.replace(/（.*）/,""))}</span></div></div><div class="dhW">${w?`<b>${wxIcon(w.c)}</b><span>${Math.round(w.lo)}–${Math.round(w.hi)}°C${w.pp!=null?" · 降雨 "+w.pp+"%":""}</span>`:`<b>⏳</b><span>${away>16?"16 日內有預報":"預報載入中"}</span>`}</div></div>
+ <div class="sunlab"><span>🌅 ${hm(sr)}</span><span>日照 ${Math.floor(dl/60)} 小時 ${dl%60} 分</span><span>🌇 ${hm(ss)}</span></div><div class="sunbar"></div></section>`}
 let TD=null;
 function today(){const days=liveDays(),tdy=new Date().toLocaleDateString("en-CA",{timeZone:"Australia/Brisbane"}),n=days.findIndex(x=>x.date===tdy);
- if(TD==null||TD>=days.length)TD=n<0?0:n;const i=TD,d=days[i],[sr,ss]=sunTimes(d.date),dl=ss-sr;
- const away=Math.ceil((new Date(d.date+"T00:00:00+10:00")-Date.now())/864e5),w=WX&&WX.daily[d.date],td=WX&&WX.tide[d.date];
+ if(TD==null||TD>=days.length)TD=n<0?0:n;const i=TD,d=days[i],w=WX&&WX.daily[d.date],td=WX&&WX.tide[d.date];
  const rt=d.rt||[],ru=rt.length>1?"https://www.google.com/maps/dir/?api=1&origin="+encodeURIComponent(rt[0])+"&destination="+encodeURIComponent(rt[rt.length-1])+(rt.length>2?"&waypoints="+encodeURIComponent(rt.slice(1,-1).join("|")):""):"";
  const hl=HIGHLIGHTS[i]||[],q=[];
  if(td&&td.length)q.push(["🌊","潮汐（約）",td.map(x=>x[1]+" "+x[0]).join("　")]);
@@ -235,8 +261,7 @@ function today(){const days=liveDays(),tdy=new Date().toLocaleDateString("en-CA"
  const notes=[...(d.ph?["昆士蘭公眾假期"]:[]),...String(d.note||"").split("。").map(x=>x.trim()).filter(Boolean)];
  $("today").innerHTML=`<div id="todayIn"><section class="tcard thero"><div class="tsub noen">${n<0?"行程預覽":i===n?"今日":"行程預覽"}</div><div class="tdrow"><h2 class="tdate">D${i+1} · ${dlab(d)}</h2></div><div class="chips tchips noen" role="group" aria-label="選擇日子">${days.map((x,k)=>`<button type="button" data-tday="${k}" aria-pressed="${k===i}">D${k+1}</button>`).join("")}</div>
  <div class="tbtns"><button type="button" data-tgo="now"${n<0||n===i?" hidden":""}>今日</button>${ru?`<a class="troute tlink noen" href="${esc(ru)}" target="_blank" rel="noopener">${G('<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/>',16)}當日路線</a>`:""}<button type="button" class="tfull2" data-tfull="1">完整時間表 ›</button></div></section>
- <section class="dsum2 dsB tdsB"><div class="dhB noen"><div class="dhL"><div class="dhR">${esc(d.rl||d.title)}</div><div class="dhS"><span>🏠 ${i===days.length-1?"回程":esc(D.TRIP.base.replace(/（.*）/,""))}</span></div></div><div class="dhW" id="twx">${w?`<b>${wxIcon(w.c)}</b><span>${Math.round(w.lo)}–${Math.round(w.hi)}°C${w.pp!=null?" · 降雨 "+w.pp+"%":""}</span>`:`<b>⏳</b><span>${away>16?"16 日內有預報":"預報載入中"}</span>`}</div></div>
- <div class="sunlab"><span>🌅 ${hm(sr)}</span><span>日照 ${Math.floor(Math.round(dl*60)/60)} 小時 ${Math.round(dl*60)%60} 分</span><span>🌇 ${hm(ss)}</span></div><div class="sunbar"></div></section>
+ ${sumCard(i)}
  <section class="tcard tquick noen"><div class="thd2"><b>📍 今日重點</b></div>${hl.length?`<div class="bdgs noen" style="--n:${hl.length}">${hl.map(h=>`<button type="button" class="bdg">${goldBadge(h.id)}<span>${esc(h.name)}</span></button>`).join("")}</div>`:""}
  <ul class="tqi">${q.map(([ic,t,s])=>`<li><i>${ic}</i><span>${esc(t)}<small>${esc(s)}</small></span></li>`).join("")}</ul></section>
  ${notes.length?`<section class="tcard tnotes noen"><div class="thd2"><b>⚠️ 今日注意</b></div><ul>${notes.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></section>`:""}</div>`;
