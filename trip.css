@@ -1,0 +1,519 @@
+/* 行程頁：樣式取自冰島版（只套用在 #trip 內） */
+#trip{--chg:#6d45c6;--bg:#f4f1ea;--route:#2b6f95;--muted:#667985;--fg:#14283a;--meal:#a8580a;--line:#ddd8cb;--stay:#c2412d;--ok:#4e6f5c;--sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;--card:#fffdf8;--dc:;--coast:#a9c1c9;--r-l:16px;--shadow:0 1px 2px rgba(20,40,58,.05),0 8px 24px rgba(20,40,58,.07);--r-m:12px;--r-s:10px;--al-book:#9a3d29;--al-bookbg:#f8e6df;--warnbg:#f8e6df;--warn:#a8580a;--cc:;--serif:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;--fjord:#3f6f85;--sage:#8fae9b;--ok2:#4e6f5c;--tint:#e9f0f3;--fill:#ececf0;--glass-edge:rgba(0,0,0,.08);--glass:rgba(255,255,255,.72);--glass-solid:#fbfbfd;--thick:rgba(250,250,252,.86);--okbg:#eaf1ec;--sage-t:#4e6f5c;--al-drvbg:#fbf0e3;--fs-body:13px;--fs-meta:12.5px;--pad-card:18px}
+#trip .seg { display: inline-flex; border: 1px solid var(--chg); border-radius: 999px; overflow: hidden; }
+#trip .seg button { font-size: 12.5px; padding: 3px 12px; border: 0px; background: transparent; color: var(--chg); cursor: pointer; }
+#trip .seg button[aria-pressed="true"] { background: var(--chg); color: var(--bg); }
+#trip .chips { display: flex; gap: 6px; margin-bottom: 10px; }
+#trip .chips button { font-size: 13px; cursor: pointer; font-variant-numeric: tabular-nums; }
+#trip .chips button[aria-pressed="true"] { background: var(--route); border-color: var(--route); color: var(--bg); }
+#trip .day h3 { margin: 0px 0px 6px; justify-content: space-between; }
+#trip .day h3 small { font-weight: 400; color: var(--muted); font-size: 12.5px; }
+#trip .golin { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; margin: 0px 0px 6px; padding: 6px 10px; border-radius: 8px; color: var(--fg); }
+#trip .ieb { border: 0px; background: none; cursor: pointer; color: var(--muted); font-size: 12px; padding: 0px 4px; margin-left: 2px; opacity: 0.55; line-height: 1; vertical-align: middle; }
+#trip .ieb:hover, #trip .ieb:focus-visible { opacity: 1; color: var(--route); }
+#trip .sched { display: grid; grid-template-columns: 5.8em minmax(0px, 1fr); gap: 3px 10px; font-size: 14px; }
+#trip .sched .t { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+#trip .sched .a { min-width: 0px; }
+#trip .sched .m { color: var(--meal); }
+#trip .sub2 { font-size: 12px; font-weight: 700; color: var(--muted); margin: 12px 0px 2px; letter-spacing: 0.04em; }
+#trip .daynav { display: flex; justify-content: space-between; gap: 8px; margin-top: 12px; }
+#trip .daynav button { font-size: 13px; padding: 4px 12px; border-radius: 999px; cursor: pointer; }
+#trip .spots details { border-top: 1px dashed var(--line); padding: 5px 0px; font-size: 13.5px; }
+#trip .spots summary { cursor: pointer; font-weight: 500; }
+#trip .spots p { margin: 4px 0px; color: var(--fg); }
+#trip .spots ul { margin: 2px 0px 4px; padding-left: 1.2em; color: var(--meal); }
+#trip .opts summary .add { font-weight: 400; color: var(--meal); margin-left: 8px; font-size: 12.5px; }
+#trip .opts a { font-size: 12.5px; color: var(--route); }
+#trip .dnote { margin: 6px 0px 10px; font-size: 13.5px; }
+#trip .dnh { font-weight: 700; color: var(--stay); font-size: 12.5px; }
+#trip .dnote ul { margin: 2px 0px 0px; padding-left: 1.2em; }
+#trip .sched.rich .a.cf { border-left-color: var(--ok); border-left-style: solid; }
+#trip .sched.rich .t.cf { color: var(--ok); font-weight: 600; }
+#trip .recpick { display: inline-flex; align-items: center; gap: 4px; float: right; margin: 8px 0px 0px 8px; font-size: 12px; font-weight: 600; color: var(--ok); cursor: pointer; }
+#trip .recpick input { width: 18px; height: 18px; accent-color: var(--ok); }
+#trip details.sec { margin: 10px 0px 0px; }
+#trip details.sec > summary { cursor: pointer; padding: 9px 12px; font-weight: 600; font-size: 13.5px; color: var(--route); list-style: none; }
+#trip details.sec > summary::-webkit-details-marker { display: none; }
+#trip details.sec > summary::before { content: "▸ "; }
+#trip details.sec[open] > summary::before { content: "▾ "; }
+#trip .secb { padding: 0px 12px 10px; }
+#trip .dnote.wx { border-left-color: rgb(74, 127, 166); }
+#trip .snum { display: inline-grid; place-items: center; min-width: 17px; height: 17px; border-radius: 50%; color: rgb(255, 255, 255); font-style: normal; font-size: 10.5px; font-weight: 700; margin-right: 4px; vertical-align: 1px; padding: 0px 3px; box-sizing: border-box; }
+#trip .rhint { font-size: 12.5px; color: var(--muted); margin: 2px 0px 6px; }
+#trip .sched.rich details summary { cursor: pointer; list-style: none; }
+#trip .sched.rich details summary::-webkit-details-marker { display: none; }
+#trip .sched.rich details summary::after { font-size: 11.5px; color: var(--route); font-weight: 400; }
+#trip .spd { border-top: 1px dashed var(--line); padding-top: 6px; font-size: 13px; color: var(--fg); font-weight: 400; }
+#trip .spt { font-weight: 700; }
+#trip .spd p { margin: 2px 0px 4px; }
+#trip .spd dl { display: grid; grid-template-columns: 5.5em minmax(0px, 1fr); gap: 2px 8px; margin: 0px; }
+#trip .spd dt { color: var(--muted); }
+#trip .spd dd { margin: 0px; }
+#trip .spd ul { margin: 0px; padding-left: 1.1em; }
+#trip .chips { position: sticky; top: env(safe-area-inset-top,0px); z-index: 6; background: var(--bg); flex-wrap: nowrap; overflow-x: auto; padding: 8px 2px; margin: 0px -2px 6px; scrollbar-width: none; }
+#trip .chips::-webkit-scrollbar { display: none; }
+#trip .chips button { flex: 0 0 auto; border-color: var(--line); padding: 6px 13px; }
+#trip .plink { font-size: 12.5px; color: var(--route); white-space: nowrap; }
+#trip .day { max-width: 780px; }
+#trip .day h3 { font-family: var(--sans); margin-bottom: 8px; }
+#trip .day h3 small { font-family: var(--sans); }
+#trip .dnote { background: var(--bg); border-left: 4px solid var(--stay); }
+#trip .sched.rich { grid-template-columns: 5.6em minmax(0px, 1fr); row-gap: 0px; margin-top: 6px; }
+#trip .sched.rich .t { font-size: 13px; }
+#trip .sched.rich .a { border-left: 2px solid var(--line); }
+#trip .sched.rich .a::before { content: ""; position: absolute; left: -7px; top: 0.85em; width: 12px; height: 12px; border-radius: 50%; background: var(--card); border: 2.5px solid var(--route); }
+#trip .sched.rich .a.m::before { border-color: var(--meal); }
+#trip .spd { background: var(--bg); border: 0px; border-radius: 10px; margin-top: 8px; }
+#trip .daynav { max-width: 780px; }
+#trip .day { border-radius: 16px; }
+#trip .sched.rich { grid-template-columns: 4.7em minmax(0px, 1fr); }
+#trip .sched.rich .t { font-size: 12px; }
+#trip .chips button[aria-pressed="true"][style] { background: var(--dc); border-color: var(--dc); color: rgb(255, 255, 255); }
+#trip .day[style] { border-top: 5px solid var(--dc); }
+#trip .day[style] h3 { color: var(--fg); }
+#trip button, #trip input, #trip select, #trip textarea, #trip h4, #trip #map text { font-family: var(--sans); }
+#trip .drv { width: 100%; border-collapse: collapse; font-size: 14px; }
+#trip .drv small { color: var(--muted); display: block; font-size: 12px; }
+#trip .st { font-size: 11.5px; font-weight: 700; border-radius: 999px; padding: 1px 9px; }
+#trip .sched.rich .a { padding: 7px 0px 12px 18px; line-height: 1.45; }
+#trip .sched.rich .t { padding: 7px 0px 0px; line-height: 1.3; }
+#trip .sched.rich .t .est { display: block; font-size: 10.5px; color: var(--muted); font-weight: 400; letter-spacing: 0.06em; margin-top: 1px; }
+#trip .sched.rich .t.key { color: var(--fg); font-weight: 700; }
+#trip .tl-h { font-weight: 400; color: var(--fg); }
+#trip .tl-n { font-weight: 400; }
+#trip .sched.rich .a.key .tl-n { font-weight: 700; }
+#trip .sched.rich .a.meal .tl-n { color: var(--meal); }
+#trip .sched .m { font-weight: 400; }
+#trip .tl-m { font-size: 12px; color: var(--muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
+#trip .tl-d { font-size: 12.5px; color: var(--muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#trip .bkb { display: inline-block; font-size: 10.5px; font-weight: 700; color: var(--stay); border: 1px solid; border-radius: 999px; padding: 0px 6px; margin-left: 6px; vertical-align: 1px; white-space: nowrap; }
+#trip .sched.rich details { margin-top: 2px; }
+#trip .sched.rich details > summary { font-size: 12px; display: inline-block; }
+#trip .sched.rich details summary::after { content: "▸ 詳情"; }
+#trip .sched.rich details[open] summary::after { content: "▾ 收起"; }
+#trip .sched.rich .a.drv { padding: 2px 0px 8px 18px; font-size: 12px; }
+#trip .sched.rich { display: block; margin-left: 7px; }
+#trip .sched.rich > .t { display: block; padding: 10px 0px 0px 18px; border-left: 2px solid var(--line); font-size: 12px; }
+#trip .sched.rich > .t:empty { display: none; }
+#trip .sched.rich > .t .est { display: inline; margin: 0px 0px 0px 6px; }
+#trip .sched.rich > .a { display: block; padding: 2px 0px 12px 18px; }
+#trip .sched.rich > .a.drv { padding: 4px 0px 8px 18px; }
+#trip .sched.rich > .a::before { top: 0.45em; }
+#trip .sched .a.drv { font-size: 12.5px; color: var(--muted); padding: 0px 0px 3px 14px; border-left: 2px dotted var(--coast); margin-bottom: 4px; }
+#trip .day, #trip .card2, #trip .mapbox, #trip .stl2 .night, #trip #budget .btot > div, #trip .sec, #trip .ovrow, #trip .scenbox { border-radius: var(--r-l); }
+#trip .day, #trip .card2, #trip .stl2 .night { background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); }
+#trip .day { padding: 18px 20px; }
+#trip .day h3 { font-size: 1.15rem; font-weight: 700; }
+#trip .day h3 small { font-size: 12.5px; }
+#trip .sec { border-radius: var(--r-m); border-color: var(--line); background: var(--card); }
+#trip .sec > summary { padding: 11px 14px; font-size: 13.5px; }
+#trip .chips { gap: 6px; padding: 8px 0px; }
+#trip .chips button { border-radius: 10px; border: 1px solid var(--line); background: var(--card); box-shadow: none; padding: 5px 12px; line-height: 1.25; }
+#trip .chips button:hover { border-color: var(--route); }
+#trip .chips button[aria-pressed="true"] { background: var(--route); border-color: var(--route); color: rgb(255, 255, 255); box-shadow: rgba(58, 118, 144, 0.28) 0px 2px 8px; }
+#trip .mini, #trip .daynav button, #trip .maptog, #trip .seg, #trip .bbar select, #trip .er input, #trip .er select, #trip .srch input, #trip .eadd input { border-radius: var(--r-s); }
+#trip .daynav button { background: var(--card); border-color: var(--line); }
+#trip .day { padding: 14px; }
+#trip .cpday { font-size: 13px; }
+#trip .chips button[aria-pressed="true"][style] { background: color-mix(in srgb,var(--dc) 70%,#000); border-color: color-mix(in srgb,var(--dc) 70%,#000); color: rgb(255, 255, 255); }
+#trip .sched.rich details > summary { font-size: 12px; color: var(--route); }
+#trip .sched.rich details summary::after { content: none; }
+#trip .sched.rich details summary::before { content: "▸ "; }
+#trip .sched.rich details[open] summary::before { content: "▾ "; }
+#trip .dact { display: flex; gap: 8px; flex-wrap: wrap; }
+#trip .navbtn, #trip .mapbtn { display: inline-flex; align-items: center; gap: 6px; min-height: 42px; padding: 0px 16px; border-radius: 999px; font-weight: 700; font-size: 14px; text-decoration: none; cursor: pointer; font-family: inherit; }
+#trip .navbtn { border: 0px; }
+#trip .navbtn:hover { filter: brightness(1.08); }
+#trip .mapbtn { display: none; background: var(--card); color: var(--route); border: 1.5px solid var(--route); }
+#trip .navbtn svg, #trip .mapbtn svg { width: 17px; height: 17px; fill: none; stroke: currentcolor; stroke-width: 2; stroke-linejoin: round; }
+#trip .navbtn svg { fill: currentcolor; stroke: none; }
+#trip .day h3:has(+ .dsum) small, #trip .day h3:has(+ .dsum2) small { display: none; }
+#trip .sched.rich .tod { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; margin: 14px 0px 4px; font-size: 12px; font-weight: 700; }
+#trip .sched.rich .tod::after { content: ""; flex: 1 1 0%; height: 1px; }
+#trip .sched.rich .tod:first-child { margin-top: 4px; }
+#trip .sched.rich .a.pri { padding-top: 6px; padding-bottom: 10px; }
+#trip .sched.rich .a.pri::before { top: 1.15em; background: var(--dc,var(--route)); border-color: var(--dc,var(--route)); }
+#trip .tl-card { border-top-color: ; border-top-style: ; border-top-width: ; border-right-color: ; border-right-style: ; border-right-width: ; border-bottom-color: ; border-bottom-style: ; border-bottom-width: ; border-image-source: ; border-image-slice: ; border-image-width: ; border-image-outset: ; border-image-repeat: ; border-left: 4px solid var(--dc,var(--route)); padding: 9px 12px 8px; }
+#trip .sched.rich .a.pri .tl-n { font-weight: 700; font-size: 1.03em; }
+#trip .sched.rich .t.pri { color: var(--fg); font-weight: 600; padding-top: 12px; }
+#trip .sched.rich .a.meal, #trip .sched.rich .a.svc { font-size: 0.93em; padding-bottom: 6px; }
+#trip .sched.rich .a.meal .tl-d, #trip .sched.rich .a.svc .tl-d { font-size: 12px; }
+#trip .sched.rich .a.meal::before { width: 9px; height: 9px; left: -5.5px; border-width: 2px; }
+#trip .alrt { display: inline-flex; align-items: center; gap: 3px; margin-left: 6px; padding: 1px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 700; line-height: 1.6; white-space: nowrap; vertical-align: 1px; }
+#trip .alrt::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentcolor; }
+#trip .sched.rich .bkb { color: var(--al-book) !important; background: var(--al-bookbg) !important; border: 0px !important; border-radius: 999px !important; font-weight: 700 !important; padding: 1px 8px !important; }
+#trip .st.todo { background: var(--warnbg); color: var(--warn); }
+#trip .tcat { border-top-color: ; border-top-style: ; border-top-width: ; border-right-color: ; border-right-style: ; border-right-width: ; border-bottom-color: ; border-bottom-style: ; border-bottom-width: ; border-image-source: ; border-image-slice: ; border-image-width: ; border-image-outset: ; border-image-repeat: ; border-left: 4px solid var(--cc); border-radius: 14px; background: var(--card); margin: 0px 0px 10px; scroll-margin-top: 12px; }
+#trip .sched.rich .a, #trip .tl-card { position: relative; }
+#trip .sched.rich details.dsx { margin: 0px; }
+#trip .sched.rich details.dsx > summary.dsm { position: absolute; top: 5px; right: 0px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; color: var(--route); background: color-mix(in srgb,var(--route) 10%,transparent); cursor: pointer; list-style: none; padding: 0px; font-size: 0px; }
+#trip .tl-card > details.dsx > summary.dsm { top: 7px; right: 7px; }
+#trip .sched.rich details.dsx > summary.dsm::before, #trip .sched.rich details.dsx > summary.dsm::after { content: none !important; display: none; }
+#trip .sched.rich details.dsx > summary.dsm::-webkit-details-marker { display: none; }
+#trip .sched.rich details.dsx > summary.dsm:hover { background: color-mix(in srgb,var(--route) 18%,transparent); }
+#trip .sched.rich details.dsx[open] > summary.dsm { background: var(--route); color: var(--card); }
+#trip .sched.rich summary.dsm svg { width: 17px; height: 17px; fill: none; stroke: currentcolor; stroke-width: 2; stroke-linecap: round; }
+#trip .sched.rich .a:has(> details.dsx) > .tl-h, #trip .sched.rich .a:has(> details.dsx) > .tl-m, #trip .sched.rich .a:has(> details.dsx) > .tl-d, #trip .tl-card:has(> details.dsx) > .tl-h, #trip .tl-card:has(> details.dsx) > .tl-m, #trip .tl-card:has(> details.dsx) > .tl-d { padding-right: 34px; }
+#trip .sched.rich details.dsx[open] > :not(summary) { margin-top: 6px; }
+#trip .dsum2 { flex-wrap: wrap; align-items: center; justify-content: space-between; }
+#trip .dsum2 ul { list-style: none; margin: 0px; padding: 0px; display: flex; flex-wrap: wrap; min-width: 0px; font-size: 14px; }
+#trip .dsum2 li { display: inline-flex; align-items: center; gap: 5px; min-width: 0px; font-weight: 600; }
+#trip .dsum2 li span { overflow-wrap: anywhere; }
+#trip .dsum2 svg { width: 16px; height: 16px; flex: 0 0 auto; fill: none; stroke: var(--muted); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+#trip .dsum2 .navbtn, #trip .dsum2 .mapbtn { gap: 5px; }
+#trip .dsum2 .navbtn svg { fill: currentcolor; stroke: none; }
+#trip .dsum2 .mapbtn svg { stroke: currentcolor; }
+#trip .dsum2 .mapbtn { display: inline-flex; }
+#trip .sched.rich .t.cn { font-size: 12px; color: var(--muted); font-weight: 400; padding-top: 4px; }
+#trip .sched.rich .a.drv.cn { flex-wrap: wrap; align-items: center; gap: 2px 6px; color: var(--muted); font-size: 12.5px; padding: 3px 0px 9px 18px; border-left: 2px dotted var(--line); }
+#trip .sched.rich .a.drv.cn::before { display: none; }
+#trip .sched.rich .a.drv.cn .cnic { width: 15px; height: 15px; fill: none; stroke: currentcolor; stroke-width: 1.9; stroke-linejoin: round; flex: 0 0 auto; }
+#trip .sched.rich .eatl { font-size: 12px; color: var(--meal); }
+#trip .stlink { margin-top: 3px; border: 0px; background: none; padding: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; color: var(--route); cursor: pointer; }
+#trip .stlink:hover { text-decoration: underline; }
+#trip .sched.rich > .t.cn { padding: 6px 0px 0px 18px; border-left: 2px dotted var(--line); }
+#trip .sched.rich .a.drv.cn { display: block; }
+#trip .sched.rich .a.drv.cn .cnic { display: inline-block; vertical-align: -3px; margin-right: 5px; }
+#trip .dsum2 { gap: 10px; display: grid !important; }
+#trip .dsum2 ul { gap: 4px 16px; }
+#trip .day h3 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+#trip .cuopen { margin-left: auto; border: 1.5px dashed var(--route); background: transparent; border-radius: 999px; padding: 4px 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+#trip .pghead h2, #trip #budget > h2, #trip #tips > h2, #trip .day h3 > span:first-child, #trip .tht, #trip .bsh h3, #trip .bkh, #trip .pkgh { font-family: var(--serif) !important; letter-spacing: 0.02em; }
+#trip .day h3 > span:first-child { font-weight: 700; font-size: 1.22rem; }
+#trip .day, #trip .card2, #trip .tcat, #trip .stc, #trip .sd-t, #trip .pdash2, #trip .bdash section, #trip .thd, #trip .prelist li, #trip .mapbox, #trip .bkchk li { border-radius: var(--r-l) !important; border-color: var(--line) !important; box-shadow: var(--shadow) !important; }
+#trip .tl-card { background: var(--card); border-radius: 14px !important; box-shadow: none !important; border-color: var(--line) !important; }
+#trip .dsum2 { border-color: transparent !important; }
+#trip .navbtn, #trip .prebtn, #trip .cuopen, #trip .mini, #trip .mapbtn, #trip .sunb > summary, #trip .tct, #trip .mvseg button, #trip .rmode button { transition: background-color 0.15s, color 0.15s, border-color 0.15s, transform 0.15s; }
+#trip .navbtn { background: var(--fjord) !important; color: rgb(255, 253, 248) !important; }
+#trip .navbtn:active, #trip .mapbtn:active, #trip .cuopen:active, #trip .tct:active { transform: scale(0.97); }
+#trip .cuopen { border-color: var(--sage) !important; color: var(--fjord) !important; background: color-mix(in srgb,var(--sage) 14%,transparent) !important; border-style: solid !important; }
+#trip .sched.rich .tod { color: var(--ok2) !important; letter-spacing: 0.18em; }
+#trip .sched.rich .tod::after { opacity: 0.7; background: var(--line) !important; }
+#trip .sched.rich .a { border-left-color: var(--line) !important; }
+#trip #panel > article.day, #trip .tpanel:not([hidden]), #trip .ppanel:not([hidden]), #trip .addp { animation: 0.22s ease-out 0s 1 normal both running fjIn; }
+#trip .day { padding: 14px 12px !important; }
+#trip .sched.rich .tl-d, #trip .sched.rich .tl-more { overflow-wrap: anywhere; }
+#trip .dstat2 { list-style: none; margin: 0px; padding: 0px; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+#trip .dstat2 li { display: inline-flex; align-items: center; gap: 5px; font-weight: 600; }
+#trip .dstat2 svg { width: 15px; height: 15px; flex: 0 0 auto; fill: none; stroke: var(--muted); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+#trip .dsum2 .stin { display: inline-flex; vertical-align: -2px; margin-left: 4px; }
+#trip .dsum2 .stin svg { width: 15px; height: 15px; }
+#trip .sched .gpin { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; margin-left: 4px; vertical-align: -4px; border-radius: 50%; color: var(--route); background: color-mix(in srgb,var(--route) 10%,transparent); }
+#trip .sched .gpin svg { width: 13px; height: 13px; fill: none; stroke: currentcolor; stroke-width: 2; }
+#trip .sched a.gml { color: inherit; text-decoration: underline 1px; text-underline-offset: 2px; }
+#trip .sched.rich .tl-d.eatl { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; display: block !important; -webkit-line-clamp: unset !important; }
+#trip .dsum2 .dact { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+#trip .dsum2 .navbtn, #trip .dsum2 .mapbtn, #trip .dsum2 .sunbtn { box-sizing: border-box; height: 36px; min-height: 36px; padding: 0px 14px; border-radius: 999px; font-size: 13.5px; font-weight: 700; gap: 6px; line-height: 1; margin: 0px; font-family: inherit; }
+#trip .dsum2 .navbtn, #trip .dsum2 .mapbtn { border: 1.5px solid var(--fjord); }
+#trip .dsum2 .dact svg { width: 16px; height: 16px; flex: 0 0 auto; }
+#trip .dsum2 .rt { white-space: nowrap; }
+#trip .day h3 .h3act { display: inline-flex; gap: 6px; align-items: center; margin-left: auto; flex: 0 0 auto; }
+#trip .day h3 .h3act .cuopen, #trip .day h3 .h3act .sunbtn { box-sizing: border-box; min-height: 32px; border-radius: 999px; display: inline-flex; align-items: center; gap: 5px; line-height: 1; margin: 0px; font-family: inherit; cursor: pointer; }
+#trip .day h3 { flex-wrap: wrap; }
+#trip .day h3 .h3act { margin-left: 0px; width: 100%; }
+#trip .day, #trip .card2, #trip .tcat, #trip .stc, #trip .pdash2, #trip .mapbox, #trip .prelist li, #trip .bkchk li, #trip .thd, #trip .sd-t { background: var(--card); box-shadow: none !important; border: 0px !important; border-radius: var(--r-l) !important; }
+#trip .day h3 { letter-spacing: -0.01em; font-size: 20px !important; font-weight: 700 !important; }
+#trip .dsum2 { background: none !important; border-top: 0px !important; border-right: 0px !important; border-left: 0px !important; border-image: none !important; border-radius: 0px !important; padding: 0px 0px 14px !important; margin: 0px 0px 14px !important; border-bottom: .5px solid var(--line) !important; }
+#trip .dsum2 ul, #trip .dstat2 { font-size: 15px !important; }
+#trip .dsum2 svg, #trip .dstat2 svg { stroke: var(--muted) !important; }
+#trip .navbtn, #trip .dsum2 .navbtn { background: var(--route) !important; color: rgb(255, 255, 255) !important; border: 0px !important; }
+#trip .dsum2 .mapbtn, #trip .day h3 .h3act .cuopen, #trip .cuopen, #trip .mini, #trip .cpday, #trip .mapbtn { background: var(--tint) !important; color: var(--route) !important; border: 0px !important; box-shadow: none !important; }
+#trip .dsum2 .navbtn, #trip .dsum2 .mapbtn { height: 40px !important; min-height: 40px !important; padding: 0px 16px !important; font-size: 15px !important; font-weight: 600 !important; }
+#trip .day h3 .h3act .cuopen, #trip .day h3 .h3act .sunbtn { height: 34px !important; font-size: 14px !important; font-weight: 600 !important; padding: 0px 14px !important; }
+#trip .mini, #trip .cpday { border-radius: 999px !important; font-weight: 600 !important; padding: 5px 12px !important; }
+#trip .chips button { background: var(--fill) !important; border: 0px !important; box-shadow: none !important; color: var(--fg) !important; border-radius: 12px !important; }
+#trip .chips button[aria-pressed="true"], #trip .chips button.on, #trip .chips button[aria-current="true"] { background: var(--route) !important; color: rgb(255, 255, 255) !important; }
+#trip .viewseg, #trip .rmode, #trip .mvseg, #trip .seg { display: inline-flex; background: var(--fill) !important; border: 0px !important; border-radius: 10px !important; padding: 2px !important; box-shadow: none !important; gap: 0px !important; }
+#trip .viewseg button, #trip .rmode button, #trip .mvseg button, #trip .seg button { font-weight: 600; background: none !important; border: 0px !important; border-radius: 8px !important; color: var(--fg) !important; box-shadow: none !important; }
+#trip .viewseg button[aria-pressed="true"], #trip .rmode button[aria-pressed="true"], #trip .mvseg button[aria-pressed="true"], #trip .seg button[aria-pressed="true"] { background: var(--card) !important; color: var(--fg) !important; box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.04) 0px 0px 0px 0.5px !important; }
+#trip .sched.rich { font-size: 15px; }
+#trip .sched.rich .tl-card { background: none !important; border: 0px !important; box-shadow: none !important; padding: 2px 0px !important; }
+#trip .sched.rich .tl-n { font-size: 16px; }
+#trip .sched.rich .tl-m, #trip .sched.rich .tl-d { color: var(--muted); }
+#trip .tod { font-weight: 600; letter-spacing: 0.06em; color: var(--muted) !important; font-size: 12px !important; border-color: var(--line) !important; }
+#trip .bkb, #trip .alrt { font-weight: 600; background: var(--fill) !important; color: var(--muted) !important; border: 0px !important; }
+#trip .sched .gpin { background: var(--tint) !important; }
+#trip details.sec { border: 0px !important; background: var(--fill) !important; border-radius: 12px !important; }
+#trip .dnote { border: 0px !important; border-radius: 12px !important; }
+#trip .dsum2, #trip :root[data-theme="dark"] .dsum2 { background: none !important; }
+#trip .daynav button { font-weight: 600; background: none !important; border: 0px !important; box-shadow: none !important; color: var(--route) !important; }
+#trip .sched.rich .a.m .tl-n, #trip .sched.rich .a.meal .tl-n { color: var(--fg) !important; }
+#trip .golin { background: var(--fill) !important; border: 0px !important; }
+#trip .vh { width: 1px; height: 1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; position: absolute !important; }
+#trip .day, #trip .card2, #trip .tcat, #trip .stc, #trip .pdash2, #trip .mapbox, #trip .prelist li, #trip .bkchk li, #trip .thd, #trip .sd-t, #trip .ovrow, #trip .scenbox { border-radius: var(--r-l) !important; }
+#trip .tcat, #trip #tips .card2 { border-top: 0px !important; }
+#trip .sched.rich .a.drv, #trip .sched.rich .a.cn { color: var(--muted); }
+#trip .sched.rich .a.meal::before, #trip .sched.rich .a.m::before { border-color: var(--meal) !important; }
+#trip .sched.rich .snum { background: var(--route) !important; }
+#trip button, #trip a, #trip .chips button { transition: background-color 0.15s, color 0.15s; }
+#trip .chips, #trip #view-trip > .chips { backdrop-filter: saturate(180%) blur(16px); box-shadow: 0 .5px 0 var(--glass-edge); background: var(--glass) !important; }
+#trip .day, #trip .card2, #trip .ovrow, #trip .scenbox, #trip .prelist li, #trip .thoff, #trip .dnote, #trip .addp, #trip .mvseg, #trip .viewseg { backdrop-filter: none !important; }
+#trip .ii { width: 15px; height: 15px; fill: none; stroke: currentcolor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: -2px; margin-right: 4px; flex: 0 0 auto; }
+#trip .ieb .ii { margin: 0px; width: 13px; height: 13px; }
+#trip .day { background: none !important; padding: 0px !important; border: 0px !important; box-shadow: none !important; }
+#trip .day > h3 { padding: 4px 4px 0px; }
+#trip .day > .dsum2 { background: var(--card) !important; border: 0px !important; border-radius: 20px !important; padding: 18px !important; margin: 0px 0px 14px !important; }
+#trip .day > .golin, #trip .day > .cfbar { margin: 0px 0px 10px; padding: 10px 14px; border-radius: 14px; }
+#trip .day > .sched { background: var(--card); border-radius: 16px; margin: 0px 0px 12px; padding: 14px 14px 10px !important; }
+#trip .day > details.sec { background: var(--card) !important; border-radius: 14px !important; margin: 0px 0px 8px !important; }
+#trip .day > details.sec > summary { font-weight: 600; padding: 13px 16px !important; font-size: 15px !important; color: var(--fg) !important; }
+#trip dialog .btn, #trip dialog button:not(.mini):not(.ieb) { min-height: 42px; border-radius: 12px !important; }
+#trip dialog, #trip .mgrp, #trip .mcancel, #trip .spp { background: var(--card) !important; }
+#trip .day h3 .h3act .optbtn { box-sizing: border-box; height: 34px; padding: 0px 14px; border-radius: 999px; font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; border: 0px; background: var(--okbg); color: var(--sage-t); }
+#trip .day h3 .h3act .optbtn svg { width: 15px; height: 15px; fill: none; stroke: currentcolor; stroke-width: 2; stroke-linecap: round; }
+#trip .day h3 .h3act { flex-wrap: wrap; }
+#trip dialog.optdlg { width: min(560px, 94vw); max-height: 80vh; overflow: hidden; display: flex; flex-direction: column; padding: 0px !important; }
+#trip .optdlg .odh { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 16px 18px 4px; }
+#trip .optdlg .odh h3 { margin: 0px; }
+#trip .optdlg .odx { border: 0px; background: none; color: var(--route); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 16px; font-weight: 600; cursor: pointer; padding: 6px 2px; }
+#trip .optdlg .odb { overflow: auto; padding: 4px 18px 18px; }
+#trip .optdlg .spots.opts details { background: var(--card); border-radius: 12px; margin: 0px 0px 8px; border: 0px; }
+#trip dialog.optdlg { width: 100%; max-width: 100%; margin: auto 0px 0px; max-height: 86vh; border-radius: 20px 20px 0px 0px !important; padding-bottom: env(safe-area-inset-bottom,0px) !important; }
+#trip .alrt.wdA { background: var(--al-drvbg) !important; color: var(--meal) !important; }
+#trip .optdlg .rhint:empty { display: none; }
+#trip .optdlg .spots.opts { grid-template-columns: 44px minmax(0px, 1fr); background: var(--card); border-radius: 12px; overflow: hidden; margin: 0px 0px 10px; display: grid !important; }
+#trip .optdlg .spots.opts > * { grid-column: 1 / -1; }
+#trip .optdlg .spots.opts > .recpick { grid-column: 1; justify-content: center; align-items: flex-start; padding: 12px 0px 0px; border-bottom: .5px solid var(--line); float: none !important; margin: 0px !important; display: flex !important; }
+#trip .optdlg .spots.opts > .recpick + details { grid-column: 2; margin: 0px !important; border-radius: 0px !important; border-bottom: .5px solid var(--line) !important; background: none !important; }
+#trip .optdlg .spots.opts > details { background: none !important; border-radius: 0px !important; margin: 0px !important; }
+#trip .optdlg .spots.opts > details > summary { padding: 0px !important; }
+#trip .optdlg input[type="checkbox"], #trip .optdlg input[type="radio"] { width: 20px; height: 20px; margin: 0px; flex: 0 0 auto; }
+#trip .sched.rich .a { position: relative; }
+#trip .sched.rich .gpin { position: absolute; top: 5px; right: 34px; border-radius: 50%; place-items: center; color: var(--route); width: 28px !important; height: 28px !important; margin: 0px !important; vertical-align: baseline !important; display: grid !important; background: var(--tint) !important; }
+#trip .sched.rich .gpin svg { width: 15px !important; height: 15px !important; }
+#trip .sched.rich .tl-card .gpin { top: 7px; right: 41px; }
+#trip .sched.rich .a:has(.gpin) .tl-h { padding-right: 66px; }
+#trip #view-trip #panel { display: block !important; }
+#trip #view-trip:not(.nomap) #panel .a, #trip #view-trip:not(.nomap) #panel .day, #trip #view-trip:not(.nomap) #panel details { scroll-margin-top: calc(80px + clamp(210px, 34vh, 340px)); }
+#trip .sched.rich .hasg > .tl-h, #trip .sched.rich .hasd > .tl-h { min-height: 34px; }
+#trip .sched.rich .hasg.hasd > .tl-h { padding-right: 70px !important; }
+#trip .sched.rich .hasg:not(.hasd) > .tl-h, #trip .sched.rich .hasd:not(.hasg) > .tl-h { padding-right: 38px !important; }
+#trip .dsum2 li, #trip .dstat2 li { gap: 7px !important; }
+#trip .sched.rich .tl-h { gap: 6px; }
+#trip .spd { padding: 10px 12px !important; }
+#trip .optdlg .spots.opts > details { padding: 12px 14px 12px 0px !important; }
+#trip .cutag, #trip .bkb, #trip .alrt { padding: 1px 8px !important; }
+#trip .dnote { padding: 12px 14px !important; }
+#trip #panel .secb { padding: 0px 16px 14px !important; }
+#trip #panel .secb > * { margin: 0px !important; }
+#trip #panel .secb > * + * { margin-top: 12px !important; }
+#trip #panel .dnote { background: none !important; padding: 0px !important; border: 0px !important; border-radius: 0px !important; }
+#trip #panel .dnote .dnh { margin: 0px 0px 4px; }
+#trip #panel .dnote ul { margin: 0px; padding-left: 18px; }
+#trip #panel .dnote p { margin: 0px; }
+#trip #panel .sched { padding-left: 16px !important; padding-right: 16px !important; }
+#trip #panel .golin { padding-left: 16px !important; padding-right: 16px !important; }
+#trip .sched.rich .tl-h .snum { display: none !important; }
+#trip .sched.rich .a[data-sn]::before { box-sizing: border-box; margin-top: -4px; color: rgb(255, 255, 255); font-style: normal; font-variant: tabular-nums; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-weight: 700; font-stretch: normal; font-size: 11px; line-height: 20px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; text-align: center; content: attr(data-sn) !important; display: block !important; width: 20px !important; height: 20px !important; left: -11px !important; border: 0px !important; background: var(--dc,var(--route)) !important; }
+#trip .sched.rich .a:not(.drv) .tl-n, #trip .sched.rich .a:not(.drv):not(:has(.tl-n)) > .tl-h, #trip .sched.rich .a.m .tl-h, #trip .sched.rich .a.meal .tl-h { font-size: 15px !important; line-height: 1.4 !important; }
+#trip .sched.rich .a .tl-n, #trip .sched.rich .a .tl-h { font-weight: 500 !important; }
+#trip .sched.rich .a.pri .tl-n, #trip .sched.rich .a.key .tl-n, #trip .sched.rich .a.pri .tl-h, #trip .sched.rich .a.key .tl-h { font-weight: 600 !important; }
+#trip .sched.rich .a .tl-m, #trip .sched.rich .a .tl-d { font-size: 12.5px !important; }
+#trip .sched.rich .t { font-size: 13px !important; font-weight: 400 !important; }
+#trip .sched.rich .t.key, #trip .sched.rich .t.pri { font-weight: 600 !important; }
+#trip .sched.rich .t small.est { font-size: 11.5px !important; }
+#trip article.day > h3 { font-size: 22px !important; }
+#trip article.day > h3, #trip .daynav { padding-left: 0px !important; padding-right: 0px !important; margin-left: 0px !important; margin-right: 0px !important; }
+#trip .sched.rich .a:has(> details.dsx) > .tl-h { padding-right: 76px; }
+#trip .sched.rich .tl-card:has(> details.dsx) > .tl-h { padding-right: 76px; }
+#trip .sched.rich .a .tl-h .gpin, #trip .sched.rich .hasg:not(.hasd) .gpin, #trip .sched.rich .tl-card.hasg:not(.hasd) .gpin, #trip .sched.rich .a:not(:has(> details.dsx)):not(:has(> .tl-card > details.dsx)) .gpin, #trip .sched.rich .tl-card:not(:has(> details.dsx)) .gpin { right: 41px !important; }
+#trip .sched.rich .a:has(.gpin) .tl-h { padding-right: 76px !important; }
+#trip article.day > h3 .dwx { display: inline-block; margin-left: 8px; padding: 2px 8px; border-radius: 999px; background: var(--fill); color: var(--fg); font-size: 12.5px; font-weight: 500; vertical-align: middle; white-space: nowrap; }
+#trip article.day > h3 .dwx[hidden] { display: none; }
+#trip .sched.rich > .a[data-sk] { cursor: pointer; }
+#trip #view-trip .dsum2 .navbtn { right: 16px; bottom: calc(72px + env(safe-area-inset-bottom,0px)); z-index: 40; min-height: 46px; box-shadow: rgba(0, 0, 0, 0.22) 0px 2px 10px; position: fixed !important; padding: 0px 20px !important; flex: 0 0 auto !important; }
+#trip #view-trip .dsum2 .mapbtn { display: none !important; }
+#trip .sched.rich > .a:not(.open) .tl-d, #trip .sched.rich > .a:not(.open) .tl-more { display: none !important; }
+#trip .sched.rich > .a { cursor: pointer; }
+#trip .golin.g1 { color: var(--muted); display: block !important; padding: 8px 14px !important; font-size: var(--fs-body) !important; }
+#trip .golin.g1 b { color: var(--fg); }
+#trip .golin.g1 b.late { color: var(--warn,#c2410c); }
+#trip article.day > h3 .h3act { align-items: center; }
+#trip details.dmore { position: relative; display: inline-block; }
+#trip details.dmore > summary { list-style: none; cursor: pointer; width: 36px; height: 32px; display: grid; place-items: center; border-radius: 10px; background: var(--fill); color: var(--fg); font-size: 18px; font-weight: 700; line-height: 1; }
+#trip details.dmore > summary::-webkit-details-marker { display: none; }
+#trip details.dmore .dmm { position: absolute; right: 0px; top: calc(100% + 6px); z-index: 30; display: flex; flex-direction: column; min-width: 140px; padding: 6px; background: var(--card); border-radius: 12px; box-shadow: rgba(0, 0, 0, 0.18) 0px 6px 24px; }
+#trip details.dmore .dmm button { color-scheme: unset; forced-color-adjust: unset; math-depth: unset; position: unset; position-anchor: unset; text-size-adjust: unset; appearance: unset; font-family: unset; font-feature-settings: unset; font-kerning: unset; font-language-override: unset; font-optical-sizing: unset; font-palette: unset; font-size-adjust: unset; font-stretch: unset; font-style: unset; font-synthesis: unset; font-variant: unset; font-variation-settings: unset; font-weight: unset; position-area: unset; text-orientation: unset; text-rendering: unset; text-spacing-trim: unset; -webkit-font-smoothing: unset; -webkit-locale: unset; -webkit-text-orientation: unset; -webkit-writing-mode: unset; writing-mode: unset; zoom: unset; accent-color: unset; place-content: unset; place-items: unset; place-self: unset; alignment-baseline: unset; anchor-name: unset; anchor-scope: unset; animation-composition: unset; animation: unset; animation-trigger: unset; app-region: unset; aspect-ratio: unset; backdrop-filter: unset; backface-visibility: unset; background: unset; background-blend-mode: unset; baseline-shift: unset; baseline-source: unset; block-size: unset; border-block: unset; border: unset; border-collapse: unset; border-end-end-radius: unset; border-end-start-radius: unset; border-inline: unset; border-shape: unset; border-start-end-radius: unset; border-start-start-radius: unset; inset: unset; box-decoration-break: unset; box-shadow: unset; break-after: unset; break-before: unset; break-inside: unset; buffered-rendering: unset; caption-side: unset; caret-animation: unset; caret-color: unset; caret-shape: unset; clear: unset; clip: unset; clip-path: unset; clip-rule: unset; color-interpolation: unset; color-interpolation-filters: unset; color-rendering: unset; columns: unset; column-fill: unset; gap: unset; rule-break: unset; rule: unset; rule-inset: unset; rule-visibility-items: unset; column-span: unset; contain: unset; contain-intrinsic-block-size: unset; contain-intrinsic-size: unset; contain-intrinsic-inline-size: unset; container: unset; content: unset; content-visibility: unset; corner-shape: unset; corner-block-end-shape: unset; corner-block-start-shape: unset; counter-increment: unset; counter-reset: unset; counter-set: unset; cx: unset; cy: unset; d: unset; display: unset; dominant-baseline: unset; dynamic-range-limit: unset; empty-cells: unset; field-sizing: unset; fill: unset; fill-opacity: unset; fill-rule: unset; filter: unset; flex: unset; flex-flow: unset; flex-line-count: unset; float: unset; flood-color: unset; flood-opacity: unset; grid: unset; grid-area: unset; height: unset; hyphenate-character: unset; hyphenate-limit-chars: unset; hyphens: unset; image-orientation: unset; image-rendering: unset; initial-letter: unset; inline-size: unset; inset-block: unset; inset-inline: unset; interactivity: unset; interest-delay: unset; interpolate-size: unset; isolation: unset; letter-spacing: unset; lighting-color: unset; line-break: unset; line-height: unset; list-style: unset; margin-block: unset; margin: unset; margin-inline: unset; marker: unset; mask: unset; mask-type: unset; math-shift: unset; math-style: unset; max-block-size: unset; max-height: unset; max-inline-size: unset; max-width: unset; min-block-size: unset; min-height: unset; min-inline-size: unset; min-width: unset; mix-blend-mode: unset; object-fit: unset; object-position: unset; object-view-box: unset; offset: unset; opacity: unset; order: unset; orphans: unset; outline: unset; outline-offset: unset; overflow-anchor: unset; overflow-block: unset; overflow-clip-margin: unset; overflow-inline: unset; overflow-wrap: unset; overflow: unset; overlay: unset; overscroll-behavior-block: unset; overscroll-behavior-inline: unset; overscroll-behavior: unset; padding-block: unset; padding-inline: unset; page: unset; page-margin-safety: unset; page-orientation: unset; paint-order: unset; perspective: unset; perspective-origin: unset; pointer-events: unset; position-try: unset; position-visibility: unset; print-color-adjust: unset; quotes: unset; r: unset; reading-flow: unset; reading-order: unset; resize: unset; rotate: unset; ruby-align: unset; ruby-overhang: unset; ruby-position: unset; rule-overlap: unset; rx: unset; ry: unset; scale: unset; scroll-axis-lock: unset; scroll-behavior: unset; scroll-initial-target: unset; scroll-margin-block: unset; scroll-margin: unset; scroll-margin-inline: unset; scroll-marker-group: unset; scroll-padding-block: unset; scroll-padding: unset; scroll-padding-inline: unset; scroll-snap-align: unset; scroll-snap-stop: unset; scroll-snap-type: unset; scroll-target-group: unset; scroll-timeline: unset; scrollbar-color: unset; scrollbar-gutter: unset; scrollbar-width: unset; shape-image-threshold: unset; shape-margin: unset; shape-outside: unset; shape-rendering: unset; size: unset; speak: unset; stop-color: unset; stop-opacity: unset; stroke: unset; stroke-dasharray: unset; stroke-dashoffset: unset; stroke-linecap: unset; stroke-linejoin: unset; stroke-miterlimit: unset; stroke-opacity: unset; stroke-width: unset; tab-size: unset; table-layout: unset; text-align: unset; text-align-last: unset; text-anchor: unset; text-autospace: unset; text-box: unset; text-combine-upright: unset; text-decoration: unset; text-decoration-skip-ink: unset; text-emphasis: unset; text-emphasis-position: unset; text-fit: unset; text-indent: unset; text-justify: unset; text-overflow: unset; text-shadow: unset; text-transform: unset; text-underline-offset: unset; text-underline-position: unset; text-wrap: unset; timeline-scope: unset; timeline-trigger: unset; touch-action: unset; transform: unset; transform-box: unset; transform-origin: unset; transform-style: unset; transition: unset; translate: unset; trigger-scope: unset; user-select: unset; vector-effect: unset; vertical-align: unset; view-timeline: unset; view-transition-class: unset; view-transition-group: unset; view-transition-name: unset; view-transition-scope: unset; visibility: unset; border-spacing: unset; -webkit-box-align: unset; -webkit-box-decoration-break: unset; -webkit-box-direction: unset; -webkit-box-flex: unset; -webkit-box-ordinal-group: unset; -webkit-box-orient: unset; -webkit-box-pack: unset; -webkit-box-reflect: unset; -webkit-line-break: unset; -webkit-line-clamp: unset; -webkit-mask-box-image: unset; -webkit-rtl-ordering: unset; -webkit-ruby-position: unset; -webkit-tap-highlight-color: unset; -webkit-text-combine: unset; -webkit-text-decorations-in-effect: unset; -webkit-text-fill-color: unset; -webkit-text-security: unset; -webkit-text-stroke: unset; -webkit-user-drag: unset; white-space-collapse: unset; widows: unset; width: unset; will-change: unset; window-drag: unset; word-break: unset; word-spacing: unset; x: unset; y: unset; z-index: unset; box-sizing: border-box; padding: 10px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; color: var(--fg); }
+#trip details.dmore .dmm button:hover { background: var(--fill); }
+#trip details.dmore .dmm { left: auto; right: 0px; }
+#trip details.dmore .dmm button, #trip details.dmore .dmm button.cuopen, #trip details.dmore .dmm button.cpday { display: block !important; width: 100% !important; text-align: left !important; background: none !important; color: var(--fg) !important; border: 0px !important; box-shadow: none !important; padding: 10px 12px !important; font-size: 14px !important; font-weight: 500 !important; border-radius: 8px !important; min-height: 0px !important; height: auto !important; opacity: 1 !important; }
+#trip details.dmore .dmm button:hover { background: var(--fill) !important; }
+#trip article.day > h3 { flex-wrap: wrap; gap: 6px 10px; display: flex !important; align-items: center !important; }
+#trip article.day > h3 > .h3act { gap: 8px; margin-left: auto !important; margin-top: 0px !important; display: inline-flex !important; width: auto !important; }
+#trip .spd p.spx0 { font-weight: 600; color: var(--fg); }
+#trip .sched small.est { display: none !important; }
+#trip .sched.rich { display: grid !important; grid-template-columns: 3.4em minmax(0px, 1fr) !important; column-gap: 8px !important; margin-left: 0px !important; }
+#trip .sched.rich > .tod { grid-column: 1 / -1; }
+#trip .sched.rich > .t { grid-column: 1; line-height: 1.35; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; display: block !important; padding: 10px 0px 0px !important; border-left: 0px !important; font-size: 12.5px !important; white-space: normal !important; }
+#trip .sched.rich > .t:empty { display: block !important; }
+#trip .sched.rich > .a { grid-column: 2; border-left: 2px solid var(--line); padding: 10px 0px 12px 16px !important; }
+#trip .sched.rich > .a::before { top: calc(0.35em + 10px) !important; }
+#trip .sched.rich > .a.nogpin .gpin { display: none !important; }
+#trip .sched.rich > .a.nogpin .tl-h { padding-right: 40px !important; }
+#trip #panel { padding-bottom: 110px; }
+#trip article.day > h3 { flex-wrap: wrap !important; }
+#trip article.day > h3 > span:first-child { flex: 1 1 auto; min-width: 0px; }
+#trip article.day > h3 > .h3act { flex: 0 0 auto; }
+#trip article.day > h3 .optbtn span { display: none; }
+#trip .sched.rich .snin { display: none; }
+#trip .sched.rich .snin { display: inline-grid; place-items: center; width: 18px; height: 18px; margin-right: 6px; border-radius: 50%; background: var(--dc,var(--route)); color: rgb(255, 255, 255); font-size: 11px; font-weight: 700; font-style: normal; vertical-align: 1px; }
+#trip .sched.rich > .a[data-sn]::before { content: "" !important; width: 10px !important; height: 10px !important; left: -6px !important; margin-top: 0px !important; }
+#trip .sched.rich > .a.nogpin .tl-card > .tl-h { padding-right: 40px !important; }
+#trip #panel article.day > .daynav.dtop, #trip #panel article.day > details.sec, #trip #panel article.day > .golin, #trip #panel article.day > .eatbox, #trip #panel article.day > .dnote, #trip #panel article.day > .sched, #trip #panel article.day > .dsum2, #trip #panel article.day > .scenbox, #trip #panel article.day > .ddocs { border-radius: 20px !important; }
+#trip .chips button { border-radius: 14px !important; }
+#trip .chips { border-radius: 16px !important; padding: 6px !important; }
+#trip .daynav { align-items: center; justify-content: space-between; gap: 8px; display: flex !important; background: transparent !important; padding: 0px !important; box-shadow: none !important; }
+#trip .daynav button { min-height: 40px; font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; cursor: pointer; padding: 0px 14px !important; border-radius: 999px !important; border: 1px solid var(--line) !important; background: var(--card) !important; color: var(--fg) !important; font-size: var(--fs-meta) !important; font-weight: 600 !important; }
+#trip .sched.rich.simp { display: grid !important; grid-template-columns: 64px minmax(0px, 1fr) !important; gap: 0px 12px !important; margin: 0px !important; font-size: 15px !important; }
+#trip .sched.rich.simp > .tod { display: none !important; }
+#trip .sched.rich.simp > .t { white-space: normal; display: block !important; grid-column: 1 !important; border-right: 0px !important; border-bottom: 0px !important; border-left: 0px !important; border-image: none !important; border-top: 1px solid var(--line) !important; padding: 12px 0px 0px !important; margin: 0px !important; font-size: 15px !important; font-weight: 600 !important; color: var(--muted) !important; line-height: 1.35 !important; }
+#trip .sched.rich.simp > .t .est { display: none !important; }
+#trip .sched.rich.simp > .a { position: relative; min-width: 0px; cursor: pointer; grid-column: 2 !important; border-right: 0px !important; border-bottom: 0px !important; border-left: 0px !important; border-image: none !important; border-top: 1px solid var(--line) !important; padding: 12px 0px !important; margin: 0px !important; }
+#trip .sched.rich.simp > .t:first-of-type, #trip .sched.rich.simp > .a:first-of-type, #trip .sched.rich.simp > .tod + .t, #trip .sched.rich.simp > .tod + .t + .a { border-top: 0px !important; }
+#trip .sched.rich.simp > .a::before, #trip .sched.rich.simp > .a::after { display: none !important; }
+#trip .sched.rich.simp .tl-card { background: transparent !important; box-shadow: none !important; padding: 0px !important; border: 0px !important; margin: 0px !important; }
+#trip .sched.rich.simp .tl-h { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+#trip .sched.rich.simp .tl-n { line-height: 1.35; font-size: 15px !important; font-weight: 600 !important; }
+#trip .sched.rich.simp .a.m .tl-n { font-weight: 400 !important; color: var(--meal); }
+#trip .sched.rich.simp .snum { display: none !important; }
+#trip .sched.rich.simp .snin { place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--route); color: rgb(255, 255, 255); font-size: 11px; font-style: normal; font-weight: 700; flex: 0 0 auto; display: inline-grid !important; }
+#trip .sched.rich.simp .tl-d, #trip .sched.rich.simp .tl-m, #trip .sched.rich.simp .tl-more, #trip .sched.rich.simp details.dsx, #trip .sched.rich.simp .spx0 { display: none !important; }
+#trip .sched.rich.simp .a .tl-h::after { content: "›"; margin-left: auto; color: var(--muted); font-size: 18px; line-height: 1; transition: transform 0.15s; }
+#trip .sched.rich.simp .bkb, #trip .sched.rich.simp .alrt { font-size: 11px !important; }
+#trip .sched.rich.simp > .a { padding-right: 22px !important; }
+#trip .sched.rich.simp .tl-h { display: block !important; position: static !important; }
+#trip .sched.rich.simp .tl-card, #trip .sched.rich.simp .tl-card > * { position: static !important; }
+#trip .sched.rich.simp .tl-h > * { display: inline; vertical-align: middle; }
+#trip .sched.rich.simp .tl-h > .snin { margin-right: 6px; vertical-align: 1px; display: inline-grid !important; }
+#trip .sched.rich.simp .tl-h > .bkb, #trip .sched.rich.simp .tl-h > .alrt, #trip .sched.rich.simp .tl-h > .docb, #trip .sched.rich.simp .tl-h > [class*="rk"] { margin-left: 6px; vertical-align: 1px; display: inline-flex !important; }
+#trip .sched.rich.simp .tl-n { min-width: 0px; }
+#trip .sched.rich.simp .a .tl-h::after { position: absolute; right: 2px; top: 13px; margin: 0px !important; }
+#trip .sched.rich.simp .gpin { display: none !important; }
+#trip .chips button { height: 38px; align-items: center; justify-content: center; font-weight: 700; min-width: 48px !important; padding: 0px 10px !important; display: inline-flex !important; font-size: 14px !important; }
+#trip .chips button.call { font-weight: 600; }
+#trip #panel .day h3 .dwx { display: none !important; }
+#trip #panel .dsum2.dsB { background: var(--card) !important; border-radius: 20px !important; padding: 18px !important; border: 1px solid var(--line) !important; margin: 0px 0px 14px !important; display: block !important; }
+#trip #panel .dsum2.dsB > ul { display: none !important; }
+#trip .dhB { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+#trip .dhL { min-width: 0px; }
+#trip .dhR { font-size: 19px; font-weight: 800; line-height: 1.3; overflow-wrap: anywhere; }
+#trip .dhS { margin-top: 6px; font-size: 13.5px; font-weight: 600; color: var(--muted); display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+#trip .dhW { flex: 0 0 auto; text-align: right; display: grid; justify-items: end; gap: 2px; min-width: 64px; }
+#trip .dhW b { font-size: 30px; line-height: 1; }
+#trip .dhW span { font-size: 14px; font-weight: 700; }
+#trip .dhW > span:only-of-type { font-size: 11px; color: var(--muted); font-weight: 600; }
+#trip .sunlab { display: flex; justify-content: space-between; margin: 14px 0px 6px; font-size: 12.5px; color: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; }
+#trip .sunbar { height: 6px; border-radius: 3px; background: linear-gradient(90deg, rgb(31, 59, 87) 0%, rgb(242, 176, 94) 16%, rgb(143, 195, 232) 50%, rgb(242, 176, 94) 84%, rgb(31, 59, 87) 100%); }
+#trip #panel .dsum2.dsB .dact { margin-top: 12px; }
+#trip .sched.rich.simp .tcat { font-style: normal; font-size: 15px; margin-right: 6px; display: inline-block; width: 20px; text-align: center; vertical-align: -1px; }
+#trip .dhA { margin-top: 8px; font-size: 13px; font-weight: 600; display: flex; gap: 6px; align-items: baseline; flex-wrap: wrap; }
+#trip .day h3 .h3act { gap: 6px !important; }
+#trip .day h3 .h3act .optbtn, #trip .day h3 .h3act .dmore > summary { place-items: center; height: 28px !important; min-height: 28px !important; width: 28px !important; min-width: 28px !important; padding: 0px !important; display: inline-grid !important; }
+#trip .day h3 .h3act .optbtn > span { display: none !important; }
+#trip .sched.rich.simp > .a.noexp { cursor: default; }
+#trip .sched.rich.simp .a details.dsx > summary.dsm { align-items: center; gap: 3px; box-sizing: border-box; font-weight: 600; line-height: 1; position: static !important; display: inline-flex !important; width: auto !important; height: 28px !important; margin: 8px 0px 0px !important; padding: 0px 10px !important; border-radius: 999px !important; background: var(--fill) !important; color: var(--route) !important; font-size: 13px !important; }
+#trip .sched.rich.simp .a details.dsx > summary.dsm svg { display: none !important; }
+#trip .sched.rich.simp .a details.dsx > summary.dsm .vh { white-space: nowrap; position: static !important; width: auto !important; height: auto !important; clip: auto !important; clip-path: none !important; overflow: visible !important; margin: 0px !important; }
+#trip .sched.rich.simp .a details.dsx > summary.dsm::after { font-size: 11px; content: "▾" !important; display: inline !important; position: static !important; border: 0px !important; transform: none !important; width: auto !important; height: auto !important; background: none !important; }
+#trip .sched.rich.simp .a details.dsx[open] > summary.dsm::after { content: "▴" !important; }
+#trip .sched.rich.simp .a details.dsx > summary.dsm { display: none !important; }
+#trip .sched.rich.simp .a .tl-m.durx { display: none !important; }
+#trip .sched.rich .a.drv.hasnav { cursor: pointer; }
+#trip .sched.rich .a.drv .drvgo { display: block; position: relative; padding-right: 66px; min-height: 24px; color: inherit; text-decoration: none; }
+#trip .sched.rich .a.drv .drvgo .cnic { display: inline-block; vertical-align: -2px; margin-right: 4px; }
+#trip .sched.rich .a.drv .drvpill { position: absolute; right: 0px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 700; color: var(--route); background: var(--fill); border-radius: 999px; padding: 4px 10px 3px; line-height: 1; }
+#trip .sched.rich .a .depgo { display: inline-block; margin-top: 6px; text-decoration: none; }
+#trip .sched.rich .a .depgo .drvpill { position: static; transform: none; display: inline-block; font-size: 12px; font-weight: 700; color: var(--route); background: var(--fill); border-radius: 999px; padding: 4px 10px 3px; line-height: 1; }
+#trip .sched.rich.simp > .t.cn { font-weight: 500; border-top: 0px !important; padding-top: 2px !important; font-size: 12.5px !important; color: var(--muted) !important; }
+#trip .sched.rich.simp > .a.drv { color: var(--muted); border-top: 0px !important; padding-top: 2px !important; padding-bottom: 10px !important; font-size: 12.5px !important; }
+#trip .sched.rich .a.drv .drvpill { padding: 3px 9px 2px; font-size: 11.5px; }
+#trip .sched.rich.simp { grid-template-columns: 48px minmax(0px, 1fr) !important; }
+#trip .sched.rich .a.drv .drvt { font-weight: 700; color: var(--fg); }
+#trip .sched.rich .a .depgo.depline { display: block; position: relative; margin-top: 4px; padding-right: 46px; color: var(--muted); font-size: 12.5px; text-decoration: none; line-height: 1.45; }
+#trip .sched.rich .a .depgo.depline .cnic { display: inline-block; width: 14px; height: 14px; vertical-align: -2px; margin-right: 4px; fill: none; stroke: currentcolor; stroke-width: 1.8; }
+#trip .sched.rich .a .depgo.depline .drvpill { position: absolute; right: -22px; top: 50%; transform: translateY(-50%); }
+#trip .sched.rich .t .tend { display: block; font-size: 11.5px; font-weight: 600; color: var(--muted); margin-top: 1px; white-space: nowrap; }
+#trip .drvpill, #trip .plink.navpill { align-items: center; gap: 4px; height: 26px; white-space: nowrap; box-sizing: border-box; display: inline-flex !important; font-size: 12px !important; font-weight: 700 !important; color: var(--route) !important; background: var(--fill) !important; border-radius: 999px !important; padding: 0px 10px !important; line-height: 1 !important; text-decoration: none !important; }
+#trip .drvpill::before, #trip .plink.navpill::before { content: ""; width: 11px; height: 11px; flex: 0 0 auto; background: currentcolor; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l7 19-7-4-7 4z'/%3E%3C/svg%3E") center center / contain no-repeat; }
+#trip .dhB { min-height: 84px; }
+#trip .dhL { flex: 1 1 0%; }
+#trip .dhR { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#trip .dhS { gap: 3px; display: grid !important; }
+#trip .dhS > span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#trip .dhW { width: 86px; }
+#trip .dsum2.dsB { width: 100%; box-sizing: border-box; display: block !important; }
+#trip .dsum2.dsB > .dhB, #trip .dsum2.dsB > .sunlab, #trip .dsum2.dsB > .sunbar { width: 100%; box-sizing: border-box; }
+#trip .ost { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; font-size: 10.5px; font-weight: 700; vertical-align: 1px; white-space: nowrap; background: color-mix(in srgb,var(--route) 12%,transparent); color: var(--route); }
+#trip .ost.ai { background: color-mix(in srgb, rgb(201, 164, 92) 22%, transparent 78%); color: rgb(138, 106, 40); }
+#trip #panel h3 > span:first-child { min-width: 0px; }
+#trip .dsum2.dsB, #trip .dlinks, #trip .bstat, #trip #bookp > section, #trip #prep section.tcard, #trip #prep .hcard { border-radius: 20px !important; padding: var(--pad-card) !important; }
+#trip #panel .dsum2.dsB, #trip #budget .bstat { border-radius: 20px !important; padding: var(--pad-card) !important; }
+#trip .tcard, #trip .hcard, #trip .glance, #trip .fcd, #trip .dsum2.dsB, #trip #panel .dsum2.dsB, #trip #todayIn .tdsB, #trip #budget .bstat, #trip #budget .bsec, #trip #budget .bdash > div:not([class]), #trip #mroute, #trip #homeMapSlot { border: 0px !important; }
+#trip .day h3 > span:first-child { font-size: 1.3rem; }
+#trip .dsum2 .dhR { font-size: 16.5px !important; font-weight: 700 !important; }
+#trip .golin.g1.drvc { flex-wrap: wrap; align-items: center; gap: 6px 10px; display: flex !important; }
+#trip .golin.g1.drvc > span:first-child:not(.drvseg) { flex: 1 1 auto; min-width: 0px; }
+#trip .golin .gl-l { font-style: normal; }
+#trip .golin .gl-l, #trip .drvseg .dsl { display: none; }
+#trip .golin.g1.drvc { gap: 6px 8px; }
+#trip .sched.rich .drvdet { list-style: none; margin: 6px 0px 2px; padding: 8px 10px; border-radius: 10px; background: var(--fill); font-size: 12.5px; display: grid; gap: 4px; }
+#trip .sched.rich .drvdet li { display: flex; justify-content: space-between; gap: 10px; line-height: 1.45; }
+#trip .sched.rich .drvdet li span { color: var(--muted); }
+#trip .sched.rich .depline .dgo { font-weight: 600; }
+#trip .sched.rich .drvdet li b { white-space: nowrap; flex: 0 0 auto; }
+#trip .sched.rich .drvdet li span { min-width: 0px; }
+#trip .dmm .dmseg { display: flex; align-items: center; gap: 8px; padding: 6px 10px; font-size: 13px; }
+#trip .dmm .dmseg > span:first-child { color: var(--muted); white-space: nowrap; }
+#trip .dmm .dmseg .seg button { font-size: 12px; padding: 3px 9px; }
+#trip .dmm .dmseg { flex-direction: column; align-items: flex-start; gap: 6px; padding: 8px 12px 10px; }
+#trip .dmm .dmseg .seg { display: inline-flex; flex-wrap: nowrap; white-space: nowrap; padding: 2px; border-radius: 999px; background: var(--fill); }
+#trip .dmm .dmseg .seg button { writing-mode: horizontal-tb; border-radius: 999px; text-align: center; display: inline-block !important; width: auto !important; white-space: nowrap !important; padding: 4px 12px !important; margin: 0px !important; }
+#trip .dmm .dmseg .seg button[aria-pressed="true"] { font-weight: 700; box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px; background: var(--card) !important; color: var(--route) !important; }
+#trip .spd .sptop, #trip .spd .spintro { display: flex; flex-direction: column; gap: 6px; margin: 0px 0px 10px; }
+#trip .spd .sph { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; color: var(--muted); }
+#trip .spd .sptop > p, #trip .spd .spintro > p { margin: 0px; }
+#trip .spd .sptop ul.spw { margin: 0px; padding-left: 18px; }
+#trip .spd .drvdet.in { flex-direction: column; gap: 4px; margin: 0px; padding: 0px; list-style: none; display: flex !important; }
+#trip .spd .drvdet.in li { display: flex; justify-content: space-between; gap: 8px; }
+#trip .spd .sptop .sph2 { margin-top: 6px; }
+#trip details.dmore .dmm .dmseg { margin-top: 4px; border-top: 1px solid var(--line,rgba(127,127,127,.2)); padding-top: 10px; }
+#trip details.dmore .dmm .dmseg > span:first-child { font-size: 12px; }
+#trip .sched.rich .a.drv .drvt { font-weight: 500; color: var(--muted); }
+#trip .sched.rich .drvdur { font-size: inherit; font-weight: 500; color: var(--muted); white-space: nowrap; }
+#trip #view-trip .dsum2 .navbtn.fabmin { width: 46px; justify-content: center; padding: 0px !important; }
+#trip #view-trip .dsum2 .navbtn.fabmin span { display: none; }
+#trip #view-trip > .chips, #trip #chips { mask-image: linear-gradient(90deg, transparent 0px, rgb(0, 0, 0) 12px, rgb(0, 0, 0) calc(100% - 12px), transparent 100%); background: var(--bg) !important; box-shadow: none !important; backdrop-filter: none !important; border: 0px !important; border-radius: 0px !important; gap: 6px !important; }
+#trip #chips button { min-width: 52px; height: 36px; font-weight: 700; padding: 0px 12px !important; }
+#trip .bkb.bkok{background:rgba(47,138,87,.14)!important;color:#23744a!important}
+#trip dialog.optdlg .add{display:block;font-size:12.5px;color:var(--muted);font-weight:400;margin-top:2px}
+#trip dialog.optdlg .spd dl{display:grid;grid-template-columns:3em 1fr;gap:3px 10px;font-size:13px}
+#trip dialog.optdlg .spd dd{margin:0}
+#trip .daynav button[disabled]{opacity:.35}
+@media (prefers-color-scheme:dark){#trip{--bg:#171b1f;--card:#22272c;--fg:#e8eaec;--muted:#a3abb3;--line:#353c43;--route:#7fb7d9;--fill:#2c3238;--tint:#2a3540;--accent-bg:#2a3540;--warnbg:#3a231c;--warn:#ff9a80;--ok2:#86d6a8}}
+/* 景點彈出卡（冰島版樣式，無地圖版） */
+#trip{--glass:rgba(255,255,255,.72);--glass-edge:rgba(0,0,0,.08);--glass-solid:#fbfbfd;--glass-hi:rgba(255,255,255,.6);--glass-sh:0 10px 30px rgba(0,0,0,.12)}
+#trip .pop { border-left: 4px solid var(--route); padding: 12px 14px; margin: 10px 0px 4px; font-size: 14px; }
+#trip .poph { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+#trip .popx { border: 0px; background: transparent; color: var(--muted); font-size: 22px; line-height: 1; cursor: pointer; padding: 0px 4px; }
+#trip .pop p { margin: 4px 0px 10px; }
+#trip .pop .ppark { margin-top: -4px; font-size: 13px; color: var(--muted); }
+#trip .popb { display: flex; flex-wrap: wrap; gap: 8px; }
+#trip .pop { border-radius: 16px !important; }
+#trip .pop { background: var(--glass) !important; backdrop-filter: saturate(180%) blur(20px) !important; border: .5px solid var(--glass-edge) !important; box-shadow: inset 0 .5px 0 var(--glass-hi),var(--glass-sh) !important; }
+#trip .pop { background: var(--glass-solid) !important; }
+#trip .pop .poph { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+#trip .pop .poph b { font-size: 16px; }
+#trip .pop .popx { width: 28px; height: 28px; border-radius: 50%; border: 0px; background: var(--fill); color: var(--muted); font-size: 18px; line-height: 1; cursor: pointer; flex: 0 0 auto; }
+#trip .pop .popd { display: flex; gap: 6px; margin: 4px 0px 6px; }
+#trip .pop .popd span { font-size: 12px; font-weight: 600; color: var(--route); background: var(--tint); border-radius: 999px; padding: 1px 8px; }
+#trip .pop > p:not(.ppark) { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin: 4px 0px 8px; font-size: 14px; }
+#trip .pop .popb { display: flex; flex-wrap: wrap; gap: 6px; }
+#trip .pop .popb .btn { min-height: 36px; padding: 0px 14px; font-size: 14px; display: inline-flex; align-items: center; }
+#trip .pop .btn{display:inline-flex;align-items:center;min-height:38px;padding:0 16px;border-radius:999px;border:0;background:var(--route);color:#fff;text-decoration:none;font-weight:600;font-size:14px}
+#trip .pop .btn.ghostb{background:var(--fill,#ececf0);color:var(--route)}
+#trip .pop{position:fixed!important;left:12px;right:12px;bottom:calc(74px + env(safe-area-inset-bottom,0px));z-index:30;max-height:60vh;overflow:auto;margin:0!important;padding:14px 16px!important;border-left:0!important;box-shadow:0 12px 34px rgba(0,0,0,.18)!important}
+#trip .pop .popd{display:flex;gap:6px}
+#trip .sched.rich.simp .a:not(.hasp) .tl-h::after{content:none}
+#trip .a.hasp{cursor:pointer}
+@media (prefers-color-scheme:dark){#trip{--glass:rgba(34,39,44,.8);--glass-solid:#22272c;--glass-edge:rgba(255,255,255,.1)}}
+#trip .sched .tl-h .bkb.bkok,#trip .sched .a .bkb.bkok{background:rgba(47,138,87,.14)!important;color:#23744a!important}
