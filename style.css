@@ -114,8 +114,14 @@ body{background:var(--bg);color:var(--fg)}
 #wx{margin:10px 0 12px;padding:10px 12px;border-radius:12px;background:var(--bg);font-size:14px;line-height:1.7}
 
 /* 管理按鈕及視窗 */
-.topbar{display:flex;align-items:center;padding:calc(env(safe-area-inset-top,0px) + 8px) 2px 8px}
-.topbar:has(.admbtn[hidden]){display:none}
+.hero{display:none}
+.apphead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 14px) 4px 12px}
+.ahbrand{display:flex;align-items:center;gap:11px;min-width:0}
+.ahlogo{width:40px;height:40px;border-radius:11px;box-shadow:0 3px 10px rgba(0,122,135,.22);flex:0 0 auto}
+.ahtx small{display:block;font-size:10.5px;font-weight:700;letter-spacing:.14em;color:#007A87}
+.ahtx h1{margin:1px 0 0;font:700 25px/1.1 Georgia,"Noto Serif TC","Songti TC",serif;letter-spacing:.01em;color:#133B44}
+.ahtx h1 span{color:#FF6F61}
+@media (prefers-color-scheme:dark){.ahtx small{color:#7fd0d9}.ahtx h1{color:#e8eaec}}
 .admbtn{width:40px;height:40px;border-radius:50%;border:.5px solid rgba(0,0,0,.08);background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#22313a;display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .admbtn svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 @media (prefers-color-scheme:dark){.admbtn{background:rgba(34,39,44,.8);color:#e8eaec;border-color:rgba(255,255,255,.1)}}
