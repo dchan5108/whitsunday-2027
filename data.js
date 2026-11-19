@@ -79,7 +79,7 @@ DAYS:[
      ["","浮潛（視乎天氣及海況）",""],
      ["17:30","返抵 Port of Airlie",""],
      ["19:00","晚餐（待定）",""]]},
- {date:"2027-03-29",rl:"Airlie Beach ⇄ Hamilton Island",img:"",rt:["Port of Airlie, Airlie Beach QLD","Hamilton Island Marina QLD"],meet:"07:30 Port of Airlie 報到（08:00 開船）；回程 14:25 Hamilton Island Marina",wd:"一",title:"Hamilton Island · 行山",ph:1,
+ {date:"2027-03-29",rl:"Airlie Beach ⇄ Hamilton Island",img:"day3.webp",rt:["Port of Airlie, Airlie Beach QLD","Hamilton Island Marina QLD"],meet:"07:30 Port of Airlie 報到（08:00 開船）；回程 14:25 Hamilton Island Marina",wd:"一",title:"Hamilton Island · 行山",ph:1,
   note:"船公司建議開船前最少 30 分鐘到達碼頭。",
   s:[["07:30","Port of Airlie 報到",""],
      ["08:00","Cruise Whitsundays 船往 Hamilton Island Marina（09:00 抵達）","book",{ai:1,end:"09:00",go:{m:"boat",to:"Hamilton Island Marina",d:"約 1 小時",q:"Hamilton Island Marina QLD"}}],

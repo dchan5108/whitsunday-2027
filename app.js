@@ -190,7 +190,7 @@ function prep(){
  drawChk();drawDocs()}
 
 /* ---------- Iceland-style countdown / gated landing ---------- */
-function gateMarkup(message){const left=Math.ceil((new Date(D.TRIP.start+'T00:00:00+10:00')-Date.now())/86400000);return `<div class="ocean-scene"><div class="ocean-sun"></div><div class="ocean-island"></div><div class="ocean-wave"></div></div><div class="gate-card"><div class="eyebrow">27–30 MARCH · QUEENSLAND</div><h1>WHITSUNDAYS<br>2027</h1><div class="countdown">${left>0?`<strong>${left}</strong><span>Days to go</span>`:'Adventure time'}</div><p>${esc(message||'登入後查看四日行程、準備事項及旅行費用。')}</p><div id="gate-google"></div><p class="gate-msg" id="gate-msg"></p></div>`}
+function gateMarkup(message){const left=Math.ceil((new Date(D.TRIP.start+'T00:00:00+10:00')-Date.now())/86400000);return `<div class="gate-card"><div class="eyebrow">27–30 MARCH · QUEENSLAND</div><h1>WHITSUNDAYS<br>2027</h1><div class="countdown">${left>0?`<strong>${left}</strong><span>Days to go</span>`:'Adventure time'}</div><p>${esc(message||'登入後查看四日行程、準備事項及旅行費用。')}</p><div id="gate-google"></div><p class="gate-msg" id="gate-msg"></p></div>`}
 function showGate(message){let g=document.getElementById('auth-gate');if(!g){g=document.createElement('div');g.id='auth-gate';document.body.appendChild(g)}g.innerHTML=gateMarkup(message);g.hidden=false;document.body.classList.add('locked');if(D.CONFIG.api&&D.CONFIG.gclient)loginBtn(document.getElementById('gate-google'),document.getElementById('gate-msg'));else document.getElementById('gate-msg').textContent='請先在 data.js 設定 Apps Script URL 及 Google OAuth Client ID。'}
 function hideGate(){const g=document.getElementById('auth-gate');if(g)g.hidden=true;document.body.classList.remove('locked')}
 /* ---------- 總覽、今日（冰島版樣式） ---------- */
