@@ -173,10 +173,77 @@ function prep(){
 function gateMarkup(message){const left=Math.ceil((new Date(D.TRIP.start+'T00:00:00+10:00')-Date.now())/86400000);return `<div class="ocean-scene"><div class="ocean-sun"></div><div class="ocean-island"></div><div class="ocean-wave"></div></div><div class="gate-card"><div class="eyebrow">27–30 MARCH · QUEENSLAND</div><h1>WHITSUNDAYS<br>2027</h1><div class="countdown">${left>0?`<strong>${left}</strong><span>Days to go</span>`:'Adventure time'}</div><p>${esc(message||'登入後查看四日行程、準備事項及旅行費用。')}</p><div id="gate-google"></div><p class="gate-msg" id="gate-msg"></p></div>`}
 function showGate(message){let g=document.getElementById('auth-gate');if(!g){g=document.createElement('div');g.id='auth-gate';document.body.appendChild(g)}g.innerHTML=gateMarkup(message);g.hidden=false;document.body.classList.add('locked');if(D.CONFIG.api&&D.CONFIG.gclient)loginBtn(document.getElementById('gate-google'),document.getElementById('gate-msg'));else document.getElementById('gate-msg').textContent='請先在 data.js 設定 Apps Script URL 及 Google OAuth Client ID。'}
 function hideGate(){const g=document.getElementById('auth-gate');if(g)g.hidden=true;document.body.classList.remove('locked')}
-function home(){const left=Math.max(0,Math.ceil((new Date(D.TRIP.start+'T00:00:00+10:00')-Date.now())/86400000));const d=liveDays();const next=d.findIndex(x=>new Date(x.date+'T23:59:59+10:00')>=new Date());const i=next<0?0:next;
- $('home').innerHTML=`<div class="section-title"><span>THE JOURNEY</span><h2>Whitsundays 2027</h2><p>${left?left+' 日後出發':'四日三夜 · Airlie Beach'}</p></div><div class="overview-grid">${d.map((x,n)=>`<button class="overview-day" data-day="${n}"><span>DAY ${n+1} · ${md(x.date)}</span><strong>${esc(x.title)}</strong><small>${esc(x.note||'')}</small></button>`).join('')}</div><div class="card"><h3>住宿</h3><p>${esc(D.TRIP.base)}</p></div>`;
- $('home').querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{cur=+b.dataset.day;show('trip')})}
-function today(){const n=D.DAYS.findIndex(x=>x.date===new Date().toLocaleDateString('en-CA',{timeZone:'Australia/Brisbane'}));const i=n<0?0:n;const d=liveDays()[i];$('today').innerHTML=`<div class="section-title"><span>${n<0?'行程預覽':'TODAY'}</span><h2>D${i+1} · ${esc(d.title)}</h2></div><section class="card"><p class="note">${n<0?'旅行期間會自動顯示當日行程。':''}</p>${highlightBadges(i)}<ul class="tl">${d.s.map(x=>`<li><span class="t">${esc(x[0])}</span><div class="a">${esc(x[1])}</div></li>`).join('')}</ul><p class="note" id="wx"></p><button class="btn" id="today-more">查看當日完整行程</button></section>`;$('today-more').onclick=()=>{cur=i;show('trip')};loadWeather()}
+/* ---------- 總覽、今日（冰島版樣式） ---------- */
+const WDS="日一二三四五六",dlab=x=>{const [y,m,dd]=x.date.split("-");return `${+m}月${+dd}日（${x.wd}）`};
+const G=(inner,w=22)=>`<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
+function home(){const days=liveDays(),B=D.PREP.filter(p=>p.g==="book"),nok=B.filter(p=>ST[p.id]).length,hero=prepHero();
+ $("home").innerHTML=`<div id="homeL"><div id="homeTop"><section class="ovhero noen"><div class="ovh-t"><small>2027 年 3 月 27–30 日</small><h2>Whitsundays 海島之旅</h2></div>${hero}${hero?`<div class="ovh-rem"><button type="button" class="ovh-go" data-ovprep="1">預訂 ${nok} / ${B.length} 已完成 ›</button></div>`:""}</section>
+ <div class="ovplan2"><h3 class="ovdh">四日行程</h3><div class="ovdays">${days.map((x,k)=>`<button type="button" class="ovday" data-day="${k}">${x.img?`<img class="ovimg" src="${esc(x.img)}" alt="" loading="lazy">`:`<span class="ovimg ovph" aria-hidden="true">🏝️</span>`}<span class="ovtx"><small>D${k+1} · ${dlab(x)}</small><b>${esc(x.title)}</b></span></button>`).join("")}</div></div>
+ <section class="hcard glance ovplan noen"><div class="glh"><h3>旅程一覽</h3></div>
+ <div class="glst"><div>${G('<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>')}<b>4</b><small>天</small></div><div>${G('<path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/>')}<b>3</b><small>晚</small></div><div>${G('<path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>')}<b>${D.TRIP.people}</b><small>人</small></div><div>${G('<path d="M12 3v13M12 4 5 15h7M13 7l5 8h-5"/><path d="M3 18c3 2 15 2 18 0"/>')}<b>3</b><small>項活動</small></div></div></section>
+ <section class="hcard hlinks"><div class="thd2"><b>🔗 常用連結</b></div><div class="hicons noen">
+  <a href="tel:000"><i>📞</i><span>000</span></a>
+  <a href="https://www.bom.gov.au/places/qld/airlie-beach/" target="_blank" rel="noopener"><i>🌤️</i><span>天氣</span></a>
+  <a href="https://www.bom.gov.au/australia/tides/" target="_blank" rel="noopener"><i>🌊</i><span>潮汐</span></a>
+  <a href="${esc(D.SRC.fer3[1])}" target="_blank" rel="noopener"><i>⛴️</i><span>船班</span></a></div></section></div></div>`;
+ $("home").querySelectorAll("[data-day]").forEach(b=>b.onclick=()=>{cur=+b.dataset.day;show("trip");window.scrollTo(0,0)});
+ const go=$("home").querySelector("[data-ovprep]");if(go)go.onclick=()=>{show("prep");window.scrollTo(0,0)}}
+
+/* 日出日落（Airlie Beach，昆士蘭時間 UTC+10） */
+function sunTimes(ds,lat=-20.27,lon=148.72,tz=10){const R=Math.PI/180,[y,m,d]=ds.split("-").map(Number);
+ const N=Math.floor(275*m/9)-Math.floor((m+9)/12)*(1+Math.floor((y-4*Math.floor(y/4)+2)/3))+d-30,lh=lon/15;
+ const f=rise=>{const t=N+((rise?6:18)-lh)/24,M=.9856*t-3.289;let L=(M+1.916*Math.sin(M*R)+.02*Math.sin(2*M*R)+282.634)%360;if(L<0)L+=360;
+  let RA=(Math.atan(.91764*Math.tan(L*R))/R+360)%360;RA=(RA+(Math.floor(L/90)-Math.floor(RA/90))*90)/15;
+  const sd=.39782*Math.sin(L*R),cd=Math.cos(Math.asin(sd)),ch=(Math.cos(90.833*R)-sd*Math.sin(lat*R))/(cd*Math.cos(lat*R));
+  const H=(rise?360-Math.acos(ch)/R:Math.acos(ch)/R)/15;let UT=(H+RA-.06571*t-6.622-lh)%24;if(UT<0)UT+=24;return (UT+tz)%24};
+ return [f(1),f(0)]}
+const hm=h=>{let mm=Math.round(h*60);return String(Math.floor(mm/60)%24).padStart(2,"0")+":"+String(mm%60).padStart(2,"0")};
+
+/* 天氣、UV、潮汐（Open-Meteo，免費；出發前約 16 日先有預報；上次結果存低離線用） */
+let WX=LS.get("wx2",null),WXT=0;
+function loadWeather(){const start=new Date(D.TRIP.start+"T00:00:00+10:00");if((start-Date.now())/864e5>15||Date.now()-WXT<6e5)return;WXT=Date.now();
+ const q="latitude=-20.27&longitude=148.72&timezone=Australia%2FBrisbane&start_date="+D.TRIP.start+"&end_date="+D.TRIP.end;
+ Promise.allSettled([fetch("https://api.open-meteo.com/v1/forecast?"+q+"&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max").then(r=>r.json()),
+  fetch("https://marine-api.open-meteo.com/v1/marine?"+q+"&hourly=sea_level_height_msl").then(r=>r.json())]).then(([a,b])=>{
+  const o={daily:{},tide:{}};
+  if(a.status==="fulfilled"&&a.value.daily){const x=a.value.daily;x.time.forEach((t,k)=>o.daily[t]={c:x.weather_code[k],hi:x.temperature_2m_max[k],lo:x.temperature_2m_min[k],pp:x.precipitation_probability_max[k],uv:x.uv_index_max[k]})}
+  if(b.status==="fulfilled"&&b.value.hourly){const t=b.value.hourly.time,v=b.value.hourly.sea_level_height_msl;
+   for(let k=1;k<v.length-1;k++){if(v[k]==null)continue;const hi=v[k]>v[k-1]&&v[k]>=v[k+1],lo=v[k]<v[k-1]&&v[k]<=v[k+1];if(!hi&&!lo)continue;const day=t[k].slice(0,10);(o.tide[day]=o.tide[day]||[]).push([t[k].slice(11,16),hi?"高潮":"低潮"])}}
+  if(Object.keys(o.daily).length||Object.keys(o.tide).length){WX=o;LS.set("wx2",WX);if(!$("today").hidden)today()}}).catch(()=>{})}
+const wxIcon=c=>c==null?"":c<1?"☀️":c<3?"🌤️":c<4?"☁️":c<50?"🌫️":c<70?"🌧️":c<80?"🌨️":c<90?"🌦️":"⛈️";
+const uvLab=u=>u<3?"低":u<6?"中":u<8?"高":u<11?"甚高":"極高";
+
+/* 今日重點勳章：冰島版金框＋Whitsundays 圖案 */
+function goldBadge(id,sz=72){const u="g"+id;return `<svg class="bdgsv" viewBox="0 0 100 100" width="${sz}" height="${sz}" aria-hidden="true"><defs>
+<linearGradient id="${u}r" x1=".15" y1="0" x2=".85" y2="1"><stop offset="0" stop-color="#fbeec4"/><stop offset=".22" stop-color="#d9b56a"/><stop offset=".5" stop-color="#8f6a2e"/><stop offset=".72" stop-color="#e6c983"/><stop offset="1" stop-color="#7a5624"/></linearGradient>
+<linearGradient id="${u}l" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e3a8"/><stop offset=".5" stop-color="#c49a4c"/><stop offset="1" stop-color="#e9cf8c"/></linearGradient>
+<radialGradient id="${u}v" cx=".5" cy=".42" r=".6"><stop offset=".72" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".28"/></radialGradient><clipPath id="${u}c"><circle cx="50" cy="50" r="40.5"/></clipPath></defs>
+<circle cx="50.6" cy="51.4" r="48" fill="#000" opacity=".2"/><circle cx="50" cy="50" r="48" fill="url(#${u}r)"/><circle cx="50" cy="50" r="44.6" fill="none" stroke="#5a3f18" stroke-width=".6" opacity=".55"/><circle cx="50" cy="50" r="43.4" fill="url(#${u}r)" transform="rotate(180 50 50)"/>
+<g clip-path="url(#${u}c)"><g transform="translate(8 8)">${badgeArt(id).replace(/^<svg[^>]*>|<\/svg>$/g,"")}</g><rect width="100" height="100" fill="url(#${u}v)"/><path d="M14 38A38 38 0 0 1 60 11L62 18A32 32 0 0 0 22 42Z" fill="#fff" opacity=".16"/></g>
+<circle cx="50" cy="50" r="40.6" fill="none" stroke="url(#${u}l)" stroke-width="1.4"/><path d="M9.5 40A42 42 0 0 1 40 8.5" stroke="#fff" stroke-width="1.6" fill="none" opacity=".55" stroke-linecap="round"/><path d="M91 60A42 42 0 0 1 62 91" stroke="#3d2a10" stroke-width="1.4" fill="none" opacity=".35" stroke-linecap="round"/></svg>`}
+
+let TD=null;
+function today(){const days=liveDays(),tdy=new Date().toLocaleDateString("en-CA",{timeZone:"Australia/Brisbane"}),n=days.findIndex(x=>x.date===tdy);
+ if(TD==null||TD>=days.length)TD=n<0?0:n;const i=TD,d=days[i],[sr,ss]=sunTimes(d.date),dl=ss-sr;
+ const away=Math.ceil((new Date(d.date+"T00:00:00+10:00")-Date.now())/864e5),w=WX&&WX.daily[d.date],td=WX&&WX.tide[d.date];
+ const rt=d.rt||[],ru=rt.length>1?"https://www.google.com/maps/dir/?api=1&origin="+encodeURIComponent(rt[0])+"&destination="+encodeURIComponent(rt[rt.length-1])+(rt.length>2?"&waypoints="+encodeURIComponent(rt.slice(1,-1).join("|")):""):"";
+ const hl=HIGHLIGHTS[i]||[],q=[];
+ if(td&&td.length)q.push(["🌊","潮汐（約）",td.map(x=>x[1]+" "+x[0]).join("　")]);
+ if(w&&w.uv!=null)q.push(["🕶️","UV 指數 "+Math.round(w.uv)+"（"+uvLab(w.uv)+"）","塗防曬、戴帽"]);
+ q.push(["🪼","水母季（stinger season）","在海中游泳或浮潛要穿 stinger suit"]);
+ if(d.meet)q.push(["⛴️","集合／船班",d.meet]);
+ const notes=[...(d.ph?["昆士蘭公眾假期"]:[]),...String(d.note||"").split("。").map(x=>x.trim()).filter(Boolean)];
+ $("today").innerHTML=`<div id="todayIn"><section class="tcard thero"><div class="tsub noen">${n<0?"行程預覽":i===n?"今日":"行程預覽"}</div><div class="tdrow"><h2 class="tdate">D${i+1} · ${dlab(d)}</h2></div><div class="chips tchips noen" role="group" aria-label="選擇日子">${days.map((x,k)=>`<button type="button" data-tday="${k}" aria-pressed="${k===i}">D${k+1}</button>`).join("")}</div>
+ <div class="tbtns"><button type="button" data-tgo="now"${n<0||n===i?" hidden":""}>今日</button>${ru?`<a class="troute tlink noen" href="${esc(ru)}" target="_blank" rel="noopener">${G('<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/>',16)}當日路線</a>`:""}<button type="button" class="tfull2" data-tfull="1">完整時間表 ›</button></div></section>
+ <section class="dsum2 dsB tdsB"><div class="dhB noen"><div class="dhL"><div class="dhR">${esc(d.rl||d.title)}</div><div class="dhS"><span>🏠 ${i===days.length-1?"回程":esc(D.TRIP.base.replace(/（.*）/,""))}</span></div></div><div class="dhW" id="twx">${w?`<b>${wxIcon(w.c)}</b><span>${Math.round(w.lo)}–${Math.round(w.hi)}°C${w.pp!=null?" · 降雨 "+w.pp+"%":""}</span>`:`<b>⏳</b><span>${away>16?"16 日內有預報":"預報載入中"}</span>`}</div></div>
+ <div class="sunlab"><span>🌅 ${hm(sr)}</span><span>日照 ${Math.floor(Math.round(dl*60)/60)} 小時 ${Math.round(dl*60)%60} 分</span><span>🌇 ${hm(ss)}</span></div><div class="sunbar"></div></section>
+ <section class="tcard tquick noen"><div class="thd2"><b>📍 今日重點</b></div>${hl.length?`<div class="bdgs noen" style="--n:${hl.length}">${hl.map(h=>`<button type="button" class="bdg">${goldBadge(h.id)}<span>${esc(h.name)}</span></button>`).join("")}</div>`:""}
+ <ul class="tqi">${q.map(([ic,t,s])=>`<li><i>${ic}</i><span>${esc(t)}<small>${esc(s)}</small></span></li>`).join("")}</ul></section>
+ ${notes.length?`<section class="tcard tnotes noen"><div class="thd2"><b>⚠️ 今日注意</b></div><ul>${notes.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></section>`:""}</div>`;
+ $("today").querySelectorAll("[data-tday]").forEach(b=>b.onclick=()=>{TD=+b.dataset.tday;today()});
+ const nw=$("today").querySelector("[data-tgo]");if(nw)nw.onclick=()=>{TD=n;today()};
+ $("today").querySelector("[data-tfull]").onclick=()=>{cur=i;show("trip");window.scrollTo(0,0)};
+ loadWeather()}
 /* ---------- 分頁 ---------- */
 const TABS=["prep","today","home","trip","budget"];
 function show(t){if(!ME||ME.role==="pending"||ME.role==="rejected"){showGate(ME&&ME.role==="pending"?"登入成功，等待管理員批准。":"");return}if(!TABS.includes(t))t="home";
@@ -189,9 +256,5 @@ window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
 showGate('正在驗證登入狀態…');if(ME&&ME.sk){call({op:'ping',dev:dev()}).then(j=>{if(!j.ok||j.role==='pending'||j.role==='rejected')throw Error('尚未獲批');ME.owner=!!j.owner;ME.role=j.role;LS.set('me',ME);hideGate();show(location.hash.slice(1)||'home');syncState();loadDays()}).catch(e=>{if(ME&&ME.sk&&(e instanceof TypeError||!navigator.onLine)){hideGate();show(location.hash.slice(1)||'home')}else{ME=null;LS.set('me',null);showGate('請使用 Google 登入。')}})}
 /* 離線：用 service worker 保存網站，冇網絡都打得開 */
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
-/* Airlie Beach weather (Open-Meteo, free, no key); last result cached for offline */
-function loadWeather(){const el=$('wx');if(!el)return;const url='https://api.open-meteo.com/v1/forecast?latitude=-20.27&longitude=148.72&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Australia%2FBrisbane&start_date='+D.TRIP.start+'&end_date='+D.TRIP.end;
- fetch(url).then(r=>r.json()).then(j=>{const t=j.daily&&j.daily.time;if(!t||!t.length)throw new Error('no data');const rows=t.map((d,x)=>d.slice(5)+'：'+Math.round(j.daily.temperature_2m_min[x])+'–'+Math.round(j.daily.temperature_2m_max[x])+'°C，降雨 '+(j.daily.precipitation_probability_max[x]??'-')+'%').join('<br>');el.innerHTML='Airlie Beach 天氣預報<br>'+rows;LS.set('wx',el.innerHTML)})
- .catch(()=>{el.innerHTML=LS.get('wx',null)||'天氣預報會喺出發前約兩星期開始顯示。'})}
 })();
 
