@@ -233,14 +233,23 @@ function loadWeather(){const start=new Date(D.TRIP.start+"T00:00:00+10:00");if((
 const wxIcon=c=>c==null?"":c<1?"☀️":c<3?"🌤️":c<4?"☁️":c<50?"🌫️":c<70?"🌧️":c<80?"🌨️":c<90?"🌦️":"⛈️";
 const uvLab=u=>u<3?"低":u<6?"中":u<8?"高":u<11?"甚高":"極高";
 
-/* 今日重點勳章：冰島版金框＋Whitsundays 圖案 */
-function goldBadge(id,sz=72){const u="g"+id;return `<svg class="bdgsv" viewBox="0 0 100 100" width="${sz}" height="${sz}" aria-hidden="true"><defs>
-<linearGradient id="${u}r" x1=".15" y1="0" x2=".85" y2="1"><stop offset="0" stop-color="#fbeec4"/><stop offset=".22" stop-color="#d9b56a"/><stop offset=".5" stop-color="#8f6a2e"/><stop offset=".72" stop-color="#e6c983"/><stop offset="1" stop-color="#7a5624"/></linearGradient>
-<linearGradient id="${u}l" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e3a8"/><stop offset=".5" stop-color="#c49a4c"/><stop offset="1" stop-color="#e9cf8c"/></linearGradient>
-<radialGradient id="${u}v" cx=".5" cy=".42" r=".6"><stop offset=".72" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".28"/></radialGradient><clipPath id="${u}c"><circle cx="50" cy="50" r="40.5"/></clipPath></defs>
-<circle cx="50.6" cy="51.4" r="48" fill="#000" opacity=".2"/><circle cx="50" cy="50" r="48" fill="url(#${u}r)"/><circle cx="50" cy="50" r="44.6" fill="none" stroke="#5a3f18" stroke-width=".6" opacity=".55"/><circle cx="50" cy="50" r="43.4" fill="url(#${u}r)" transform="rotate(180 50 50)"/>
-<g clip-path="url(#${u}c)"><g transform="translate(8 8)">${badgeArt(id).replace(/^<svg[^>]*>|<\/svg>$/g,"")}</g><rect width="100" height="100" fill="url(#${u}v)"/><path d="M14 38A38 38 0 0 1 60 11L62 18A32 32 0 0 0 22 42Z" fill="#fff" opacity=".16"/></g>
-<circle cx="50" cy="50" r="40.6" fill="none" stroke="url(#${u}l)" stroke-width="1.4"/><path d="M9.5 40A42 42 0 0 1 40 8.5" stroke="#fff" stroke-width="1.6" fill="none" opacity=".55" stroke-linecap="round"/><path d="M91 60A42 42 0 0 1 62 91" stroke="#3d2a10" stroke-width="1.4" fill="none" opacity=".35" stroke-linecap="round"/></svg>`}
+/* 今日重點勳章：迷你啫喱水族箱（半透明啫喱圓頂＋氣泡＋光澤） */
+function jellyBadge(id,sz=72){const u="j"+id,h=[...id].reduce((a,c)=>a+c.charCodeAt(0),0),B=[[24+h%9,30+h%7,2.4],[70-h%8,62-h%6,1.8],[62-h%5,24+h%9,1.4],[33+h%6,70-h%5,1.6]];
+ return `<svg class="bdgsv jelly" viewBox="0 0 100 100" width="${sz}" height="${sz}" aria-hidden="true"><defs>
+<radialGradient id="${u}o" cx=".38" cy=".3" r=".75"><stop offset="0" stop-color="#e9fdfc"/><stop offset=".55" stop-color="#9ee6e6"/><stop offset="1" stop-color="#3fb3bf"/></radialGradient>
+<radialGradient id="${u}v" cx=".5" cy=".45" r=".58"><stop offset=".62" stop-color="#0a6c7c" stop-opacity="0"/><stop offset="1" stop-color="#0a6c7c" stop-opacity=".38"/></radialGradient>
+<linearGradient id="${u}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<clipPath id="${u}c"><circle cx="50" cy="50" r="41"/></clipPath></defs>
+<ellipse cx="50" cy="95" rx="30" ry="4" fill="#0a5c6a" opacity=".18"/>
+<circle cx="50" cy="50" r="47" fill="url(#${u}o)" opacity=".92"/>
+<g clip-path="url(#${u}c)"><g transform="translate(8 8)">${badgeArt(id).replace(/^<svg[^>]*>|<\/svg>$/g,"")}</g>
+<rect width="100" height="100" fill="#7fe3e8" opacity=".16"/><rect width="100" height="100" fill="url(#${u}v)"/>
+${B.map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" fill-opacity=".25" stroke="#fff" stroke-width=".7" stroke-opacity=".85"/>`).join("")}</g>
+<circle cx="50" cy="50" r="41" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="1.2"/>
+<path d="M17 44A34 34 0 0 1 52 13Q38 17 30 26T21 46Z" fill="url(#${u}g)"/>
+<ellipse cx="33" cy="25" rx="4.2" ry="2.4" transform="rotate(-35 33 25)" fill="#fff" opacity=".9"/>
+<path d="M78 66A33 33 0 0 1 60 83" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+<circle cx="50" cy="50" r="47" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="1"/></svg>`}
 
 function sumCard(i,cls=" tdsB"){const days=liveDays(),d=days[i],[sr,ss]=sunTimes(d.date),dl=Math.round((ss-sr)*60);
  const away=Math.ceil((new Date(d.date+"T00:00:00+10:00")-Date.now())/864e5),w=WX&&WX.daily[d.date];
@@ -259,7 +268,7 @@ function today(){const days=liveDays(),tdy=new Date().toLocaleDateString("en-CA"
  $("today").innerHTML=`<div id="todayIn"><section class="tcard thero"><div class="tsub noen">${n<0?"行程預覽":i===n?"今日":"行程預覽"}</div><div class="tdrow"><h2 class="tdate">D${i+1} · ${dlab(d)}</h2></div><div class="chips tchips noen" role="group" aria-label="選擇日子">${days.map((x,k)=>`<button type="button" data-tday="${k}" aria-pressed="${k===i}">D${k+1}</button>`).join("")}</div>
  <div class="tbtns"><button type="button" data-tgo="now"${n<0||n===i?" hidden":""}>今日</button>${ru?`<a class="troute tlink noen" href="${esc(ru)}" target="_blank" rel="noopener">${G('<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/>',16)}當日路線</a>`:""}<button type="button" class="tfull2" data-tfull="1">完整時間表 ›</button></div></section>
  ${sumCard(i)}
- <section class="tcard tquick noen"><div class="thd2"><b>📍 今日重點</b></div>${hl.length?`<div class="bdgs noen" style="--n:${hl.length}">${hl.map(h=>`<button type="button" class="bdg">${goldBadge(h.id)}<span>${esc(h.name)}</span></button>`).join("")}</div>`:""}
+ <section class="tcard tquick noen"><div class="thd2"><b>📍 今日重點</b></div>${hl.length?`<div class="bdgs noen" style="--n:${hl.length}">${hl.map(h=>`<button type="button" class="bdg">${jellyBadge(h.id)}<span>${esc(h.name)}</span></button>`).join("")}</div>`:""}
  <ul class="tqi">${q.map(([ic,t,s])=>`<li><i>${ic}</i><span>${esc(t)}<small>${esc(s)}</small></span></li>`).join("")}</ul></section>
  ${notes.length?`<section class="tcard tnotes noen"><div class="thd2"><b>⚠️ 今日注意</b></div><ul>${notes.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></section>`:""}</div>`;
  $("today").querySelectorAll("[data-tday]").forEach(b=>b.onclick=()=>{TD=+b.dataset.tday;today()});
