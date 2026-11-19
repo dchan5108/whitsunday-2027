@@ -1,0 +1,183 @@
+/* 準備頁：樣式取自冰島版（只套用在 #prep 內） */
+#prep{--line:#ddd8cb;--muted:#667985;--chg:#6d45c6;--bg:#f4f1ea;--route:#2b6f95;--card:#fffdf8;--sea:#d3e5ee;--sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;--shadow:0 1px 2px rgba(20,40,58,.05),0 8px 24px rgba(20,40,58,.07);--r-s:10px;--r-m:12px;--accent-bg:#e9f0f3;--fg:#14283a;--nav:rgba(245,245,247,.82);--shadow-l:0 10px 30px rgba(0,0,0,.10),0 1px 3px rgba(0,0,0,.06);--warnbg:#f8e6df;--warn:#a8580a;--ok2:#4e6f5c;--serif:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;--r-l:16px;--tint:#e9f0f3;--fill:#ececf0;--glass:rgba(255,255,255,.72);--glass-edge:rgba(0,0,0,.08);--glass-solid:#fbfbfd;--fs-page:24px;--fs-sec:17px;--fs-item:15px;--fs-meta:12.5px;--meal:#a8580a;--pad-card:18px;--gap-card:14px}
+#prep #bookp h3.bkcol { cursor: pointer; user-select: none; padding: 10px 0px; border-bottom: 1px solid var(--line,#e6e8eb); margin: 0px; }
+#prep #bookp h3.bkcol::after { content: "›"; margin-left: auto; font-size: 22px; line-height: 1; color: var(--muted,#5b6470); transition: transform 0.15s; order: 2; }
+#prep #bookp h3.bkcol[aria-expanded="true"]::after { transform: rotate(90deg); }
+#prep #bookp h3.bkcol .bkc { order: 1; margin-left: auto; }
+#prep #bookp h3.bkcol::after { margin-left: 10px !important; }
+#prep #bookp ul.tkl[hidden] { display: none !important; }
+#prep #bookp ul.tkl { margin-top: 8px; }
+#prep .seg { display: inline-flex; border: 1px solid var(--chg); border-radius: 999px; overflow: hidden; }
+#prep .seg button { font-size: 12.5px; padding: 3px 12px; border: 0px; background: transparent; color: var(--chg); cursor: pointer; }
+#prep .seg button[aria-pressed="true"] { background: var(--chg); color: var(--bg); }
+#prep .bnote { font-size: 13px; color: var(--muted); margin: 0px 0px 10px; max-width: 72ch; }
+#prep .mini { font-size: 11.5px; padding: 1px 8px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); color: var(--route); cursor: pointer; }
+#prep .tiph { font-size: 1rem; font-weight: 700; margin: 20px 0px 8px; padding-bottom: 4px; border-bottom: 1px solid var(--line); max-width: 760px; }
+#prep .plink { font-size: 12.5px; color: var(--route); white-space: nowrap; }
+#prep .bkvt { margin: 6px 0px 10px; }
+#prep #guide section, #prep #bookp section { scroll-margin-top: 12px; }
+#prep .gtw { overflow-x: auto; max-width: 100%; }
+#prep .gt { border-collapse: collapse; font-size: 13px; min-width: 620px; width: 100%; background: var(--card); border-radius: 10px; overflow: hidden; }
+#prep .gt th, #prep .gt td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--line); vertical-align: top; }
+#prep .gt th { background: var(--sea); font-weight: 700; font-size: 12.5px; }
+#prep .bkchk { list-style: none; margin: 0px 0px 6px; padding: 0px; display: grid; gap: 6px; max-width: 760px; }
+#prep .bkchk li { background: var(--card); border-radius: 10px; box-shadow: var(--shadow); }
+#prep .bkday { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
+#prep .bkday .bkc { margin-left: auto; }
+#prep .bkm { font-size: 12.5px; color: var(--muted); margin: 2px 0px 0px 28px; }
+#prep .bkc { font-size: 12px; font-weight: 500; color: var(--muted); margin-left: 8px; }
+#prep .bkprog { max-width: 760px; font-size: 14px; margin: 4px 0px; }
+#prep .bkprog .bkbar { height: 8px; border-radius: 99px; background: var(--line); margin-top: 4px; overflow: hidden; }
+#prep .bkprog .bkbar i { display: block; height: 100%; background: var(--route); border-radius: 99px; }
+#prep #bookp, #prep #pack { scroll-margin-top: 56px; margin-top: 22px; }
+#prep .pg h2 { margin-top: 0px; }
+#prep .pghead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; margin-bottom: 6px; }
+#prep .st { font-size: 11.5px; font-weight: 700; border-radius: 999px; padding: 1px 9px; }
+#prep .stinfo { font-size: 12.5px; }
+#prep .stinfo b { font-size: 13px; }
+#prep .stinfo dl { display: grid; grid-template-columns: 4.2em 1fr; gap: 3px 10px; margin: 6px 0px 4px; }
+#prep .stinfo dt { color: var(--muted); }
+#prep .stinfo dd { margin: 0px; overflow-wrap: anywhere; }
+#prep .pkprog .bar, #prep .bkprog .bkbar { border-radius: 999px; }
+#prep .mini, #prep .daynav button, #prep .maptog, #prep .seg, #prep .bbar select, #prep .er input, #prep .er select, #prep .srch input, #prep .eadd input { border-radius: var(--r-s); }
+#prep .pghead h2, #prep #budget > h2, #prep #tips > h2 { font-size: 1.35rem; font-weight: 700; letter-spacing: 0.01em; margin: 6px 0px 4px; }
+#prep .tiph { max-width: none; }
+#prep .gt { border: 1px solid var(--line); border-radius: var(--r-m); font-variant-numeric: tabular-nums; }
+#prep .gt th { background: var(--accent-bg); color: var(--fg); font-weight: 600; letter-spacing: 0.02em; }
+#prep .st.todo { background: var(--warnbg); color: var(--warn); }
+#prep .pdash2 { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; margin: 4px 0px 14px; }
+#prep .pd-h { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+#prep .pd-h b { font-size: 15px; }
+#prep .pd-h small { color: var(--muted); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+#prep .pd-bar { height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; margin: 8px 0px 10px; }
+#prep .pd-bar i { display: block; height: 100%; background: var(--ok2); }
+#prep .bkchk li { position: relative; }
+#prep .bkchk .bkm { font-size: 12.5px !important; color: var(--muted); }
+#prep .prelist { list-style: none; margin: 0px; padding: 0px; display: grid; gap: 6px; }
+#prep .prelist li { background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+#prep .prelist label { display: flex; align-items: flex-start; cursor: pointer; }
+#prep .prelist input { margin-top: 3px; width: 18px; height: 18px; flex: 0 0 auto; }
+#prep .prelist span { display: grid; gap: 1px; }
+#prep .prelist small { font-size: 12.5px; color: var(--muted); }
+#prep .bkh { font-size: 15px; margin: 4px 0px 8px; }
+#prep .flc { margin-bottom: 14px; }
+#prep .flc > summary { cursor: pointer; font-weight: 700; font-size: 15px; }
+#prep .pghead h2, #prep #budget > h2, #prep #tips > h2, #prep .day h3 > span:first-child, #prep .tht, #prep .bsh h3, #prep .bkh, #prep .pkgh { font-family: var(--serif) !important; letter-spacing: 0.02em; }
+#prep .day, #prep .card2, #prep .tcat, #prep .stc, #prep .sd-t, #prep .pdash2, #prep .bdash section, #prep .thd, #prep .prelist li, #prep .mapbox, #prep .bkchk li { border-radius: var(--r-l) !important; border-color: var(--line) !important; box-shadow: var(--shadow) !important; }
+#prep .gtw, #prep .bwrap, #prep .rcw { max-width: 100%; overflow-x: auto; }
+#prep .prelist .flc { margin: 8px 0px 0px 28px; }
+#prep .prelist .flc > summary { cursor: pointer; font-size: 13px; }
+#prep .prelist .flc .gtw { margin-top: 6px; }
+#prep .prelist .flc { margin-left: 0px; }
+#prep .day, #prep .card2, #prep .tcat, #prep .stc, #prep .pdash2, #prep .mapbox, #prep .prelist li, #prep .bkchk li, #prep .thd, #prep .sd-t { background: var(--card); box-shadow: none !important; border: 0px !important; border-radius: var(--r-l) !important; }
+#prep .dsum2 .mapbtn, #prep .day h3 .h3act .cuopen, #prep .cuopen, #prep .mini, #prep .cpday, #prep .mapbtn { background: var(--tint) !important; color: var(--route) !important; border: 0px !important; box-shadow: none !important; }
+#prep .mini, #prep .cpday { border-radius: 999px !important; font-weight: 600 !important; padding: 5px 12px !important; }
+#prep .day, #prep .card2, #prep .tcat, #prep .stc, #prep .pdash2, #prep .mapbox, #prep .prelist li, #prep .bkchk li, #prep .thd, #prep .sd-t, #prep .ovrow, #prep .scenbox { border-radius: var(--r-l) !important; }
+#prep .pghead h2, #prep #tips h2, #prep #stays h2, #prep h2, #prep .pg h2 { letter-spacing: -0.01em; font-size: 24px !important; font-weight: 700 !important; }
+#prep .day, #prep .card2, #prep .ovrow, #prep .scenbox, #prep .prelist li, #prep .thoff, #prep .dnote, #prep .addp, #prep .mvseg, #prep .viewseg { backdrop-filter: none !important; }
+#prep .mtab { display: none !important; }
+#prep table.btable, #prep table.gt { border-spacing: 0px; background: var(--card); border-radius: 12px; overflow: hidden; border-collapse: separate !important; }
+#prep .btable th, #prep .gt th { font-weight: 600; font-size: 12.5px; background: var(--fill) !important; color: var(--muted) !important; border: 0px !important; }
+#prep .budhead { display: none; }
+#prep .prelist b { font-size: 15px !important; font-weight: 600; }
+#prep .prelist small, #prep .prelist .flc > summary { font-weight: 400; color: var(--muted); font-size: 13px !important; }
+#prep .prelist .flc > summary { color: var(--route) !important; font-weight: 600; }
+#prep .prelist .flc .gt, #prep .prelist .flc .gt td, #prep .prelist .flc .gt th, #prep .prelist .flc dl, #prep .prelist .flc dd, #prep .prelist .flc dt { font-size: 13px !important; }
+#prep .prelist li { padding: 12px 14px !important; }
+#prep .prelist label { gap: 12px !important; }
+#prep .bkchk li { padding: 12px 14px !important; }
+#prep .sbtog { display: none !important; }
+#prep .bkchk .flc { margin: 8px 0px 0px 28px; }
+#prep .bkchk .flc > summary { cursor: pointer; font-weight: 600; color: var(--route); font-size: 13px !important; }
+#prep .bkchk .flc .gtw { margin-top: 6px; }
+#prep .bkchk .flc .gt, #prep .bkchk .flc .gt td, #prep .bkchk .flc .gt th, #prep .bkchk .flc dl, #prep .bkchk .flc dd, #prep .bkchk .flc dt { font-size: 13px !important; }
+#prep .bkchk .flc, #prep .bkact { margin-left: 0px !important; }
+#prep .tkf { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0px 12px; }
+#prep .tkf button { display: inline-flex; align-items: center; gap: 6px; border: 0px; border-radius: 999px; padding: 6px 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 13px; font-weight: 600; background: var(--fill); color: var(--fg); cursor: pointer; }
+#prep .tkf button b { font-size: 12px; min-width: 18px; padding: 0px 6px; border-radius: 999px; background: var(--card); text-align: center; }
+#prep .tkf button[aria-pressed="true"] { background: var(--route); color: var(--card); }
+#prep .tkf button[aria-pressed="true"] b { background: rgba(255, 255, 255, 0.25); color: inherit; }
+#prep .tkl li { display: grid; gap: 6px; }
+#prep .tk-h { display: flex; align-items: flex-start; gap: 10px; padding-right: 2px; }
+#prep .tk-h .bkn { flex: 1 1 0%; min-width: 0px; font-size: 16px; font-weight: 600; line-height: 1.35; }
+#prep .tkimp { flex: 0 0 auto; font-size: 11px; font-weight: 700; color: rgb(179, 96, 26); background: rgba(224, 123, 42, 0.12); border-radius: 6px; padding: 1px 6px; margin-top: 3px; }
+#prep select.tst { order: 3; flex: 0 0 auto; appearance: none; border: 0px; border-radius: 999px; padding: 4px 22px 4px 10px; font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer; background-repeat: no-repeat; background-position: right 8px center; background-size: 8px 5px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23888'/%3E%3C/svg%3E"); }
+#prep select.tst.todo { background-color: rgba(224, 123, 42, 0.14); color: rgb(163, 82, 15); }
+#prep .tkl .bkm { line-height: 1.5; margin: 0px !important; }
+#prep .tkd { font-weight: 600; color: var(--muted); }
+#prep .tk-a { display: flex; align-items: center; gap: 10px; }
+#prep .tkln { font-size: 13px; font-weight: 600; color: var(--route); text-decoration: none; padding: 4px 10px; border-radius: 999px; background: var(--fill); }
+#prep .tkl .flc, #prep .tkl .bkact, #prep .tkl .bkx { margin-left: 0px !important; }
+#prep .tk-a { flex-wrap: wrap; }
+#prep #bookp select.tst { width: auto !important; max-width: none !important; height: auto !important; min-height: 0px !important; margin: 0px !important; border: 0px !important; border-radius: 999px !important; padding: 4px 24px 4px 11px !important; font-size: 12.5px !important; font-weight: 700 !important; line-height: 1.4 !important; box-shadow: none !important; background-repeat: no-repeat !important; background-position: right 9px center !important; background-size: 8px 5px !important; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23888'/%3E%3C/svg%3E") !important; }
+#prep #bookp select.tst.todo { background-color: rgba(224, 123, 42, 0.14) !important; color: rgb(163, 82, 15) !important; }
+#prep .tkst { margin-top: 8px; display: grid; gap: 8px; font-size: 13px; color: var(--fg); }
+#prep .tkst p { margin: 0px; }
+#prep .tkst .opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px 16px; }
+#prep .tkst .opts ul { margin: 4px 0px 0px; padding-left: 16px; }
+#prep .tkst .opts small { display: block; color: var(--muted); }
+#prep .tkst .stinfo { background: var(--fill); border-radius: 10px; padding: 10px 12px; }
+#prep .pghead h2 { font-size: var(--fs-page) !important; font-weight: 700 !important; }
+#prep #bookp h3.bkh, #prep #bookp h3.bkday, #prep .bsh h3, #prep details.bsec > summary, #prep .bsettle h3.tiph, #prep #tips h3.tht { font-size: var(--fs-sec) !important; font-weight: 700 !important; color: var(--fg) !important; }
+#prep .tkl .bkn, #prep .tk-h .bkn, #prep .htl b, #prep .thoff a b, #prep #tips .tgrid dt, #prep #tips details.tsec > summary.tiph, #prep details.mecat > summary, #prep .hroute .hn { font-size: var(--fs-item) !important; }
+#prep .tkl .bkn, #prep .tk-h .bkn, #prep .htl b, #prep .thoff a b, #prep #tips .tgrid dt, #prep #tips details.tsec > summary.tiph, #prep details.mecat > summary { font-weight: 600 !important; }
+#prep .tkl .bkm, #prep .thoff a small, #prep .tkst, #prep .tkst .opts small, #prep .flt small, #prep .flc .gt td, #prep .flc .gt th { font-size: var(--fs-meta) !important; }
+#prep .thd2 b, #prep .ddocs h4, #prep #bookp h3.bkh, #prep #bookp h3.bkday, #prep .hrh b { font-size: var(--fs-sec) !important; font-weight: 700 !important; }
+#prep .tnm, #prep .dtx b, #prep #homeTop li, #prep .bkn, #prep .tt .tv { font-size: var(--fs-item) !important; }
+#prep #g-book { background: var(--card); border-radius: 16px; padding: 16px 18px; }
+#prep #g-book h3.bkh { margin-top: 0px; }
+#prep #g-book .bkchk li { background: var(--bg) !important; box-shadow: none !important; }
+#prep #bookp h3.bkcol:last-of-type { border-bottom: 0px; }
+#prep .pghead h2 { position: absolute !important; width: 1px !important; height: 1px !important; overflow: hidden !important; clip: rect(0px, 0px, 0px, 0px) !important; white-space: nowrap !important; margin: 0px !important; padding: 0px !important; }
+#prep .pghead:not(.budhead) { margin: 0px !important; min-height: 0px !important; }
+#prep #bookp .bkvt { display: none !important; }
+#prep #bookp .tkf { flex-wrap: nowrap; align-items: center; gap: 8px; }
+#prep .tkseg { display: flex; flex: 1 1 0%; min-width: 0px; background: var(--fill); border-radius: 999px; padding: 3px; }
+#prep .tkseg button { flex: 1 1 0%; min-width: 0px; border: 0px; background: transparent; border-radius: 999px; padding: 6px 4px; font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: var(--fs-meta); font-weight: 600; color: var(--fg); cursor: pointer; white-space: nowrap; }
+#prep #bookp .tkseg button[aria-pressed="true"] { box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px; background: var(--card) !important; color: var(--fg) !important; }
+#prep #bookp .tkseg button[aria-pressed="true"] b { color: var(--route) !important; background: transparent !important; }
+#prep #bookp .tkseg button b { background: transparent !important; padding: 0px !important; }
+#prep .tkseg b { font-weight: 600; color: var(--muted); }
+#prep .tksort, #prep .tkstay { flex: 0 0 auto; border: 0px; border-radius: 999px; padding: 8px 12px; background: var(--fill); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: var(--fs-meta); font-weight: 600; color: var(--fg); cursor: pointer; white-space: nowrap; }
+#prep .tkcat { font-style: normal; font-size: 16px; margin-right: 6px; }
+#prep .bkn { word-break: keep-all; overflow-wrap: anywhere; }
+#prep .bkm .tkimpi { color: var(--meal); font-weight: 700; }
+#prep .tk-a .tkdet { display: inline-flex; align-items: center; gap: 3px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 13px; font-weight: 600; color: var(--route); padding: 4px 10px; border: 0px; border-radius: 999px; background: var(--fill); cursor: pointer; line-height: 1.35; }
+#prep .tk-a .tkdet::after { content: "▾"; font-size: 11px; }
+#prep .tk-a .tkdet[aria-expanded="true"]::after { content: "▴"; }
+#prep .tk-a .tkmore { flex-basis: 100%; min-width: 0px; }
+#prep .tk-a .tkln, #prep .tk-a .tkdet { box-sizing: border-box; height: 28px; display: inline-flex; align-items: center; line-height: 1; padding: 0px 10px; }
+#prep .scenbox .seg button, #prep .viewbox .seg button, #prep #bookp .tkseg button, #prep .tkseg button { justify-content: center; gap: 4px; min-height: 32px; display: inline-flex !important; align-items: center !important; line-height: 1 !important; padding-top: 0px !important; padding-bottom: 0px !important; }
+#prep .tkseg button b { line-height: 1; }
+#prep .bkprog .bklocal { font-size: 12px; color: var(--muted); font-weight: 500; }
+#prep .tcard, #prep .fcd, #prep .ovplan, #prep .ovhero { border-radius: 20px; }
+#prep .fcd { background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); padding: 18px; }
+#prep .fcd .fct { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+#prep .fcd .fct b { font: 700 34px / 1.1 Georgia, "Noto Serif TC", serif; color: var(--fg); }
+#prep .fcd .fct span { color: var(--muted); font-size: 13px; }
+#prep .fcd .fcb { height: 10px; border-radius: 9px; background: var(--line); margin: 16px 6px 8px; position: relative; }
+#prep .fcd .fcb i { position: absolute; left: 0px; top: 0px; bottom: 0px; border-radius: 9px; background: linear-gradient(90deg, rgb(74, 163, 199), rgb(20, 40, 58)); }
+#prep .fcd .fcb u { position: absolute; top: -8px; font-size: 20px; text-decoration: none; transform: translateX(-50%); }
+#prep .fcd .fcr { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+#prep .fcd .fci { margin-top: 6px; justify-content: flex-start; }
+#prep .thd2 > b, #prep .glh h3, #prep .bc-h .glk, #prep #bookp h3.bkh, #prep .hrh b { color: var(--fg); letter-spacing: 0.01em; margin: 0px; font: 700 var(--fs-sec)/1.3 Georgia,"Noto Serif TC","Songti TC",serif !important; }
+#prep .tcard, #prep .hcard, #prep .glance, #prep .fcd { background: var(--card) !important; border: 1px solid var(--line) !important; border-radius: 20px !important; }
+#prep .dsum2.dsB, #prep .dlinks, #prep .bstat, #prep #bookp > section, #prep section.tcard, #prep .hcard { border-radius: 20px !important; padding: var(--pad-card) !important; }
+#prep > * + *, #prep #budget > * + * { margin-top: var(--gap-card); }
+#prep .fcd { margin-bottom: 0px; }
+#prep .fcd, #prepHero .fcd, #prepHero { margin-bottom: 0px !important; }
+#prepHero { margin-bottom: 14px !important; }
+#prep #pp-book, #prep #bookp { margin-top: 0px !important; padding-top: 0px !important; }
+#prep .fcd, #prepHero .fcd { box-shadow: none !important; }
+#prep .tcard, #prep .hcard, #prep .glance, #prep .fcd, #prep .dsum2.dsB, #prep #panel .dsum2.dsB, #prep #todayIn .tdsB, #prep #budget .bstat, #prep #budget .bsec, #prep #budget .bdash > div:not([class]), #prep #mroute, #prep #homeMapSlot { border: 0px !important; }
+#prep select.tst.ok{background-color:rgba(47,138,87,.14)!important;color:#23744a!important}
+#prep select.tst.recheck{background-color:rgba(43,111,149,.12)!important;color:var(--route)!important}
+#prep select.tst.na{background-color:var(--fill)!important;color:var(--muted)!important}
+#prep .tkl li.tk-ok .bkn,#prep .tkl li.tk-na .bkn{color:var(--muted)}
+#prep .tkl li.tk-na{opacity:.7}
+#prep .prelist li.done b{text-decoration:line-through;color:var(--muted)}
+#prep .prelist em.ai{font-style:normal;margin-left:6px;font-size:11px}
+#prep .pcard{background:var(--card);border-radius:20px;padding:16px 18px;margin-top:14px}
+#prep .pcard h3{margin:0 0 8px;font:700 var(--fs-sec)/1.3 Georgia,"Noto Serif TC","Songti TC",serif;color:var(--fg)}
+@media (prefers-color-scheme:dark){#prep{--bg:#171b1f;--card:#22272c;--fg:#e8eaec;--muted:#a3abb3;--line:#353c43;--route:#7fb7d9;--fill:#2c3238;--tint:#2a3540;--accent-bg:#2a3540;--warnbg:#3a231c;--warn:#ff9a80;--ok2:#86d6a8}
+ #prep select.tst.ok{color:#6fd39a!important}}

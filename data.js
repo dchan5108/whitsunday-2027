@@ -4,19 +4,19 @@ window.DATA={
 /* 後台：Google Apps Script 網頁應用程式網址（部署後填入）；Google 登入用戶端 ID（可使用同一 OAuth client，但後台獨立） */
 CONFIG:{api:"https://script.google.com/macros/s/AKfycbxUhoC326h38eVHgABELkQIjo4YLLZJYREQGftRlNvAQKkZ-CudhKVlMmjRHRdHMxF_/exec",gclient:"147893735528-nu3c7upfv480ciatt1u7fg2jm8ju8jcn.apps.googleusercontent.com"},
 
-/* 出發前要做。ai:1＝AI 建議 */
+/* 出發前要做。g:"book"＝預訂清單，g:"pre"＝出發前要做；ic＝圖示；imp:1＝重要；dl＝期限（預訂清單按期限分組）；ai:1＝AI 建議 */
 PREP:[
- {id:"fly",n:"訂 Scenic Flight（3/27 13:00）",d:"訂位時要提供全名及體重。",ai:1,s:["fly3"]},
- {id:"cam",n:"訂 Camira Sailing Adventure（3/28）",d:"問清楚復活節公眾假期的實際價錢。",ai:1},
- {id:"fer",n:"訂 Hamilton Island 來回船票（3/29）",ai:1},
- {id:"sh1",n:"訂 3/27 機場 shuttle",d:"配合 JQ842 08:30 抵達。",ai:1},
- {id:"sh2",n:"訂 3/30 機場 shuttle",d:"配合 VA1118 15:15 起飛。",ai:1},
- {id:"bag",n:"問 The Sebel 可否寄存行李",d:"3/27 入住前及 3/30 退房後。",ai:1},
- {id:"ins",n:"買旅遊保險",d:"住宿不可退款；選包天氣取消及航班延誤的保單。",ai:1},
- {id:"lug",n:"確認兩程機票的行李額",d:"去程 Jetstar、回程 Virgin Lite。",ai:1},
- {id:"call",n:"出發前 48 小時致電 Ocean Rafting 確認接送時間",ai:1,s:["fly4"]},
- {id:"wx",n:"出發前 3–5 日看天氣及風浪預報",ai:1},
- {id:"chk",n:"網上 check-in（兩程）",ai:1}
+ {id:"ins",g:"book",ic:"🛡️",imp:1,dl:"越早越好（現在就做）",n:"買旅遊保險",d:"住宿不可退款；選包天氣取消及航班延誤的保單。",ai:1},
+ {id:"fly",g:"book",ic:"🛩️",imp:1,dl:"越早越好（現在就做）",n:"訂 Scenic Flight（3/27 13:00）",d:"訂位時要提供全名及體重。",ai:1,s:["fly3"]},
+ {id:"cam",g:"book",ic:"⛵",imp:1,dl:"越早越好（現在就做）",n:"訂 Camira Sailing Adventure（3/28）",d:"問清楚復活節公眾假期的實際價錢。",ai:1},
+ {id:"fer",g:"book",ic:"⛴️",dl:"出發前一個月",n:"訂 Hamilton Island 來回船票（3/29）",ai:1},
+ {id:"sh1",g:"book",ic:"🚐",dl:"出發前一個月",n:"訂 3/27 機場 shuttle",d:"配合 JQ842 08:30 抵達。",ai:1},
+ {id:"sh2",g:"book",ic:"🚐",dl:"出發前一個月",n:"訂 3/30 機場 shuttle",d:"配合 VA1118 15:15 起飛。",ai:1},
+ {id:"bag",g:"pre",n:"問 The Sebel 可否寄存行李",d:"3/27 入住前及 3/30 退房後。",ai:1},
+ {id:"lug",g:"pre",n:"確認兩程機票的行李額",d:"去程 Jetstar、回程 Virgin Lite。",ai:1},
+ {id:"call",g:"pre",n:"出發前 48 小時致電 Ocean Rafting 確認接送時間",ai:1,s:["fly4"]},
+ {id:"wx",g:"pre",n:"出發前 3–5 日看天氣及風浪預報",ai:1},
+ {id:"chk",g:"pre",n:"網上 check-in（兩程）",ai:1}
 ],
 
 TRIP:{title:"Whitsundays 2027",start:"2027-03-27",end:"2027-03-30",base:"The Sebel Whitsundays（Airlie Beach）",people:2},
