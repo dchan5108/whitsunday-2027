@@ -58,9 +58,9 @@ SPOTS:{
  reef:{n:"Great Barrier Reef Full Day Adventure",i:"Cruise Whitsundays 的外堡礁全日團，由 Port of Airlie 出發，前往 Hardy Reef 的 Reefworld 浮台，可浮潛、參觀水底觀景室及乘坐半潛艇，並包自助午餐。",h:"Port of Airlie 08:00 出發，18:10 返抵",s:["reef","reef2"]}
 },
 
-/* 行程。tag：done 已訂｜book 要預訂｜opt 可選。sp：景點 key；ai:1＝AI 建議（不是你指定的） */
+/* 行程。rl＝路線標題；img＝總覽插畫；rt＝當日路線（Google Maps）；meet＝集合碼頭／船班。tag：done 已訂｜book 要預訂｜opt 可選。sp：景點 key；ai:1＝AI 建議（不是你指定的） */
 DAYS:[
- {date:"2027-03-27",wd:"六",title:"Scenic Flight · Airlie Beach",ph:1,
+ {date:"2027-03-27",rl:"Proserpine → Airlie Beach",img:"day1.webp",rt:["Whitsunday Coast Airport, Proserpine QLD","The Sebel Whitsundays, Airlie Beach QLD"],meet:"12:10–12:30 Scenic Flight 住宿接送",wd:"六",title:"Scenic Flight · Airlie Beach",ph:1,
   note:"今日不租車。機場往 Airlie Beach 坐 shuttle；Scenic Flight 有住宿免費接送。",
   s:[["06:40","JQ842 墨爾本 → Proserpine（08:30 抵達）","done"],
      ["08:45","機場 shuttle 往 Airlie Beach（約 40 分鐘）","book",{ai:1}],
@@ -70,7 +70,7 @@ DAYS:[
      ["15:00","The Sebel check-in（入住時間未核實）",""],
      ["16:00","Airlie Beach Lagoon／海濱散步","",{sp:"lagoon"}],
      ["19:00","晚餐（待定）",""]]},
- {date:"2027-03-28",wd:"日",title:"Camira Sailing Adventure",ph:1,
+ {date:"2027-03-28",rl:"Port of Airlie ⇄ Whitehaven Beach",img:"day2.webp",rt:["The Sebel Whitsundays, Airlie Beach QLD","Port of Airlie, Airlie Beach QLD"],meet:"07:45 Port of Airlie 報到（08:15 開船）",wd:"日",title:"Camira Sailing Adventure",ph:1,
   note:"由 Port of Airlie 出發。Hill Inlet 及浮潛視乎潮汐、天氣及海況。今日是公眾假期，可能有附加費（未核實）。",
   s:[["07:45","Port of Airlie 報到",""],
      ["08:15","Camira Sailing Adventure 出發","book",{sp:"cam"}],
@@ -79,7 +79,7 @@ DAYS:[
      ["","浮潛（視乎天氣及海況）",""],
      ["17:30","返抵 Port of Airlie",""],
      ["19:00","晚餐（待定）",""]]},
- {date:"2027-03-29",wd:"一",title:"Hamilton Island · 行山",ph:1,
+ {date:"2027-03-29",rl:"Airlie Beach ⇄ Hamilton Island",img:"",rt:["Port of Airlie, Airlie Beach QLD","Hamilton Island Marina QLD"],meet:"07:30 Port of Airlie 報到（08:00 開船）；回程 14:25 Hamilton Island Marina",wd:"一",title:"Hamilton Island · 行山",ph:1,
   note:"船公司建議開船前最少 30 分鐘到達碼頭。",
   s:[["07:30","Port of Airlie 報到",""],
      ["08:00","Cruise Whitsundays 船往 Hamilton Island Marina（09:00 抵達）","book",{ai:1}],
@@ -88,7 +88,7 @@ DAYS:[
      ["13:00","Catseye Beach、自由活動",""],
      ["14:25","船返 Port of Airlie（15:50 抵達；2027 年班次未核實）","book",{ai:1}],
      ["19:00","晚餐（待定）",""]]},
- {date:"2027-03-30",wd:"二",title:"Airlie Beach · 回程",ph:0,
+ {date:"2027-03-30",rl:"Airlie Beach → Proserpine",img:"day4.webp",rt:["The Sebel Whitsundays, Airlie Beach QLD","Whitsunday Coast Airport, Proserpine QLD"],meet:"",wd:"二",title:"Airlie Beach · 回程",ph:0,
   note:"",
   s:[["08:00","早餐、check-out（退房時間未核實）",""],
      ["09:30","Bicentennial Walkway 海濱散步",""],
