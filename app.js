@@ -42,7 +42,7 @@ function editDay(i){if(!ME||!ME.owner)return;const d=liveDays()[i];const title=p
  const entries=lines.split(/\n/).map(x=>x.split("|")).filter(x=>x.length>=2).map(x=>{const t=x[0].trim(),a=x.slice(1).join("|").trim(),o=d.s.find(r=>r[1]===a);return o?[t,a,o[2]||"",o[3]]:[t,a,""]});
  const patch={title:title.trim(),note:note.trim(),s:entries};if(!patch.title||!entries.length){alert("標題同時間表不可為空");return}
  call({op:"dayset",key:'day'+i,value:patch}).then(j=>{if(!j.ok)throw Error(j.err);OVERRIDES=j.days||{};trip()}).catch(e=>alert("儲存失敗："+e.message))}
-async function loadDays(){try{const j=await call({op:"dayget"});if(j.ok){OVERRIDES=j.days||{};LS.set("days",OVERRIDES);const t=TABS.find(x=>!$(x).hidden);if(t&&["home","today","trip"].includes(t))({home,today,trip})[t]()}}catch(e){}}
+async function loadDays(){try{const j=await call({op:"dayget"});if(j.ok){OVERRIDES=j.days||{};LS.set("days",OVERRIDES);if(LS.get("offline",null))LS.set("offline",offSnap());const t=TABS.find(x=>!$(x).hidden);if(t&&["home","today","trip"].includes(t))({home,today,trip})[t]()}}catch(e){}}
 
 /* ---------- 行程（冰島版樣式） ---------- */
 let cur=0;
@@ -112,8 +112,9 @@ function todo(id,t){$(id).innerHTML=`<section class="card"><h2>${t}</h2><p class
 const API=D.CONFIG.api,LS={get:(k,d)=>{try{const v=localStorage.getItem("wh27-"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set:(k,v)=>{try{v==null?localStorage.removeItem("wh27-"+k):localStorage.setItem("wh27-"+k,JSON.stringify(v))}catch(e){}}};
 let ME=LS.get("me",null),ST=LS.get("st",{}),DOCS=null,VIS=null;
 const dev=()=>{const u=navigator.userAgent;return (/iPhone/.test(u)?"iPhone":/iPad/.test(u)?"iPad":/Android/.test(u)?"Android":/Mac/.test(u)?"Mac":/Windows/.test(u)?"Windows":"其他")+" · "+(/CriOS|Chrome/.test(u)?"Chrome":/Firefox|FxiOS/.test(u)?"Firefox":/Safari/.test(u)?"Safari":"瀏覽器")+(matchMedia("(display-mode: standalone)").matches?"（主畫面）":"")};
-async function call(body){if(!API)throw new Error("後台未設定");const r=await fetch(API,{method:"POST",body:JSON.stringify(Object.assign({sk:ME&&ME.sk},body))});const j=await r.json();
- if(j.err==="sess"){ME=null;LS.set("me",null);DOCS=VIS=null;showGate("登入已失效，請重新登入。");throw new Error("登入已失效，請再登入")}return j}
+async function call(body,ms){if(!API)throw new Error("後台未設定");let j;const ac=ms?new AbortController():null,tm=ms?setTimeout(()=>ac.abort(),ms):0;
+ try{const r=await fetch(API,{method:"POST",body:JSON.stringify(Object.assign({sk:ME&&ME.sk},body)),signal:ac?ac.signal:undefined});j=await r.json()}catch(e){throw new TypeError("網絡不穩定，請稍後再試")}finally{clearTimeout(tm)}
+ if(j.err==="sess"){ME=null;LS.set("me",null);LS.set("offline",null);DOCS=VIS=null;showGate("登入已失效，請重新登入。");throw new Error("登入已失效，請再登入")}return j}
 const errTxt={notallowed:"這個 Gmail 未被加入可登入名單。",token:"Google 登入失敗，請再試。",aud:"後台的 CLIENT_ID 設定不正確。",big:"檔案太大（上限 10MB）。",owner:"只有你的帳戶看到登入記錄。"};
 function gsi(cb){if(window.google&&google.accounts)return cb();const s=document.createElement("script");s.src="https://accounts.google.com/gsi/client";s.async=true;s.onload=cb;s.onerror=()=>{const e=document.getElementById("gate-msg");if(e)e.textContent="無法載入 Google 登入，請檢查網絡。"};document.head.appendChild(s)}
 function loginBtn(el,msg){gsi(()=>{google.accounts.id.initialize({client_id:D.CONFIG.gclient,ux_mode:"popup",callback:async r=>{msg.textContent="檢查中…";
@@ -121,7 +122,7 @@ function loginBtn(el,msg){gsi(()=>{google.accounts.id.initialize({client_id:D.CO
   ME={sk:j.sk,email:j.email,owner:!!j.owner,role:j.role};LS.set("me",ME);if(j.role==="pending"){showGate("登入成功，等待管理員批准。");return}hideGate();show("home");syncState();loadDays()}catch(e){msg.textContent=e.message}}});
  google.accounts.id.renderButton(el,{theme:"outline",size:"large",text:"signin_with",locale:"zh-TW"})})}
 async function syncState(){if(!ME)return;try{const j=await call({op:"stget"});if(j.ok){ST=j.st||{};LS.set("st",ST);if(!$("prep").hidden)drawChk()}}catch(e){}}
-function ping(){if(ME&&API)call({op:"ping",dev:dev()}).then(j=>{if(j.ok&&ME){ME.owner=!!j.owner;ME.role=j.role;LS.set("me",ME);if(j.role==="pending")showGate("登入成功，等待管理員批准。");else hideGate()}}).catch(e=>{if(!(e instanceof TypeError||!navigator.onLine))showGate("登入狀態未能驗證，請重新登入。")})}
+function ping(){if(ME&&API)call({op:"ping",dev:dev()}).then(j=>{if(j.ok&&ME){ME.owner=!!j.owner;ME.role=j.role;LS.set("me",ME);if(j.role==="pending"||j.role==="rejected"){LS.set("offline",null);showGate(j.role==="pending"?"登入成功，等待管理員批准。":"這個帳戶未獲授權。")}else hideGate()}}).catch(e=>{if(!(e instanceof TypeError||!navigator.onLine))showGate("登入狀態未能驗證，請重新登入。")})}
 const kb=n=>n>1048576?(n/1048576).toFixed(1)+" MB":Math.max(1,Math.round(n/1024))+" KB";
 const dt=t=>new Date(t).toLocaleString("zh-HK",{hour12:false,month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"});
 
@@ -275,15 +276,29 @@ function today(){const days=liveDays(),tdy=new Date().toLocaleDateString("en-CA"
  const nw=$("today").querySelector("[data-tgo]");if(nw)nw.onclick=()=>{TD=n;today()};
  $("today").querySelector("[data-tfull]").onclick=()=>{cur=i;show("trip");window.scrollTo(0,0)};
  loadWeather()}
+/* ---------- 離線行程：只存集合時間、地點及地址、交通、活動；唔存確認碼、個人資料、登入資料 ---------- */
+function offSnap(){return {saved:new Date().toISOString(),days:liveDays().map(d=>({date:d.date,wd:d.wd||"",title:d.title||"",meet:d.meet||"",addr:(d.rt||[]).map(String),
+ s:(d.s||[]).map(x=>{const o=x[3]||{},g=o.go;return [x[0]||"",x[1]||"",o.end||"",g?[g.to||"",g.d||""]:null]})}))}}
+async function saveOffline(){const m=$("offmsg");if(m)m.textContent="儲存中…";
+ try{const j=await call({op:"ping",dev:dev()},15000);if(!j.ok||j.role==="pending"||j.role==="rejected")throw Error("帳戶未獲授權");
+  await loadDays();LS.set("offline",offSnap());if(!LS.get("offline",null))throw Error("瀏覽器不准儲存（請關閉私密瀏覽）");openAdmin()}
+ catch(e){if(m)m.textContent="未能儲存："+e.message}}
+function showOffline(){const o=LS.get("offline",null);if(!o||!o.days)return false;hideGate();document.body.classList.add("offmode");TABS.forEach(s=>$(s).hidden=true);
+ let el=$("offline");if(!el){el=document.createElement("section");el.id="offline";document.querySelector("main").appendChild(el)}el.hidden=false;
+ el.innerHTML=`<section class="pcard"><h2>離線行程</h2><p class="note">最後更新：${esc(dt(o.saved))} · 只供查閱</p><div class="offbtns"><button type="button" class="btn" id="offretry">重新連線</button><button type="button" class="btn ghost" id="offdel">移除離線行程</button></div></section>`+
+ o.days.map((d,i)=>`<section class="pcard offday"><h3>D${i+1} · ${esc(md(d.date))}（${esc(d.wd)}）${esc(d.title)}</h3>${d.meet?`<p><b>集合：</b>${esc(d.meet)}</p>`:""}${d.addr.length?`<p class="note">地址：${d.addr.map(esc).join(" → ")}</p>`:""}<ul class="offs">${d.s.map(x=>`<li><time>${esc(x[0])}${x[2]?"–"+esc(x[2]):""}</time><span>${esc(x[1])}${x[3]?`<small>交通：往 ${esc(x[3][0])}${x[3][1]?"（"+esc(x[3][1])+"）":""}</small>`:""}</span></li>`).join("")}</ul></section>`).join("");
+ $("offretry").onclick=()=>location.reload();$("offdel").onclick=()=>{if(confirm("移除這部機的離線行程？")){LS.set("offline",null);location.reload()}};return true}
 /* ---------- 分頁 ---------- */
 const TABS=["prep","today","home","trip","budget"];
 /* 管理（左上角）：成員審批、登入記錄、帳戶 */
 function openAdmin(){let g=$("adm");if(!g){g=document.createElement("dialog");g.id="adm";g.className="admdlg";document.body.appendChild(g)}
  g.innerHTML=`<div class="admh"><h2>管理</h2><button type="button" class="admx">完成</button></div>
  ${ME&&ME.owner?`<section class="pcard" id="members"></section><section class="pcard"><h3>登入記錄</h3><div id="vis"></div></section>`:""}
+ ${(o=>`<section class="pcard"><h3>離線行程</h3><p class="note">${o?"已儲存在這部機 · 最後更新："+esc(dt(o.saved)):"儲存後，用同一部手機、同一個瀏覽器冇網絡都可以打開。只包括集合時間、地點、交通及活動。"}</p><button type="button" class="btn" id="offsave">${o?"更新離線行程":"儲存離線行程"}</button>${o?` <button type="button" class="btn ghost" id="offrm">移除離線行程</button>`:""}<p class="note" id="offmsg"></p></section>`)(LS.get("offline",null))}
  <section class="pcard"><h3>帳戶</h3><p class="note">已登入：${esc(ME.email)}</p><button type="button" class="btn ghost" id="lgout">登出</button></section>`;
  g.querySelector(".admx").onclick=()=>g.close();g.onclick=e=>{if(e.target===g)g.close()};
- $("lgout").onclick=()=>{g.close();call({op:"logout"}).catch(()=>{});ME=null;LS.set("me",null);DOCS=VIS=MEMBERS=null;showGate()};
+ $("offsave").onclick=saveOffline;if($("offrm"))$("offrm").onclick=()=>{LS.set("offline",null);openAdmin()};
+ $("lgout").onclick=()=>{g.close();call({op:"logout"}).catch(()=>{});ME=null;LS.set("me",null);LS.set("offline",null);DOCS=VIS=MEMBERS=null;showGate()};
  drawMembers();drawVis();try{g.showModal()}catch(e){g.setAttribute("open","")}}
 function show(t){const ab=$("admbtn");if(ab){ab.hidden=!ME||ME.role==="pending"||ME.role==="rejected";ab.onclick=openAdmin}
 if(!ME||ME.role==="pending"||ME.role==="rejected"){showGate(ME&&ME.role==="pending"?"登入成功，等待管理員批准。":"");return}if(!TABS.includes(t))t="home";
@@ -293,7 +308,7 @@ if(!ME||ME.role==="pending"||ME.role==="rejected"){showGate(ME&&ME.role==="pendi
  try{if(location.hash.slice(1)!==t)history.replaceState(null,"","#"+t)}catch(e){}}
 document.querySelectorAll(".bnav button").forEach(b=>b.onclick=()=>{show(b.dataset.tab);window.scrollTo(0,0)});
 window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
-showGate('正在驗證登入狀態…');if(ME&&ME.sk){call({op:'ping',dev:dev()}).then(j=>{if(!j.ok||j.role==='pending'||j.role==='rejected')throw Error('尚未獲批');ME.owner=!!j.owner;ME.role=j.role;LS.set('me',ME);hideGate();show(location.hash.slice(1)||'home');syncState();loadDays()}).catch(e=>{if(ME&&ME.sk&&(e instanceof TypeError||!navigator.onLine)){hideGate();show(location.hash.slice(1)||'home')}else{ME=null;LS.set('me',null);showGate('請使用 Google 登入。')}})}
+showGate('正在驗證登入狀態…');if(ME&&ME.sk){call({op:'ping',dev:dev()},8000).then(j=>{if(!j.ok||j.role==='pending'||j.role==='rejected')throw Error('尚未獲批');ME.owner=!!j.owner;ME.role=j.role;LS.set('me',ME);hideGate();show(location.hash.slice(1)||'home');syncState();loadDays()}).catch(e=>{if(ME&&ME.sk&&(e instanceof TypeError||!navigator.onLine)){if(!showOffline()){hideGate();show(location.hash.slice(1)||'home')}}else{ME=null;LS.set('me',null);LS.set('offline',null);showGate('請使用 Google 登入。')}})}
 /* 離線：用 service worker 保存網站，冇網絡都打得開 */
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 })();

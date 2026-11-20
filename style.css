@@ -145,3 +145,11 @@ body{background:var(--bg);color:var(--fg)}
 #auth-gate .gate-card p{color:var(--color-text-muted)}
 #auth-gate #gate-google{display:flex;justify-content:center;margin:8px auto 0}
 #auth-gate #gate-google>div{margin:0 auto}
+
+/* 離線行程 */
+body.offmode .bnav,body.offmode .admbtn{display:none}
+.offbtns{display:flex;gap:8px;flex-wrap:wrap}
+.offs{list-style:none;margin:8px 0 0;padding:0}
+.offs li{display:grid;grid-template-columns:5.5em 1fr;gap:8px;padding:6px 0;border-top:.5px solid rgba(0,0,0,.08)}
+.offs time{font-variant-numeric:tabular-nums;color:#5b6b75}
+.offs small{display:block;color:#5b6b75}
